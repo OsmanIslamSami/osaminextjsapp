@@ -1,5 +1,6 @@
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -9,6 +10,11 @@ export default function Header() {
         <span className="text-xl font-bold text-black dark:text-zinc-50">MyApp</span>
       </div>
       <nav className="flex items-center gap-4">
+        <Show when="signed-in">
+          <Link href="/clients" className="px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded">
+            Clients
+          </Link>
+        </Show>
         <Show when="signed-out">
           <SignInButton mode="modal">
             <button className="px-4 py-2 rounded bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]">Sign In</button>

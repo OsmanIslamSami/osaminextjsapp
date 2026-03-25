@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -38,6 +39,14 @@ export default function Home() {
             <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
               You are signed in! Welcome back.
             </p>
+            <div className="flex flex-col gap-4 w-full sm:w-auto">
+              <Link
+                href="/clients"
+                className="flex h-12 items-center justify-center rounded-full bg-blue-500 px-8 text-white transition-colors hover:bg-blue-600"
+              >
+                Manage Clients
+              </Link>
+            </div>
           </Show>
           <a
             className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
