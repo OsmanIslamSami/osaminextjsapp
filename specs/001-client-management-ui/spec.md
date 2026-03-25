@@ -84,6 +84,8 @@ Users arriving at the application home page can quickly navigate to key features
 - How does search handle special characters or non-Latin scripts in names?
 - How does the dashboard grid layout handle tablets and intermediate screen sizes?
 - What happens to month comparison cards when Last Month has 0 data (new system)?
+- What happens when user exports 0 clients (empty search results - should export empty file or show message)?
+- How does export handle very large datasets (>10,000 clients - should there be pagination or limit warning)?
 
 ## Requirements *(mandatory)*
 
@@ -105,10 +107,12 @@ Users arriving at the application home page can quickly navigate to key features
 - **FR-008**: System MUST populate created_by and updated_by fields with the Clerk user identity of the authenticated user performing the action
 - **FR-009**: System MUST auto-populate created_at and updated_at timestamps using database server time
 - **FR-010**: Client list MUST be sortable by created_at and updated_at dates (newest first by default)
+- **FR-017**: System MUST provide Excel export functionality for the client list, generating .xlsx files containing all visible filtered clients with columns: name, email, mobile, address, created_by, updated_by, created_at, updated_at. Export button MUST be visible on the clients search page. Downloaded file MUST be named `clients_export_YYYY-MM-DD.xlsx` with current date.
+- **FR-018**: System MUST provide delete capability for clients using soft-delete pattern (is_deleted boolean flag). Delete action MUST show confirmation dialog with client name before execution. Deleted clients MUST be filtered from all queries (list, search, dashboard counts, export). Only authenticated users can delete clients, and deleted_by/deleted_at MUST be recorded.
 
 ### Key Entities
 
-- **Client**: Represents a customer or contact with attributes: name (required), email (required, unique), mobile (optional), address (optional), created_by (Clerk user ID), updated_by (Clerk user ID), created_at (timestamp), updated_at (timestamp)
+- **Client**: Represents a customer or contact with attributes: name (required), email (required, unique), mobile (optional), address (optional), created_by (Clerk user ID), updated_by (Clerk user ID), created_at (timestamp), updated_at (timestamp), is_deleted (boolean, default false), deleted_by (Clerk user ID, nullable), deleted_at (timestamp, nullable). Clients can be exported to Excel format (.xlsx) via export button on search page. Deleted clients are soft-deleted (is_deleted=true) and hidden from queries.
 
 - **Order**: Referenced for dashboard analytics with attributes: client_id (foreign key to Client), status (enum: pending/completed/cancelled), order metadata for counting purposes
 
@@ -123,6 +127,7 @@ Users arriving at the application home page can quickly navigate to key features
 - **SC-005**: Donut chart colors are visually distinct and accessible (WCAG AA contrast ratio)
 - **SC-006**: Dashboard grid layout adapts seamlessly to mobile devices (single column) and desktop (multi-column) without information loss
 - **SC-007**: Month comparison calculations are accurate within 1 second of database query time for datasets up to 50,000 records
+- **SC-008**: Users can export up to 1,000 filtered clients to Excel (.xlsx) format within 3 seconds, with accurate data matching on-screen search results
 
 ## Assumptions
 

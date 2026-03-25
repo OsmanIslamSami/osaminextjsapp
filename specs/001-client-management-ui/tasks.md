@@ -85,6 +85,9 @@
 - [ ] T035 [US1] Replace existing client list rendering in app/clients/page.tsx with ClientGrid component passing filtered clients
 - [ ] T036 [US1] Add empty state message to app/clients/page.tsx when no clients match search
 - [ ] T037 [US1] Add Tailwind styling to app/clients/page.tsx for card-based layout with proper spacing and borders
+- [ ] T037a [P] [US1] Add sort state to app/clients/page.tsx (useState for sortField: 'created_at' | 'updated_at', sortDirection: 'asc' | 'desc', default: sortField='created_at', direction='desc')
+- [ ] T037b [P] [US1] Create lib/components/SortableColumnHeader.tsx (column header component with sort indicator icons, click toggles direction, accepts field name and current sort state)
+- [ ] T037c [US1] Add SortableColumnHeader to app/clients/page.tsx table headers for "Added Date" (created_at) and "Updated Date" (updated_at) columns, apply sort logic to client array before rendering
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - users can search clients and see all audit fields
 
@@ -169,6 +172,46 @@
 - [ ] T078 Verify WCAG AA contrast for donut chart colors (completed=green, pending=yellow, cancelled=red)
 - [ ] T079 Run quickstart.md validation steps to ensure all implementation guide steps are accurate
 - [ ] T080 Code cleanup: Remove console.logs, unused imports, and commented code across all files
+
+---
+
+## Phase 7: Export Functionality (FR-017)
+
+**Purpose**: Enable Excel export of client data from search page
+
+- [ ] T081 Install Excel generation library: `npm install xlsx` (SheetJS for .xlsx generation)
+- [ ] T082 Create __tests__/api/clients/export.test.ts with unit test (verify Excel file generation, date formatting in filename)
+- [ ] T083 Create __tests__/components/ExportButton.test.tsx with unit test (verify button click triggers download)
+- [ ] T084 [P] Create app/api/clients/export/route.ts GET endpoint (accepts searchQuery param, returns clients as .xlsx file with Content-Disposition header)
+- [ ] T085 [P] Add Excel generation logic to app/api/clients/export/route.ts (map client data to worksheet rows, apply column headers, set filename `clients_export_YYYY-MM-DD.xlsx`)
+- [ ] T086 [P] Create lib/components/ExportButton.tsx (trigger download on click, show loading state during export, handle errors)
+- [ ] T087 Add ExportButton component to app/clients/page.tsx (position above client list, pass current searchQuery to export endpoint)
+- [ ] T088 Add export button styling using Tailwind classes (primary button style, icon + label, disabled state during loading)
+
+**Checkpoint**: Users can export filtered client list to Excel file with accurate data and proper filename format
+
+---
+
+## Phase 8: Delete Functionality (FR-018)
+
+**Purpose**: Enable soft-delete of clients with confirmation dialog
+
+- [ ] T089 Update prisma/schema.prisma to add is_deleted, deleted_by, deleted_at fields to clients model
+- [ ] T090 Generate Prisma migration: `npx prisma migrate dev --name add_soft_delete_to_clients`
+- [ ] T091 Apply migration to database: verify is_deleted defaults to false for existing clients
+- [ ] T092 Create __tests__/api/clients/[id]/delete.test.ts with unit test (verify soft-delete sets is_deleted=true, records deleted_by and deleted_at)
+- [ ] T093 Create __tests__/components/ConfirmDialog.test.tsx with unit test (verify dialog shows client name, cancel/confirm actions)
+- [ ] T094 [P] Add DELETE handler to app/api/clients/[id]/route.ts (soft-delete: SET is_deleted=true, deleted_by=userId, deleted_at=now() WHERE id=:id)
+- [ ] T095 [P] Create lib/components/ConfirmDialog.tsx (reusable modal with title, message, cancel button, confirm button, close on backdrop click)
+- [ ] T096 [P] Create lib/components/DeleteButton.tsx (delete icon button, opens ConfirmDialog on click, passes client name to confirmation message, shows loading state)
+- [ ] T097 Add DeleteButton component to app/clients/page.tsx (add to each row in client list, trigger soft-delete API call on confirm)
+- [ ] T098 Update lib/db.ts helper queries to add WHERE is_deleted = false filter to all client SELECT queries (getClients, searchClients, getClientById, getMetrics count)
+- [ ] T099 Update app/api/clients/export/route.ts to exclude deleted clients (WHERE is_deleted = false in query)
+- [ ] T100 Update seed script scripts/seed-dashboard-data.ts to set is_deleted=false explicitly for all seeded clients
+- [ ] T101 Add delete button styling using Tailwind classes (danger button style, icon + tooltip, disabled state during loading)
+- [ ] T102 Test delete confirmation flow end-to-end (verify deleted clients disappear from list, dashboard counts update, export excludes deleted clients)
+
+**Checkpoint**: Users can soft-delete clients with confirmation, deleted clients are hidden from all views and queries, audit trail records who deleted and when
 
 ---
 

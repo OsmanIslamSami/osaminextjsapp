@@ -29,6 +29,9 @@ Represents a customer or business contact in the system.
 | updated_by | VARCHAR(255) | **NEW**, NOT NULL | Clerk user ID who last updated the record |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT now() | Record creation timestamp |
 | updated_at | TIMESTAMP | NOT NULL, DEFAULT now() | Last update timestamp |
+| is_deleted | BOOLEAN | **NEW**, NOT NULL, DEFAULT false | Soft-delete flag (true = deleted, false = active) |
+| deleted_by | VARCHAR(255) | **NEW**, NULLABLE | Clerk user ID who deleted the record (null if not deleted) |
+| deleted_at | TIMESTAMP | **NEW**, NULLABLE | Soft-delete timestamp (null if not deleted) |
 
 **Indexes**:
 - PRIMARY KEY on `id`
@@ -115,8 +118,12 @@ enum OrderStatus {
 1. **clients table**:
    - ADD COLUMN `created_by` VARCHAR(255) NOT NULL DEFAULT 'system'
    - ADD COLUMN `updated_by` VARCHAR(255) NOT NULL DEFAULT 'system'
+   - ADD COLUMN `is_deleted` BOOLEAN NOT NULL DEFAULT false
+   - ADD COLUMN `deleted_by` VARCHAR(255) DEFAULT NULL
+   - ADD COLUMN `deleted_at` TIMESTAMP DEFAULT NULL
    - CREATE INDEX `idx_clients_created_at` ON clients(created_at)
    - CREATE INDEX `idx_clients_updated_at` ON clients(updated_at)
+   - CREATE INDEX `idx_clients_is_deleted` ON clients(is_deleted)
 
 2. **orders table**:
    - ADD COLUMN `status` VARCHAR(20) NOT NULL DEFAULT 'pending'
@@ -193,11 +200,12 @@ DROP INDEX idx_orders_created_at;
 
 ### Total Counts
 ```sql
--- Total clients
-SELECT COUNT(*) FROM clients;
+-- Total clients (exclude soft-deleted)
+SELECT COUNT(*) FROM clients WHERE is_deleted = false;
 
--- Total orders
-SELECT COUNT(*) FROM orders;
+-- Total orders (only for non-deleted clients)
+SELECT COUNT(*) FROM orders 
+WHERE client_id IN (SELECT id FROM clients WHERE is_deleted = false);
 ```
 
 ### Order Status Breakdown (for Donut Chart)
