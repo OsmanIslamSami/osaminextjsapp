@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import StatusBadge from '@/lib/components/clients/StatusBadge';
+import { ClientStatus } from '@/lib/generated/prisma/enums';
 
 interface Client {
   id: number;
@@ -10,6 +12,7 @@ interface Client {
   email: string;
   mobile: string;
   address: string;
+  status: ClientStatus;
   created_at: string;
 }
 
@@ -121,31 +124,37 @@ export default function ViewClient() {
       </div>
 
       {/* Client Information */}
-      <div className="bg-white border border-gray-300 rounded-lg p-6 mb-8">
+      <div className="bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-800 rounded-lg p-6 mb-8">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-gray-600 text-sm">Name</p>
-            <p className="text-lg font-semibold">{client.name}</p>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">Name</p>
+            <p className="text-lg font-semibold dark:text-zinc-100">{client.name}</p>
           </div>
           <div>
-            <p className="text-gray-600 text-sm">Email</p>
-            <p className="text-lg font-semibold">{client.email}</p>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">Email</p>
+            <p className="text-lg font-semibold dark:text-zinc-100">{client.email}</p>
           </div>
           <div>
-            <p className="text-gray-600 text-sm">Mobile</p>
-            <p className="text-lg font-semibold">{client.mobile}</p>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">Mobile</p>
+            <p className="text-lg font-semibold dark:text-zinc-100">{client.mobile}</p>
           </div>
           <div>
-            <p className="text-gray-600 text-sm">ID</p>
-            <p className="text-lg font-semibold">{client.id}</p>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">Status</p>
+            <div className="mt-1">
+              <StatusBadge status={client.status} />
+            </div>
+          </div>
+          <div>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">ID</p>
+            <p className="text-lg font-semibold dark:text-zinc-100">{client.id}</p>
           </div>
           <div className="col-span-2">
-            <p className="text-gray-600 text-sm">Address</p>
-            <p className="text-lg font-semibold">{client.address}</p>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">Address</p>
+            <p className="text-lg font-semibold dark:text-zinc-100">{client.address}</p>
           </div>
           <div className="col-span-2">
-            <p className="text-gray-600 text-sm">Member Since</p>
-            <p className="text-lg font-semibold">{new Date(client.created_at).toLocaleDateString()}</p>
+            <p className="text-gray-600 dark:text-zinc-400 text-sm">Member Since</p>
+            <p className="text-lg font-semibold dark:text-zinc-100">{new Date(client.created_at).toLocaleDateString()}</p>
           </div>
         </div>
       </div>

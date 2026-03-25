@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import ClientSearchBar from '@/lib/components/clients/ClientSearchBar';
-import ClientGrid from '@/lib/components/clients/ClientGrid';
-import SortableColumnHeader from '@/lib/components/SortableColumnHeader';
+import ClientTable from '@/lib/components/clients/ClientTable';
+import ClientTableRow from '@/lib/components/clients/ClientTableRow';
 import ExportButton from '@/lib/components/ExportButton';
+import { ClientStatus } from '@/lib/generated/prisma/enums';
 
 interface Client {
   id: number;
@@ -13,6 +14,7 @@ interface Client {
   email: string;
   mobile: string | null;
   address: string | null;
+  status: ClientStatus;
   created_at: string;
   updated_at: string;
   created_by: string;
@@ -21,79 +23,107 @@ interface Client {
 
 export default function ClientsList() {
   const [clients, setClients] = useState<Client[]>([]);
-  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sortField, setSortField] = useState<'created_at' | 'updated_at'>('created_at');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [nextCursor, setNextCursor] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  useEffect(() => {
-    fetchClients();
-  }, []);
-
-  useEffect(() => {
-    // Filter clients based on search term
-    if (search.trim() === '') {
-      setFilteredClients(clients);
+  // Fetch initial clients or search results
+  const fetchClients = useCallback(async (searchQuery: string = '', reset: boolean = false) => {
+    if (reset) {
+      setLoading(true);
+      setClients([]);
+      setNextCursor(null);
+      setHasMore(true);
     } else {
-      const searchLower = search.toLowerCase();
-      const filtered = clients.filter(
-        (client) =>
-          client.name.toLowerCase().includes(searchLower) ||
-          client.email.toLowerCase().includes(searchLower) ||
-          (client.mobile && client.mobile.toLowerCase().includes(searchLower))
-      );
-      setFilteredClients(filtered);
+      setLoadingMore(true);
     }
-  }, [search, clients]);
+    
+    setError(null);
 
-  useEffect(() => {
-    // Sort filtered clients
-    const sorted = [...filteredClients].sort((a, b) => {
-      const aValue = new Date(a[sortField]).getTime();
-      const bValue = new Date(b[sortField]).getTime();
-      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-    });
-    setFilteredClients(sorted);
-  }, [sortField, sortDirection]);
-
-  const fetchClients = async () => {
-    setLoading(true);
     try {
-      // Fetch all clients without pagination for client-side filtering and sorting
-      const response = await fetch(`/api/clients?limit=1000`);
+      const params = new URLSearchParams();
+      params.set('limit', '50');
+      if (searchQuery) params.set('search', searchQuery);
+      if (!reset && nextCursor) params.set('cursor', nextCursor.toString());
+
+      const response = await fetch(`/api/clients?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch clients');
+      
       const data = await response.json();
-      setClients(data.clients);
-      setFilteredClients(data.clients);
+      
+      if (reset) {
+        setClients(data.clients);
+      } else {
+        setClients(prev => [...prev, ...data.clients]);
+      }
+      
+      setHasMore(data.hasMore);
+      setNextCursor(data.nextCursor);
     } catch (error) {
       console.error('Error fetching clients:', error);
+      setError('Failed to load clients. Please try again.');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
-  };
+  }, [nextCursor]);
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this client?')) return;
+  // Load more when sentinel is visible
+  const loadMore = useCallback(() => {
+    if (!loadingMore && !loading && hasMore && nextCursor) {
+      fetchClients(search, false);
+    }
+  }, [loadingMore, loading, hasMore, nextCursor, search, fetchClients]);
 
-    try {
-      const response = await fetch(`/api/clients/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        fetchClients();
+  // Initial load
+  useEffect(() => {
+    fetchClients('', true);
+  }, []);
+
+  // Reset and search when search term changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchClients(search, true);
+    }, 300); // Debounce search
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current.observe(sentinelRef.current);
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
-    } catch (error) {
-      console.error('Error deleting client:', error);
-    }
+    };
+  }, [loadMore]);
+
+  const handleRetry = () => {
+    fetchClients(search, true);
   };
 
-  const handleSort = (field: 'created_at' | 'updated_at') => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('desc');
-    }
+  const handleDelete = () => {
+    // Refresh the current list after deletion
+    fetchClients(search, true);
   };
 
   return (
@@ -113,42 +143,67 @@ export default function ClientsList() {
 
       <ClientSearchBar value={search} onChange={setSearch} />
 
-      <div className="flex gap-4 mb-6 items-center">
-        <span className="text-sm text-gray-600">Sort by:</span>
-        <SortableColumnHeader
-          field="created_at"
-          label="Added Date"
-          sortField={sortField}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-        />
-        <SortableColumnHeader
-          field="updated_at"
-          label="Updated Date"
-          sortField={sortField}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-        />
-      </div>
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p className="text-red-800 dark:text-red-200 mb-2">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="text-sm text-red-600 dark:text-red-400 hover:underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {loading ? (
         <div className="text-center py-12">
-          <p className="text-gray-600">Loading...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-zinc-100"></div>
+          <p className="text-gray-600 dark:text-zinc-400 mt-4">Loading clients...</p>
         </div>
-      ) : filteredClients.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-gray-600">
-            {search ? 'No clients match your search.' : 'No clients found.'}{' '}
+      ) : clients.length === 0 ? (
+        <div className="text-center py-12 bg-gray-50 dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800">
+          <p className="text-gray-600 dark:text-zinc-400">
+            {search ? `No clients match "${search}".` : 'No clients found.'}{' '}
             {!search && <Link href="/clients/add" className="text-blue-500 hover:underline">Add one?</Link>}
           </p>
         </div>
       ) : (
         <>
-          <div className="mb-4 text-sm text-gray-600">
-            Showing {filteredClients.length} {filteredClients.length === 1 ? 'client' : 'clients'}
+          <div className="mb-4 text-sm text-gray-600 dark:text-zinc-400">
+            Showing {clients.length} {clients.length === 1 ? 'client' : 'clients'}
             {search && ` matching "${search}"`}
           </div>
-          <ClientGrid clients={filteredClients} onDelete={fetchClients} />
+          
+          <ClientTable>
+            {clients.map((client, index) => (
+              <ClientTableRow 
+                key={client.id} 
+                client={client} 
+                index={index}
+                onDelete={handleDelete}
+              />
+            ))}
+          </ClientTable>
+
+          {/* Sentinel for infinite scroll */}
+          <div ref={sentinelRef} className="h-4" />
+
+          {/* Loading more indicator */}
+          {loadingMore && (
+            <div className="text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900 dark:border-zinc-100"></div>
+              <p className="text-gray-600 dark:text-zinc-400 mt-2 text-sm">Loading more...</p>
+            </div>
+          )}
+
+          {/* End of results indicator */}
+          {!hasMore && clients.length > 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-500 dark:text-zinc-500 text-sm">
+                All clients loaded
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>

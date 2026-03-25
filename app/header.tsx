@@ -1,6 +1,7 @@
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { HomeIcon, ChartBarIcon, UsersIcon } from "@heroicons/react/24/outline";
 
 export default function Header() {
   return (
@@ -11,8 +12,17 @@ export default function Header() {
       </div>
       <nav className="flex items-center gap-4">
         <Show when="signed-in">
-          <Link href="/clients" className="px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded">
-            Clients
+          <Link href="/" className="flex items-center gap-2 px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded transition-colors">
+            <HomeIcon className="w-5 h-5" />
+            <span>Home</span>
+          </Link>
+          <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded transition-colors">
+            <ChartBarIcon className="w-5 h-5" />
+            <span>Dashboard</span>
+          </Link>
+          <Link href="/clients" className="flex items-center gap-2 px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded transition-colors">
+            <UsersIcon className="w-5 h-5" />
+            <span>Clients</span>
           </Link>
         </Show>
         <Show when="signed-out">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { ClientStatus } from '@/lib/generated/prisma/enums';
 
 interface Client {
   id: number;
@@ -10,6 +11,7 @@ interface Client {
   email: string;
   mobile: string;
   address: string;
+  status: ClientStatus;
 }
 
 export default function EditClient() {
@@ -43,7 +45,7 @@ export default function EditClient() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!formData) return;
     const { name, value } = e.target;
     setFormData((prev) => prev ? { ...prev, [name]: value } : null);
@@ -138,6 +140,23 @@ export default function EditClient() {
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="status" className="block text-sm font-medium mb-1">
+            Status
+          </label>
+          <select
+            id="status"
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
         </div>
 
         <div className="mb-6">
