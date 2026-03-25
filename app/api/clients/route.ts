@@ -9,12 +9,12 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    let queryText = 'SELECT * FROM clients WHERE (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1) ORDER BY created_at DESC LIMIT $2 OFFSET $3';
+    let queryText = 'SELECT * FROM clients WHERE is_deleted = false AND (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1) ORDER BY created_at DESC LIMIT $2 OFFSET $3';
     const result = await query(queryText, [`%${search}%`, limit, offset]);
 
     // Get total count for pagination
     const countResult = await query(
-      'SELECT COUNT(*) as total FROM clients WHERE (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1)',
+      'SELECT COUNT(*) as total FROM clients WHERE is_deleted = false AND (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1)',
       [`%${search}%`]
     );
 
