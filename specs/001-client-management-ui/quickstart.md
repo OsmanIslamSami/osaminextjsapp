@@ -1,4 +1,4 @@
-# Quickstart: Client Management UI with Dashboard
+/speckit.plan# Quickstart: Client Management UI with Dashboard
 
 **Feature**: 001-client-management-ui  
 **Date**: 2026-03-25  
