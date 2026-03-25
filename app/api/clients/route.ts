@@ -1,28 +1,55 @@
-import { query } from '@/lib/db';
+import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
-// GET all clients with search
+// GET all clients with cursor-based pagination for infinite scroll
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search') || '';
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100); // Max 100
+    const cursorParam = searchParams.get('cursor');
+    const cursor = cursorParam ? parseInt(cursorParam) : undefined;
+    const statusFilter = searchParams.get('status') || undefined;
 
-    let queryText = 'SELECT * FROM clients WHERE is_deleted = false AND (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1) ORDER BY created_at DESC LIMIT $2 OFFSET $3';
-    const result = await query(queryText, [`%${search}%`, limit, offset]);
+    // Build where clause
+    const where: any = {
+      is_deleted: false,
+    };
 
-    // Get total count for pagination
-    const countResult = await query(
-      'SELECT COUNT(*) as total FROM clients WHERE is_deleted = false AND (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1)',
-      [`%${search}%`]
-    );
+    // Add search filter if provided
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+        { mobile: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    // Add status filter if provided
+    if (statusFilter === 'Active' || statusFilter === 'Inactive') {
+      where.status = statusFilter;
+    }
+
+    // Cursor-based pagination: fetch limit+1 to determine if there are more results
+    const clients = await prisma.clients.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      take: limit + 1,
+      ...(cursor && { 
+        skip: 1, // Skip the cursor item itself
+        cursor: { id: cursor } 
+      }),
+    });
+
+    // Check if there are more results
+    const hasMore = clients.length > limit;
+    const results = hasMore ? clients.slice(0, limit) : clients;
+    const nextCursor = hasMore && results.length > 0 ? results[results.length - 1].id : null;
 
     return NextResponse.json({
-      clients: result.rows,
-      total: parseInt(countResult.rows[0].total),
-      limit,
-      offset,
+      clients: results,
+      hasMore,
+      nextCursor,
     });
   } catch (error) {
     console.error('API error:', error);
@@ -37,24 +64,29 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, address, email, mobile } = body;
+    const { name, address, email, mobile, status } = body;
 
     if (!name || !address || !email || !mobile) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Name, address, email, and mobile are required' },
         { status: 400 }
       );
     }
 
-    const result = await query(
-      'INSERT INTO clients (name, address, email, mobile) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, address, email, mobile]
-    );
+    const newClient = await prisma.clients.create({
+      data: {
+        name,
+        address,
+        email,
+        mobile,
+        status: status || 'Active',
+      },
+    });
 
-    return NextResponse.json(result.rows[0], { status: 201 });
+    return NextResponse.json(newClient, { status: 201 });
   } catch (error: any) {
     console.error('API error:', error);
-    if (error.code === '23505') {
+    if (error.code === 'P2002') {
       return NextResponse.json(
         { error: 'Email already exists' },
         { status: 400 }

@@ -1,4 +1,7 @@
 import { Pool } from 'pg';
+import { PrismaClient } from '@/lib/generated/prisma/client';
+import { PrismaNeon } from '@prisma/adapter-neon';
+import { Pool as NeonPool } from '@neondatabase/serverless';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -20,5 +23,9 @@ export async function query(text: string, params?: any[]) {
 export async function getClient() {
   return pool.connect();
 }
+
+// Prisma Client with Neon adapter
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
+export const prisma = new PrismaClient({ adapter });
 
 export default pool;

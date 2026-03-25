@@ -1,4 +1,4 @@
-import { query } from '@/lib/db';
+import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
 
@@ -7,18 +7,33 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search') || '';
 
+    // Build where clause
+    const where: any = {
+      is_deleted: false,
+    };
+
+    // Add search filter if provided
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+        { mobile: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
     // Fetch clients matching search criteria
-    const result = await query(
-      'SELECT id, name, email, mobile, address, created_at, updated_at, created_by, updated_by FROM clients WHERE is_deleted = false AND (name ILIKE $1 OR email ILIKE $1 OR mobile ILIKE $1) ORDER BY created_at DESC',
-      [`%${search}%`]
-    );
+    const clients = await prisma.clients.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+    });
 
     // Prepare data for Excel
-    const exportData = result.rows.map((client) => ({
+    const exportData = clients.map((client) => ({
       ID: client.id,
       Name: client.name,
       Email: client.email,
       Mobile: client.mobile || '',
+      Status: client.status,
       Address: client.address || '',
       'Created At': new Date(client.created_at).toLocaleString(),
       'Updated At': new Date(client.updated_at).toLocaleString(),
@@ -36,6 +51,7 @@ export async function GET(request: NextRequest) {
       { wch: 20 },  // Name
       { wch: 25 },  // Email
       { wch: 15 },  // Mobile
+      { wch: 10 },  // Status
       { wch: 30 },  // Address
       { wch: 20 },  // Created At
       { wch: 20 },  // Updated At

@@ -13,24 +13,31 @@ enum OrderStatus {
   cancelled
 }
 
+enum ClientStatus {
+  Active
+  Inactive
+}
+
 model clients {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(255)
   address    String?
-  email      String    @unique @db.VarChar(255)
-  mobile     String?   @db.VarChar(20)
-  created_by String    @default("system") @db.VarChar(255)
-  updated_by String    @default("system") @db.VarChar(255)
-  created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamp(6)
-  is_deleted Boolean   @default(false)
-  deleted_by String?   @db.VarChar(255)
-  deleted_at DateTime? @db.Timestamp(6)
+  email      String       @unique @db.VarChar(255)
+  mobile     String?      @db.VarChar(20)
+  status     ClientStatus @default(Active)
+  created_by String       @default("system") @db.VarChar(255)
+  updated_by String       @default("system") @db.VarChar(255)
+  created_at DateTime     @default(now()) @db.Timestamp(6)
+  updated_at DateTime     @default(now()) @updatedAt @db.Timestamp(6)
+  is_deleted Boolean      @default(false)
+  deleted_by String?      @db.VarChar(255)
+  deleted_at DateTime?    @db.Timestamp(6)
   orders     orders[]
 
   @@index([created_at], map: "idx_clients_created_at")
   @@index([updated_at], map: "idx_clients_updated_at")
   @@index([is_deleted], map: "idx_clients_is_deleted")
+  @@index([status], map: "idx_clients_status")
 }
 
 model orders {
