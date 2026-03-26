@@ -108,3 +108,51 @@ model SliderContent {
   @@index([is_deleted, is_visible, display_order])
   @@map("slider_content")
 }
+
+model StyleLibraryFolder {
+  id           String                @id @default(cuid())
+  name         String
+  parent_id    String?
+  path         String                // Full path like "/Slider Images/Events"
+  description  String?
+  is_deleted   Boolean               @default(false)
+  created_by   String                @default("system")
+  created_at   DateTime              @default(now())
+  updated_at   DateTime              @updatedAt
+  
+  parent       StyleLibraryFolder?   @relation("FolderHierarchy", fields: [parent_id], references: [id], onDelete: Restrict)
+  children     StyleLibraryFolder[]  @relation("FolderHierarchy")
+  files        StyleLibraryFile[]
+
+  @@unique([parent_id, name], name: "unique_folder_name_per_parent")
+  @@index([parent_id])
+  @@index([is_deleted])
+  @@index([path])
+  @@map("style_library_folders")
+}
+
+model StyleLibraryFile {
+  id           String              @id @default(cuid())
+  folder_id    String?
+  name         String
+  file_url     String              // Vercel Blob URL or CDN URL
+  file_type    String              // MIME type (image/png, video/mp4, etc.)
+  file_size    Int                 // Size in bytes
+  width        Int?                // For images/videos
+  height       Int?                // For images/videos
+  thumbnail_url String?            // Optional thumbnail for videos
+  description  String?
+  tags         String[]            @default([])
+  is_deleted   Boolean             @default(false)
+  created_by   String              @default("system")
+  created_at   DateTime            @default(now())
+  updated_at   DateTime            @updatedAt
+  
+  folder       StyleLibraryFolder? @relation(fields: [folder_id], references: [id], onDelete: SetNull)
+
+  @@index([folder_id])
+  @@index([is_deleted])
+  @@index([file_type])
+  @@index([created_at])
+  @@map("style_library_files")
+}

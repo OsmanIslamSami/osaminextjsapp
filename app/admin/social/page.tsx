@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { SocialMediaLink } from '@/lib/types';
-import { PencilIcon, TrashIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, PlusIcon, XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import FilePicker from '@/lib/components/FilePicker';
 
 interface FormData {
   platform: string;
@@ -25,6 +26,7 @@ export default function AdminSocialPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [showFilePicker, setShowFilePicker] = useState(false);
 
   useEffect(() => {
     fetchLinks();
@@ -131,24 +133,23 @@ export default function AdminSocialPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
-    if (!editingId && !selectedFile) {
-      alert('Please upload an icon file');
+    // Validation - check if icon is provided (either file upload or from library)
+    if (!editingId && !selectedFile && !formData.icon_path) {
+      alert('Please upload an icon file or select one from the library');
       return;
     }
     
     setSubmitting(true);
-    setUploadingFile(true);
 
     try {
       let iconPath = formData.icon_path;
 
-      // Upload file if a new one is selected
+      // Upload file only if a new file is selected (not from library)
       if (selectedFile) {
+        setUploadingFile(true);
         iconPath = await uploadFile(selectedFile);
+        setUploadingFile(false);
       }
-
-      setUploadingFile(false);
 
       const url = editingId 
         ? `/api/social-media/${editingId}` 
@@ -179,6 +180,7 @@ export default function AdminSocialPage() {
       alert(`Failed to ${editingId ? 'update' : 'create'} link`);
     } finally {
       setSubmitting(false);
+      setUploadingFile(false);
     }
   };
 
@@ -282,30 +284,44 @@ export default function AdminSocialPage() {
               </label>
               
               <div className="space-y-3">
-                {/* File Upload Input */}
-                <div className="flex items-center gap-3">
-                  <label className="flex-1 cursor-pointer">
+                {/* File Upload and Library Picker */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowFilePicker(true)}
+                    className="px-4 py-3 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
+                  >
+                    <div className="flex flex-col items-center gap-2 text-blue-600 dark:text-blue-400">
+                      <PhotoIcon className="w-6 h-6" />
+                      <span className="text-sm font-medium">
+                        Choose from Library
+                      </span>
+                    </div>
+                  </button>
+                  
+                  <label className="cursor-pointer">
                     <input
                       type="file"
                       accept="image/svg+xml,image/png,image/jpeg,image/jpg,image/webp"
                       onChange={handleFileSelect}
                       className="hidden"
                     />
-                    <div className="px-4 py-2 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition-colors text-center">
-                      <div className="flex items-center justify-center gap-2 text-gray-600 dark:text-zinc-400">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="px-4 py-3 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded-lg hover:border-gray-400 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors h-full">
+                      <div className="flex flex-col items-center gap-2 text-gray-600 dark:text-zinc-400">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
                         <span className="text-sm font-medium">
-                          {selectedFile ? 'Change Icon' : editingId ? 'Upload New Icon' : 'Upload Icon'}
+                          Upload New
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1">
-                        SVG, PNG, JPG, or WebP (max 2MB)
-                      </p>
                     </div>
                   </label>
                 </div>
+                
+                <p className="text-xs text-gray-500 dark:text-zinc-500 text-center">
+                  SVG, PNG, JPG, or WebP (max 2MB)
+                </p>
 
                 {/* Preview */}
                 {previewUrl && (
@@ -319,7 +335,7 @@ export default function AdminSocialPage() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900 dark:text-zinc-100">
-                        {selectedFile ? selectedFile.name : 'Current Icon'}
+                        {selectedFile ? selectedFile.name : 'Selected Icon'}
                       </p>
                       {selectedFile && (
                         <p className="text-xs text-gray-500 dark:text-zinc-400">
@@ -327,22 +343,21 @@ export default function AdminSocialPage() {
                         </p>
                       )}
                     </div>
-                    {selectedFile && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedFile(null);
-                          setPreviewUrl(editingId ? formData.icon_path : '');
-                        }}
-                        className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm"
-                      >
-                        Remove
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedFile(null);
+                        setPreviewUrl(editingId ? formData.icon_path : '');
+                        setFormData({ ...formData, icon_path: editingId ? formData.icon_path : '' });
+                      }}
+                      className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm"
+                    >
+                      Remove
+                    </button>
                   </div>
                 )}
 
-                {editingId && !selectedFile && (
+                {editingId && !selectedFile && !previewUrl && (
                   <p className="text-xs text-gray-500 dark:text-zinc-400">
                     Leave empty to keep the current icon
                   </p>
@@ -482,6 +497,19 @@ export default function AdminSocialPage() {
           </button>
         </div>
       )}
+
+      {/* File Picker Modal */}
+      <FilePicker
+        isOpen={showFilePicker}
+        onClose={() => setShowFilePicker(false)}
+        onSelect={(file) => {
+          setFormData({ ...formData, icon_path: file.file_url });
+          setPreviewUrl(file.file_url);
+          setSelectedFile(null); // Clear the local file since we're using a library file
+        }}
+        fileType="image"
+        title="Select Icon from Library"
+      />
     </div>
   );
 }

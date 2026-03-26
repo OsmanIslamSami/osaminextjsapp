@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import FilePicker from '@/lib/components/FilePicker';
 
 interface Slide {
   id: string;
@@ -26,6 +27,7 @@ export default function AdminSliderPage() {
   const [editingSlide, setEditingSlide] = useState<Slide | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showFilePicker, setShowFilePicker] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -266,13 +268,35 @@ export default function AdminSliderPage() {
             {/* File Upload */}
             <div>
               <label className="block text-sm font-medium mb-2">Media File *</label>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/gif,video/mp4,video/webm"
-                onChange={handleFileUpload}
-                disabled={uploading}
-                className="w-full border border-gray-300 rounded-lg p-2"
-              />
+              
+              <div className="flex gap-3 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setShowFilePicker(true)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                >
+                  <PhotoIcon className="w-5 h-5 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-600">
+                    Choose from Style Library
+                  </span>
+                </button>
+                
+                <div className="flex-1">
+                  <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,video/mp4,video/webm"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="hidden"
+                    />
+                    <span className="text-sm font-medium text-gray-600">
+                      Or Upload New File
+                    </span>
+                  </label>
+                </div>
+              </div>
+              
               {uploading && (
                 <div className="mt-2">
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -285,7 +309,10 @@ export default function AdminSliderPage() {
                 </div>
               )}
               {formData.media_url && (
-                <p className="text-sm text-green-600 mt-1">✓ File ready: {formData.media_url}</p>
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-600">✓ File ready</p>
+                  <p className="text-xs text-gray-600 mt-1 truncate">{formData.media_url}</p>
+                </div>
               )}
             </div>
 
@@ -461,6 +488,21 @@ export default function AdminSliderPage() {
           ))
         )}
       </div>
+
+      {/* File Picker Modal */}
+      <FilePicker
+        isOpen={showFilePicker}
+        onClose={() => setShowFilePicker(false)}
+        onSelect={(file) => {
+          setFormData({
+            ...formData,
+            media_url: file.file_url,
+            media_type: file.file_type.startsWith('video/') ? 'video' : file.file_type === 'image/gif' ? 'gif' : 'image'
+          });
+        }}
+        fileType="all"
+        title="Select Media for Slider"
+      />
     </div>
   );
 }
