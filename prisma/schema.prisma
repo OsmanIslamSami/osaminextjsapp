@@ -58,3 +58,53 @@ model orders {
   @@index([status], map: "idx_orders_status")
   @@index([created_at], map: "idx_orders_created_at")
 }
+
+model User {
+  id             String   @id @default(cuid())
+  clerk_user_id  String   @unique
+  email          String
+  name           String?
+  role           String   @default("user")
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@index([clerk_user_id])
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model SocialMediaLink {
+  id            String   @id @default(cuid())
+  platform      String
+  url           String
+  icon_path     String
+  display_order Int      @default(0)
+  is_deleted    Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([is_deleted, display_order])
+  @@map("social_media_links")
+}
+
+model SliderContent {
+  id              String   @id @default(cuid())
+  media_url       String
+  media_type      String
+  title_en        String?
+  title_ar        String?
+  button_text_en  String?
+  button_text_ar  String?
+  button_url      String?
+  show_button     Boolean  @default(false)
+  display_order   Int      @default(0)
+  is_visible      Boolean  @default(true)
+  is_deleted      Boolean  @default(false)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@index([is_deleted, is_visible, display_order])
+  @@map("slider_content")
+}

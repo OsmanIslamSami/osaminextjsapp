@@ -29,7 +29,7 @@ export default function DonutChart({ data }: { data: StatusData[] }) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={300} className="min-h-[250px] md:min-h-[300px]">
       <PieChart>
         <Pie
           data={chartData}

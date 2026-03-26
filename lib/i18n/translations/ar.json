@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "clients": "العملاء",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "admin": "الإدارة"
+  },
+  "buttons": {
+    "add": "إضافة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "export": "تصدير",
+    "search": "بحث",
+    "back": "رجوع",
+    "confirm": "تأكيد",
+    "retry": "إعادة المحاولة",
+    "creating": "جار الإنشاء...",
+    "createClient": "إنشاء عميل"
+  },
+  "forms": {
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "emailLabel": "البريد الإلكتروني",
+    "nameLabel": "الاسم",
+    "mobileLabel": "الهاتف",
+    "addressLabel": "العنوان",
+    "statusLabel": "الحالة"
+  },
+  "clients": {
+    "title": "إدارة العملاء",
+    "addClient": "إضافة عميل",
+    "addNewClient": "إضافة عميل جديد",
+    "editClient": "تعديل العميل",
+    "viewClient": "عرض العميل",
+    "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف...",
+    "noResults": "لم يتم العثور على عملاء",
+    "totalClients": "إجمالي العملاء",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا العميل؟",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "mobile": "الهاتف",
+    "address": "العنوان",
+    "status": "الحالة",
+    "statusActive": "نشط",
+    "statusInactive": "غير نشط"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "welcome": "مرحباً",
+    "totalClients": "إجمالي العملاء",
+    "totalOrders": "إجمالي الطلبات",
+    "pendingOrders": "الطلبات قيد الانتظار",
+    "completedOrders": "الطلبات المكتملة",
+    "recentActivity": "النشاط الأخير",
+    "latestClients": "أحدث العملاء",
+    "orderStatusBreakdown": "توزيع حالة الطلبات",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "welcome": "مرحباً بعودتك",
+    "signInButton": "تسجيل الدخول",
+    "signUpButton": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟"
+  },
+  "footer": {
+    "contact": "اتصل بنا",
+    "email": "info@example.com",
+    "followUs": "تابعنا",
+    "rights": "جميع الحقوق محفوظة"
+  },
+  "slider": {
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "admin": {
+    "title": "لوحة الإدارة",
+    "slider": "إدارة الشرائح",
+    "header": "إعدادات الرأس",
+    "footer": "إعدادات التذييل",
+    "users": "إدارة المستخدمين"
+  },
+  "errors": {
+    "required": "هذا الحقل مطلوب",
+    "invalidEmail": "تنسيق البريد الإلكتروني غير صحيح",
+    "invalidMobile": "رقم الهاتف غير صحيح",
+    "serverError": "حدث خطأ في الخادم. يرجى المحاولة مرة أخرى.",
+    "notFound": "المورد غير موجود",
+    "unauthorized": "غير مصرح لك بتنفيذ هذا الإجراء"
+  },
+  "common": {
+    "loading": "جار التحميل...",
+    "language": "اللغة",
+    "english": "الإنجليزية",
+    "arabic": "العربية",
+    "menu": "القائمة",
+    "profile": "الملف الشخصي"
+  }
+}

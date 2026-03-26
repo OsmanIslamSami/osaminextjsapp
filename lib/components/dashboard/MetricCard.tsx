@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslation } from '@/lib/i18n/useTranslation';
+
 // Metric card component with optional comparison
 interface MetricCardProps {
   label: string;
@@ -7,6 +11,7 @@ interface MetricCardProps {
 }
 
 export default function MetricCard({ label, value, thisMonth, lastMonth }: MetricCardProps) {
+  const { t } = useTranslation();
   const hasComparison = thisMonth !== undefined && lastMonth !== undefined;
   const percentChange = hasComparison && lastMonth > 0
     ? ((thisMonth - lastMonth) / lastMonth * 100).toFixed(1)
@@ -21,7 +26,7 @@ export default function MetricCard({ label, value, thisMonth, lastMonth }: Metri
       {hasComparison && (
         <div className="text-sm">
           <div className="flex items-center gap-2">
-            <span className="text-gray-600">This month:</span>
+            <span className="text-gray-600">{t('dashboard.thisMonth')}:</span>
             <span className="font-semibold">{thisMonth.toLocaleString()}</span>
             {percentChange !== null && (
               <span className={isIncrease ? 'text-green-600' : 'text-red-600'}>
@@ -30,7 +35,7 @@ export default function MetricCard({ label, value, thisMonth, lastMonth }: Metri
             )}
           </div>
           <div className="text-gray-500 mt-1">
-            Last month: {lastMonth.toLocaleString()}
+            {t('dashboard.lastMonth')}: {lastMonth.toLocaleString()}
           </div>
         </div>
       )}

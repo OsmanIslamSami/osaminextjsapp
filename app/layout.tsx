@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Cairo } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
 import Header from "./header";
+import Footer from "@/lib/components/Footer";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import { LanguageAwareHTML } from "@/lib/components/LanguageAwareHTML";
+import { UserSyncHandler } from "@/lib/components/UserSyncHandler";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Modern English font
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+// Modern Arabic font
+const cairo = Cairo({
+  variable: "--font-cairo",
+  subsets: ["arabic", "latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,14 +34,20 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Header />
-          {children}
-        </body>
-      </html>
+      <LanguageProvider>
+        <LanguageAwareHTML>
+          <body
+            className={`${inter.variable} ${cairo.variable} antialiased flex flex-col min-h-screen`}
+          >
+            <UserSyncHandler />
+            <Header />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </body>
+        </LanguageAwareHTML>
+      </LanguageProvider>
     </ClerkProvider>
   );
 }

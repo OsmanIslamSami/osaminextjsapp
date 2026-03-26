@@ -14,8 +14,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), var(--font-cairo), system-ui, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,5 +27,327 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), var(--font-cairo), system-ui, -apple-system, sans-serif;
 }
+
+/* Font Utility Classes */
+.font-inter {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+.font-cairo {
+  font-family: var(--font-cairo), system-ui, -apple-system, sans-serif;
+}
+
+/* Mobile Menu Animations */
+.mobile-menu-overlay {
+  animation: fadeIn 250ms ease-out;
+}
+
+.mobile-menu-drawer {
+  animation: slideIn 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  /* RTL support for slide animation */
+  [dir="rtl"] .mobile-menu-drawer {
+    animation: slideInRTL 300ms ease-out;
+  }
+
+  @keyframes slideInRTL {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-overlay,
+  .mobile-menu-drawer {
+    animation: none;
+  }
+}
+
+/* ===========================================
+   ANIMATION INFRASTRUCTURE (Phase 8)
+   =========================================== */
+
+/* Global Animation Keyframes */
+@media (prefers-reduced-motion: no-preference) {
+  /* Page fade-in */
+  @keyframes fadeInPage {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Stagger animation for lists */
+  @keyframes staggerIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Slide up animation */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Scale in animation */
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Pulse animation for loading states */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Apply page transition to main content areas */
+  .page-transition {
+    animation: fadeInPage 400ms ease-out;
+  }
+
+  /* Stagger children with delay */
+  .stagger-item {
+    animation: staggerIn 500ms ease-out;
+  }
+
+  .stagger-item:nth-child(1) { animation-delay: 0ms; }
+  .stagger-item:nth-child(2) { animation-delay: 100ms; }
+  .stagger-item:nth-child(3) { animation-delay: 200ms; }
+  .stagger-item:nth-child(4) { animation-delay: 300ms; }
+  .stagger-item:nth-child(5) { animation-delay: 400ms; }
+  .stagger-item:nth-child(n+6) { animation-delay: 500ms; }
+
+  /* Card hover effects */
+  .card-hover {
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Button Transition Utilities */
+button, 
+a.button,
+[role="button"],
+.btn {
+  transition: all 200ms ease;
+}
+
+/* Smooth transitions for interactive elements */
+.transition-smooth {
+  transition: all 200ms ease-in-out;
+}
+
+.transition-colors {
+  transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease;
+}
+
+.transition-transform {
+  transition: transform 200ms ease;
+}
+
+/* Hover effects */
+@media (prefers-reduced-motion: no-preference) {
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+  transition: outline-offset 200ms ease;
+}
+
+/* Disable/minimize animations when reduced motion is preferred */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .page-transition,
+  .stagger-item,
+  .card-hover,
+  .hover-lift,
+  .hover-scale {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Preserve essential focus states even with reduced motion */
+  *:focus-visible {
+    outline: 2px solid rgb(59 130 246);
+    outline-offset: 2px;
+  }
+}
+
+/* Loading animations */
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.loading-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* RTL Layout Utilities */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* RTL text alignment */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* RTL margin and padding overrides */
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* Preserve LTR for specific elements that should not flip */
+.ltr {
+  direction: ltr !important;
+}
+
+/* Numbers, emails, URLs should remain LTR in RTL context */
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] .numeric {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Responsive Utilities */
+
+/* Minimum touch target size for mobile (44x44px per WCAG 2.1) */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Ensure buttons meet touch target requirements */
+button,
+a.button,
+[role="button"] {
+  min-height: 44px;
+}
+
+/* Mobile-first container padding */
+.container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Ensure images are responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
+}
+

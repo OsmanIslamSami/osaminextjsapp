@@ -45,9 +45,9 @@ export default function RecentActivity({ recentClients, recentOrders }: RecentAc
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
       {/* Recent Clients */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6 shadow-sm">
         <h3 className="text-lg font-semibold mb-4">Recent Clients</h3>
         {recentClients.length === 0 ? (
           <p className="text-gray-500 text-sm">No recent clients</p>
@@ -67,7 +67,7 @@ export default function RecentActivity({ recentClients, recentOrders }: RecentAc
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6 shadow-sm">
         <h3 className="text-lg font-semibold mb-4">Recent Orders</h3>
         {recentOrders.length === 0 ? (
           <p className="text-gray-500 text-sm">No recent orders</p>

@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "init-db": "node scripts/init-db.js",
+    "seed-admin": "tsx scripts/seed-admin-user.ts",
+    "seed-social": "tsx scripts/seed-social-media.ts",
+    "seed-slider": "tsx scripts/seed-slider.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "postinstall": "prisma generate"

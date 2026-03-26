@@ -56,3 +56,85 @@ export interface PaginatedResponse<T> {
   limit: number;
   offset: number;
 }
+
+// User related types
+export interface User {
+  id: string;
+  clerk_user_id: string;
+  email: string;
+  name: string | null;
+  role: 'admin' | 'user';
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Social Media Link types
+export interface SocialMediaLink {
+  id: string;
+  platform: string;
+  url: string;
+  icon_path: string;
+  display_order: number;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateSocialMediaLinkInput {
+  platform: string;
+  url: string;
+  icon_path: string;
+  display_order?: number;
+}
+
+export interface UpdateSocialMediaLinkInput {
+  platform?: string;
+  url?: string;
+  icon_path?: string;
+  display_order?: number;
+}
+
+// Slider Content types
+export interface SliderContent {
+  id: string;
+  media_url: string;
+  media_type: 'image' | 'video' | 'gif';
+  title_en: string | null;
+  title_ar: string | null;
+  button_text_en: string | null;
+  button_text_ar: string | null;
+  button_url: string | null;
+  show_button: boolean;
+  display_order: number;
+  is_visible: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateSliderContentInput {
+  media_url: string;
+  media_type: 'image' | 'video' | 'gif';
+  title_en?: string;
+  title_ar?: string;
+  button_text_en?: string;
+  button_text_ar?: string;
+  button_url?: string;
+  show_button?: boolean;
+  display_order?: number;
+  is_visible?: boolean;
+}
+
+export interface UpdateSliderContentInput {
+  media_url?: string;
+  media_type?: 'image' | 'video' | 'gif';
+  title_en?: string;
+  title_ar?: string;
+  button_text_en?: string;
+  button_text_ar?: string;
+  button_url?: string;
+  show_button?: boolean;
+  display_order?: number;
+  is_visible?: boolean;
+}

@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
+import { canDeleteClients } from '@/lib/auth/permissions';
 
 // GET single client
 export async function GET(
@@ -99,6 +100,15 @@ export async function DELETE(
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
+      );
+    }
+
+    // Check if user has admin permissions to delete clients
+    const hasPermission = await canDeleteClients();
+    if (!hasPermission) {
+      return NextResponse.json(
+        { error: 'Forbidden. Only administrators can delete clients.' },
+        { status: 403 }
       );
     }
 

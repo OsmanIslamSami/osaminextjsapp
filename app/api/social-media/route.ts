@@ -1,0 +1,110 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/db';
+import { getCurrentUser } from '@/lib/auth/permissions';
+
+// GET all active social media links (public)
+export async function GET() {
+  try {
+    const links = await prisma.socialMediaLink.findMany({
+      where: {
+        is_deleted: false,
+      },
+      orderBy: {
+        display_order: 'asc',
+      },
+    });
+
+    const formattedLinks = links.map(link => ({
+      id: link.id,
+      platform: link.platform,
+      url: link.url,
+      icon_path: link.icon_path,
+      display_order: link.display_order,
+      created_at: link.created_at.toISOString(),
+      updated_at: link.updated_at.toISOString(),
+    }));
+
+    return NextResponse.json(formattedLinks);
+  } catch (error) {
+    console.error('Error fetching social media links:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch social media links' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST create new social media link (admin only)
+export async function POST(request: Request) {
+  try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Not authenticated' },
+        { status: 401 }
+      );
+    }
+
+    if (currentUser.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized. Admin access required.' },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const { platform, url, icon_path, display_order } = body;
+
+    // Validation
+    if (!platform || !url || !icon_path) {
+      return NextResponse.json(
+        { error: 'Platform, URL, and icon_path are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate URL format
+    try {
+      new URL(url);
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid URL format' },
+        { status: 400 }
+      );
+    }
+
+    // Validate icon_path format
+    if (!icon_path.startsWith('/icons/') || !icon_path.endsWith('.svg')) {
+      return NextResponse.json(
+        { error: 'Icon path must start with /icons/ and end with .svg' },
+        { status: 400 }
+      );
+    }
+
+    const newLink = await prisma.socialMediaLink.create({
+      data: {
+        platform,
+        url,
+        icon_path,
+        display_order: display_order || 0,
+      },
+    });
+
+    return NextResponse.json({
+      id: newLink.id,
+      platform: newLink.platform,
+      url: newLink.url,
+      icon_path: newLink.icon_path,
+      display_order: newLink.display_order,
+      created_at: newLink.created_at.toISOString(),
+      updated_at: newLink.updated_at.toISOString(),
+    }, { status: 201 });
+  } catch (error) {
+    console.error('Error creating social media link:', error);
+    return NextResponse.json(
+      { error: 'Failed to create social media link' },
+      { status: 500 }
+    );
+  }
+}

@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function AddClient() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -55,11 +57,10 @@ export default function AddClient() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Add New Client</h1>
+    <div className="container mx-auto py-4 md:py-8 px-4 page-transition">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">{t('clients.addNewClient')}</h1>
 
-      <form onSubmit={handleSubmit} className="max-w-md">
-        {error && (
+      <form onSubmit={handleSubmit} className="max-w-md">\n        {error && (
           <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
             {error}
           </div>
@@ -67,7 +68,7 @@ export default function AddClient() {
 
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium mb-1">
-            Name
+            {t('clients.name')}
           </label>
           <input
             type="text"
@@ -76,13 +77,13 @@ export default function AddClient() {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
           />
         </div>
 
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium mb-1">
-            Email
+            {t('clients.email')}
           </label>
           <input
             type="email"
@@ -91,13 +92,13 @@ export default function AddClient() {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
           />
         </div>
 
         <div className="mb-4">
           <label htmlFor="mobile" className="block text-sm font-medium mb-1">
-            Mobile
+            {t('clients.mobile')}
           </label>
           <input
             type="tel"
@@ -106,13 +107,13 @@ export default function AddClient() {
             value={formData.mobile}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
           />
         </div>
 
         <div className="mb-4">
           <label htmlFor="status" className="block text-sm font-medium mb-1">
-            Status
+            {t('clients.status')}
           </label>
           <select
             id="status"
@@ -120,16 +121,16 @@ export default function AddClient() {
             value={formData.status}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
           >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="Active">{t('clients.statusActive')}</option>
+            <option value="Inactive">{t('clients.statusInactive')}</option>
           </select>
         </div>
 
         <div className="mb-6">
           <label htmlFor="address" className="block text-sm font-medium mb-1">
-            Address
+            {t('clients.address')}
           </label>
           <textarea
             id="address"
@@ -138,20 +139,20 @@ export default function AddClient() {
             onChange={handleChange}
             required
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] transition-colors"
           >
-            {loading ? 'Creating...' : 'Create Client'}
+            {loading ? t('buttons.creating') : t('buttons.createClient')}
           </button>
-          <Link href="/clients" className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">
-            Cancel
+          <Link href="/clients" className="w-full sm:w-auto bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 text-center min-h-[44px] flex items-center justify-center transition-colors">
+            {t('buttons.cancel')}
           </Link>
         </div>
       </form>

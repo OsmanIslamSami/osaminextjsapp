@@ -5,8 +5,11 @@ import Link from 'next/link';
 import ClientSearchBar from '@/lib/components/clients/ClientSearchBar';
 import ClientTable from '@/lib/components/clients/ClientTable';
 import ClientTableRow from '@/lib/components/clients/ClientTableRow';
+import ClientCard from '@/lib/components/clients/ClientCard';
 import ExportButton from '@/lib/components/ExportButton';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
+import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface Client {
   id: number;
@@ -22,6 +25,7 @@ interface Client {
 }
 
 export default function ClientsList() {
+  const { t } = useTranslation();
   const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,6 +33,8 @@ export default function ClientsList() {
   const [hasMore, setHasMore] = useState(true);
   const [nextCursor, setNextCursor] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  const { isAdmin } = useCurrentUser();
   
   const sentinelRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -127,16 +133,16 @@ export default function ClientsList() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 page-transition">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Clients Management</h1>
+        <h1 className="text-3xl font-bold">{t('clients.title')}</h1>
         <div className="flex gap-3">
           <ExportButton searchQuery={search} />
           <Link 
             href="/clients/add" 
             className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
           >
-            Add Client
+            {t('clients.addClient')}
           </Link>
         </div>
       </div>
@@ -174,16 +180,32 @@ export default function ClientsList() {
             {search && ` matching "${search}"`}
           </div>
           
-          <ClientTable>
-            {clients.map((client, index) => (
-              <ClientTableRow 
-                key={client.id} 
-                client={client} 
-                index={index}
+          {/* Desktop table view */}
+          <div className="hidden md:block">
+            <ClientTable>
+              {clients.map((client, index) => (
+                <ClientTableRow 
+                  key={client.id} 
+                  client={client} 
+                  index={index}
+                  onDelete={handleDelete}
+                  isAdmin={isAdmin}
+                />
+              ))}
+            </ClientTable>
+          </div>
+          
+          {/* Mobile card view */}
+          <div className="md:hidden grid grid-cols-1 gap-4">
+            {clients.map((client) => (
+              <ClientCard
+                key={client.id}
+                client={client}
                 onDelete={handleDelete}
+                isAdmin={isAdmin}
               />
             ))}
-          </ClientTable>
+          </div>
 
           {/* Sentinel for infinite scroll */}
           <div ref={sentinelRef} className="h-4" />

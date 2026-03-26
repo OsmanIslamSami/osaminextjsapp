@@ -7,12 +7,18 @@ interface DeleteButtonProps {
   clientId: number;
   clientName: string;
   onDelete: () => void;
+  isAdmin?: boolean;
 }
 
-export default function DeleteButton({ clientId, clientName, onDelete }: DeleteButtonProps) {
+export default function DeleteButton({ clientId, clientName, onDelete, isAdmin = false }: DeleteButtonProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Don't render if user is not admin
+  if (!isAdmin) {
+    return null;
+  }
 
   const handleDelete = async () => {
     try {

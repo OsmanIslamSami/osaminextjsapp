@@ -6,6 +6,7 @@ import DonutChart from '@/lib/components/dashboard/DonutChart';
 import MetricCard from '@/lib/components/dashboard/MetricCard';
 import RecentActivity from '@/lib/components/dashboard/RecentActivity';
 import LatestClients from '@/lib/components/dashboard/LatestClients';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface DashboardMetrics {
   clientCount: number;
@@ -22,6 +23,7 @@ interface DashboardMetrics {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function DashboardPage() {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="text-center py-12">
-          <p className="text-gray-600">Loading dashboard...</p>
+          <p className="text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -86,33 +88,37 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+    <div className="container mx-auto py-8 px-4 page-transition">
+      <h1 className="text-3xl font-bold mb-8">{t('dashboard.title')}</h1>
 
-      {/* Metric Cards */}
+      {/* Metric Cards with stagger animation */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <MetricCard
-          label="Total Clients"
-          value={metrics.clientCount}
-          thisMonth={metrics.thisMonthClients}
-          lastMonth={metrics.lastMonthClients}
-        />
-        <MetricCard
-          label="Total Orders"
-          value={metrics.orderCount}
-          thisMonth={metrics.thisMonthOrders}
-          lastMonth={metrics.lastMonthOrders}
-        />
+        <div className="stagger-item">
+          <MetricCard
+            label={t('dashboard.totalClients')}
+            value={metrics.clientCount}
+            thisMonth={metrics.thisMonthClients}
+            lastMonth={metrics.lastMonthClients}
+          />
+        </div>
+        <div className="stagger-item">
+          <MetricCard
+            label={t('dashboard.totalOrders')}
+            value={metrics.orderCount}
+            thisMonth={metrics.thisMonthOrders}
+            lastMonth={metrics.lastMonthOrders}
+          />
+        </div>
       </div>
 
       {/* Order Status Donut Chart */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-8">
-        <h2 className="text-xl font-semibold mb-4">Order Status Breakdown</h2>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-8 stagger-item">
+        <h2 className="text-xl font-semibold mb-4">{t('dashboard.orderStatusBreakdown')}</h2>
         <DonutChart data={metrics.statusBreakdown} />
       </div>
 
       {/* Recent Activity */}
-      <div className="mb-8">
+      <div className="mb-8 stagger-item">
         <RecentActivity
           recentClients={metrics.recentClients}
           recentOrders={metrics.recentOrders}
@@ -120,7 +126,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Latest Clients */}
-      <LatestClients clients={metrics.latestClients} />
+      <div className="stagger-item">
+        <LatestClients clients={metrics.latestClients} />
+      </div>
     </div>
   );
 }

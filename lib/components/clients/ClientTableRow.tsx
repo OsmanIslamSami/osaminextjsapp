@@ -19,9 +19,10 @@ interface ClientTableRowProps {
   client: Client;
   index: number;
   onDelete?: () => void;
+  isAdmin?: boolean;
 }
 
-export default function ClientTableRow({ client, index, onDelete }: ClientTableRowProps) {
+export default function ClientTableRow({ client, index, onDelete, isAdmin = false }: ClientTableRowProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -88,13 +89,15 @@ export default function ClientTableRow({ client, index, onDelete }: ClientTableR
             >
               <PencilIcon className="w-5 h-5" />
             </Link>
-            <button
-              onClick={handleDeleteClick}
-              aria-label="Delete client"
-              className="text-gray-600 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 transition-colors"
-            >
-              <TrashIcon className="w-5 h-5" />
-            </button>
+            {isAdmin && (
+              <button
+                onClick={handleDeleteClick}
+                aria-label="Delete client"
+                className="text-gray-600 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 transition-colors"
+              >
+                <TrashIcon className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </td>
       </tr>

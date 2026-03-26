@@ -16,9 +16,10 @@ interface Client {
 interface ClientCardProps {
   client: Client;
   onDelete?: () => void;
+  isAdmin?: boolean;
 }
 
-export default function ClientCard({ client, onDelete }: ClientCardProps) {
+export default function ClientCard({ client, onDelete, isAdmin = false }: ClientCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -30,7 +31,7 @@ export default function ClientCard({ client, onDelete }: ClientCardProps) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-smooth card-hover">
       <div className="flex justify-between items-start mb-2">
         <h3 className="text-lg font-semibold text-gray-900">{client.name}</h3>
         {onDelete && (
@@ -38,6 +39,7 @@ export default function ClientCard({ client, onDelete }: ClientCardProps) {
             clientId={client.id}
             clientName={client.name}
             onDelete={onDelete}
+            isAdmin={isAdmin}
           />
         )}
       </div>
