@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { put } from '@vercel/blob';
 import { getCurrentUser } from '@/lib/auth/permissions';
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'slides');
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm'];
 
@@ -45,34 +42,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create upload directory if it doesn't exist
-    if (!existsSync(UPLOAD_DIR)) {
-      await mkdir(UPLOAD_DIR, { recursive: true });
-    }
-
     // Sanitize filename: remove special chars, keep only alphanumeric, dots, dashes, underscores
     const originalName = file.name;
-    const extension = path.extname(originalName);
-    const baseName = path.basename(originalName, extension)
+    const extension = originalName.substring(originalName.lastIndexOf('.'));
+    const baseName = originalName
+      .substring(0, originalName.lastIndexOf('.'))
       .replace(/[^a-zA-Z0-9-_]/g, '_')
       .substring(0, 50); // Limit base name length
     
     // Add timestamp to avoid collisions
     const timestamp = Date.now();
-    const sanitizedName = `${baseName}_${timestamp}${extension}`;
-    const filePath = path.join(UPLOAD_DIR, sanitizedName);
+    const sanitizedName = `slides/${baseName}_${timestamp}${extension}`;
 
-    // Convert file to buffer and write to disk
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
-
-    // Return URL path (relative to /public)
-    const url = `/uploads/slides/${sanitizedName}`;
+    // Upload to Vercel Blob
+    const blob = await put(sanitizedName, file, {
+      access: 'public',
+      addRandomSuffix: false,
+    });
 
     return NextResponse.json(
       { 
-        url,
+        url: blob.url,
         filename: sanitizedName,
         size: file.size,
         type: file.type 

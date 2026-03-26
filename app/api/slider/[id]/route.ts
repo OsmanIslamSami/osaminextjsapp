@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { del } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
 
@@ -128,7 +129,20 @@ export async function DELETE(
 
     const { id } = await context.params;
 
-    const slide = await prisma.sliderContent.updateMany({
+    // Get the slide to retrieve media URL for blob deletion
+    const slideToDelete = await prisma.sliderContent.findFirst({
+      where: {
+        id: id,
+        is_deleted: false,
+      },
+    });
+
+    if (!slideToDelete) {
+      return NextResponse.json({ error: 'Slide not found' }, { status: 404 });
+    }
+
+    // Soft delete in database
+    await prisma.sliderContent.updateMany({
       where: {
         id: id,
         is_deleted: false,
@@ -138,8 +152,14 @@ export async function DELETE(
       },
     });
 
-    if (slide.count === 0) {
-      return NextResponse.json({ error: 'Slide not found' }, { status: 404 });
+    // Delete from Vercel Blob if it's a blob URL
+    if (slideToDelete.media_url.includes('vercel-storage.com')) {
+      try {
+        await del(slideToDelete.media_url);
+      } catch (blobError) {
+        console.error('Error deleting blob:', blobError);
+        // Continue even if blob deletion fails
+      }
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
