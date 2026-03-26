@@ -134,13 +134,13 @@ export default function ClientsList() {
 
   return (
     <div className="container mx-auto py-8 px-4 page-transition">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">{t('clients.title')}</h1>
-        <div className="flex gap-3">
+      <div className="mb-6 md:mb-8 md:flex md:justify-between md:items-center">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-0">{t('clients.title')}</h1>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <ExportButton searchQuery={search} />
           <Link 
             href="/clients/add" 
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors text-center text-sm sm:text-base"
           >
             {t('clients.addClient')}
           </Link>

@@ -48,7 +48,8 @@ export default function AdminSliderPage() {
   const fetchSlides = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/slider');
+      // Use admin endpoint to see all slides (including hidden ones)
+      const response = await fetch('/api/slider/admin');
       if (response.ok) {
         const data = await response.json();
         setSlides(data.slides || []);
@@ -248,7 +249,14 @@ export default function AdminSliderPage() {
   return (
     <div className="p-4 md:p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Slider Management</h1>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">Slider Management</h1>
+          {slides.length > 0 && (
+            <p className="text-sm text-gray-600 mt-1">
+              {slides.filter(s => s.is_visible).length} visible • {slides.filter(s => !s.is_visible).length} hidden • {slides.length} total
+            </p>
+          )}
+        </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 min-h-[44px]"
@@ -416,22 +424,44 @@ export default function AdminSliderPage() {
           slides.map((slide, index) => (
             <div
               key={slide.id}
-              className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col md:flex-row gap-4"
+              className={`rounded-lg p-4 shadow-sm flex flex-col md:flex-row gap-4 ${
+                slide.is_visible 
+                  ? 'bg-white border-2 border-gray-200' 
+                  : 'bg-gray-50 border-2 border-gray-300 border-dashed'
+              }`}
             >
               {/* Preview */}
-              <div className="w-full md:w-48 h-32 flex-shrink-0">
+              <div className="w-full md:w-48 h-32 flex-shrink-0 relative">
                 {slide.media_type === 'video' ? (
                   <video src={slide.media_url} className="w-full h-full object-cover rounded" />
                 ) : (
                   <img src={slide.media_url} alt="Slide" className="w-full h-full object-cover rounded" />
                 )}
+                {/* Hidden overlay indicator */}
+                {!slide.is_visible && (
+                  <div className="absolute inset-0 bg-gray-900 bg-opacity-40 rounded flex items-center justify-center">
+                    <EyeSlashIcon className="w-8 h-8 text-white" />
+                  </div>
+                )}
               </div>
 
               {/* Details */}
               <div className="flex-1">
-                <h3 className="font-semibold text-lg">
-                  {slide.title_en || slide.title_ar || 'Untitled Slide'}
-                </h3>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-semibold text-lg">
+                    {slide.title_en || slide.title_ar || 'Untitled Slide'}
+                  </h3>
+                  {/* Status Badge */}
+                  {slide.is_visible ? (
+                    <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded">
+                      Visible on Homepage
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                      Hidden from Homepage
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm text-gray-600">
                   Type: {slide.media_type} | Order: {index + 1}
                 </p>
@@ -445,7 +475,7 @@ export default function AdminSliderPage() {
                 <button
                   onClick={() => handleToggleVisible(slide.id)}
                   className="p-2 rounded hover:bg-gray-100 min-h-[44px] min-w-[44px]"
-                  title={slide.is_visible ? 'Hide' : 'Show'}
+                  title={slide.is_visible ? 'Hide from homepage' : 'Show on homepage'}
                 >
                   {slide.is_visible ? (
                     <EyeIcon className="w-5 h-5 text-green-600" />

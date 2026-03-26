@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
 
-// GET /api/slider - Public route to fetch active slides
+// GET /api/slider - Public route to fetch active slides (only visible ones)
 export async function GET() {
   try {
+    // Only return slides that are visible AND not deleted
+    // Hidden slides (is_visible: false) are NOT returned to the public
     const slides = await prisma.sliderContent.findMany({
       where: {
         is_visible: true,

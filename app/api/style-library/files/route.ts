@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
+import { put, del } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
 
@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
     const folderId = formData.get('folder_id') as string | null;
     const description = formData.get('description') as string | null;
     const tagsStr = formData.get('tags') as string | null;
+    const replaceExisting = formData.get('replace_existing') === 'true';
 
     if (!file) {
       return NextResponse.json(
@@ -93,6 +94,32 @@ export async function POST(request: NextRequest) {
 
     const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
     console.log('📤 Upload attempt:', file.name, '(' + file.type + ', ' + fileSizeMB + 'MB)');
+
+    // Check if file with same name already exists in the same folder
+    const existingFile = await prisma.styleLibraryFile.findFirst({
+      where: {
+        name: file.name,
+        folder_id: folderId || null,
+        is_deleted: false,
+      },
+    });
+
+    if (existingFile && !replaceExisting) {
+      console.log('⚠️ File already exists:', file.name);
+      return NextResponse.json(
+        { 
+          error: 'FILE_EXISTS',
+          message: 'A file with this name already exists in this location',
+          existingFile: {
+            id: existingFile.id,
+            name: existingFile.name,
+            file_url: existingFile.file_url,
+            created_at: existingFile.created_at,
+          }
+        },
+        { status: 409 }
+      );
+    }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -169,6 +196,28 @@ export async function POST(request: NextRequest) {
         { error: 'Blob upload failed: ' + errorMsg + '. Please ensure Vercel Blob is enabled in your project settings.' },
         { status: 500 }
       );
+    }
+
+    // If replacing existing file, delete the old one
+    if (existingFile && replaceExisting) {
+      console.log('🔄 Replacing existing file:', existingFile.name);
+      
+      // Delete old file from Vercel Blob if it's a blob URL
+      if (existingFile.file_url.includes('vercel-storage.com')) {
+        try {
+          await del(existingFile.file_url);
+          console.log('✓ Deleted old blob:', existingFile.file_url);
+        } catch (delError) {
+          console.error('⚠️ Failed to delete old blob (continuing anyway):', delError);
+        }
+      }
+
+      // Delete old record from database
+      await prisma.styleLibraryFile.update({
+        where: { id: existingFile.id },
+        data: { is_deleted: true },
+      });
+      console.log('✓ Marked old file as deleted in database');
     }
 
     // Parse tags

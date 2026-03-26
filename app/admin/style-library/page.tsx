@@ -15,6 +15,9 @@ import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
   FolderPlusIcon,
+  ClipboardDocumentIcon,
+  CheckIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 
 interface Folder {
@@ -52,11 +55,17 @@ interface File {
 export default function StyleLibraryPage() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const [totalFileCount, setTotalFileCount] = useState(0);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  
+  // Multi-select state
+  const [selectedFileIds, setSelectedFileIds] = useState<Set<string>>(new Set());
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [filesToDelete, setFilesToDelete] = useState<string[]>([]);
   
   // Modals
   const [showNewFolderModal, setShowNewFolderModal] = useState(false);
@@ -76,6 +85,68 @@ export default function StyleLibraryPage() {
     }
   }, []);
 
+  // File selection handlers
+  const toggleFileSelection = (fileId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newSelected = new Set(selectedFileIds);
+    if (newSelected.has(fileId)) {
+      newSelected.delete(fileId);
+    } else {
+      newSelected.add(fileId);
+    }
+    setSelectedFileIds(newSelected);
+  };
+
+  const selectAllFiles = () => {
+    if (selectedFileIds.size === files.length) {
+      setSelectedFileIds(new Set());
+    } else {
+      setSelectedFileIds(new Set(files.map(f => f.id)));
+    }
+  };
+
+  const copyFilePath = async (fileUrl: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(fileUrl);
+      alert('File URL copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      alert('Failed to copy URL');
+    }
+  };
+
+  const handleDeleteFile = async (fileId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFilesToDelete([fileId]);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleBulkDelete = () => {
+    setFilesToDelete(Array.from(selectedFileIds));
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      for (const fileId of filesToDelete) {
+        const response = await fetch('/api/style-library/files/' + fileId, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete file');
+        }
+      }
+      setShowDeleteConfirm(false);
+      setFilesToDelete([]);
+      setSelectedFileIds(new Set());
+      fetchFiles();
+    } catch (error) {
+      console.error('Error deleting files:', error);
+      alert('Failed to delete some files');
+    }
+  };
+
   // Fetch files
   const fetchFiles = useCallback(async () => {
     try {
@@ -91,6 +162,17 @@ export default function StyleLibraryPage() {
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
       setFiles(data.files || []);
+      
+      // Also fetch total count if we're filtering
+      if (selectedFolderId || searchQuery) {
+        const totalResponse = await fetch('/api/style-library/files');
+        if (totalResponse.ok) {
+          const totalData = await totalResponse.json();
+          setTotalFileCount(totalData.files?.length || 0);
+        }
+      } else {
+        setTotalFileCount(data.files?.length || 0);
+      }
     } catch (error) {
       console.error('Error fetching files:', error);
     }
@@ -269,7 +351,7 @@ export default function StyleLibraryPage() {
             >
               <FolderIcon className="w-5 h-5 text-blue-600" />
               <span className="text-sm font-medium">All Files</span>
-              <span className="ml-auto text-xs text-gray-500">{files.length}</span>
+              <span className="ml-auto text-xs text-gray-500">{totalFileCount}</span>
             </button>
           </div>
           
@@ -294,20 +376,38 @@ export default function StyleLibraryPage() {
                 />
               </div>
               
+              {/* Bulk Actions */}
+              {selectedFileIds.size > 0 && (
+                <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg">
+                  <span className="text-sm font-medium text-blue-900">
+                    {selectedFileIds.size} selected
+                  </span>
+                  <button
+                    onClick={handleBulkDelete}
+                    className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setSelectedFileIds(new Set())}
+                    className="p-1 hover:bg-blue-100 rounded"
+                  >
+                    <XMarkIcon className="w-4 h-4 text-blue-600" />
+                  </button>
+                </div>
+              )}
+              
               <div className="flex gap-2 border border-gray-300 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-1 rounded ${
-                    viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-gray-600'
-                  }`}
+                  className={'px-3 py-1 rounded ' + (viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-gray-600')}
                 >
                   Grid
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`px-3 py-1 rounded ${
-                    viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-gray-600'
-                  }`}
+                  className={'px-3 py-1 rounded ' + (viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-gray-600')}
                 >
                   List
                 </button>
@@ -320,12 +420,43 @@ export default function StyleLibraryPage() {
                 {files.map(file => (
                   <div
                     key={file.id}
-                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer group"
+                    className={'bg-white border rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer group relative ' + (selectedFileIds.has(file.id) ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200')}
                     onClick={() => {
                       setSelectedFile(file);
                       setShowFileDetailsModal(true);
                     }}
                   >
+                    {/* Checkbox in top-left */}
+                    <div className="absolute top-2 left-2 z-10">
+                      <button
+                        onClick={(e) => toggleFileSelection(file.id, e)}
+                        className={'w-4 h-4 min-h-0 rounded-sm flex items-center justify-center transition-all shadow-sm flex-shrink-0 ' + (selectedFileIds.has(file.id) ? 'bg-blue-600 border border-blue-600 scale-110' : 'bg-white border border-gray-300 group-hover:border-blue-500 group-hover:shadow-md')}
+                        style={{ minHeight: '16px', minWidth: '16px' }}
+                      >
+                        {selectedFileIds.has(file.id) && (
+                          <CheckIcon className="w-3 h-3 text-white stroke-2" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Action buttons in top-right */}
+                    <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={(e) => copyFilePath(file.file_url, e)}
+                        className="w-7 h-7 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 shadow-sm"
+                        title="Copy URL"
+                      >
+                        <ClipboardDocumentIcon className="w-4 h-4 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteFile(file.id, e)}
+                        className="w-7 h-7 bg-white border border-red-300 rounded flex items-center justify-center hover:bg-red-50 shadow-sm"
+                        title="Delete"
+                      >
+                        <TrashIcon className="w-4 h-4 text-red-600" />
+                      </button>
+                    </div>
+
                     {file.file_type.startsWith('image/') ? (
                       <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
                         <img
@@ -357,56 +488,99 @@ export default function StyleLibraryPage() {
 
             {/* File List */}
             {viewMode === 'list' && (
-              <div className="bg-white rounded-lg border border-gray-200">
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-2 w-12">
+                        <button
+                          onClick={selectAllFiles}
+                          className={'w-4 h-4 min-h-0 rounded-sm flex items-center justify-center transition-all shadow-sm flex-shrink-0 ' + (selectedFileIds.size === files.length && files.length > 0 ? 'bg-blue-600 border border-blue-600' : 'bg-white border border-gray-300 hover:border-blue-500')}
+                          style={{ minHeight: '16px', minWidth: '16px' }}
+                        >
+                          {selectedFileIds.size === files.length && files.length > 0 && (
+                            <CheckIcon className="w-2.5 h-2.5 text-white stroke-2" />
+                          )}
+                        </button>
+                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Type
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Size
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Folder
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Uploaded
+                      </th>
+                      <th className="px-4 py-2 w-24 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-100">
                     {files.map(file => (
                       <tr
                         key={file.id}
-                        className="hover:bg-gray-50 cursor-pointer"
+                        className={'hover:bg-gray-50 cursor-pointer transition-colors ' + (selectedFileIds.has(file.id) ? 'bg-blue-50' : '')}
                         onClick={() => {
                           setSelectedFile(file);
                           setShowFileDetailsModal(true);
                         }}
                       >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
+                        <td className="px-4 py-2.5">
+                          <button
+                            onClick={(e) => toggleFileSelection(file.id, e)}
+                            className={'w-4 h-4 min-h-0 rounded-sm flex items-center justify-center transition-all shadow-sm flex-shrink-0 ' + (selectedFileIds.has(file.id) ? 'bg-blue-600 border border-blue-600' : 'bg-white border border-gray-300 hover:border-blue-500')}
+                            style={{ minHeight: '16px', minWidth: '16px' }}
+                          >
+                            {selectedFileIds.has(file.id) && (
+                              <CheckIcon className="w-2.5 h-2.5 text-white stroke-2" />
+                            )}
+                          </button>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <div className="flex items-center gap-2.5">
                             {getFileIcon(file.file_type)}
-                            <span className="text-sm font-medium text-gray-900">
+                            <span className="text-sm font-medium text-gray-900 truncate max-w-xs">
                               {file.name}
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-4 py-2.5 text-sm text-gray-600 capitalize">
                           {file.file_type.split('/')[0]}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-4 py-2.5 text-sm text-gray-600">
                           {formatFileSize(file.file_size)}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-4 py-2.5 text-sm text-gray-600">
                           {file.folder?.name || 'Root'}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-4 py-2.5 text-sm text-gray-600">
                           {new Date(file.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={(e) => copyFilePath(file.file_url, e)}
+                              className="p-1.5 hover:bg-blue-50 rounded transition-colors"
+                              title="Copy URL"
+                            >
+                              <ClipboardDocumentIcon className="w-4 h-4 text-gray-500 hover:text-blue-600" />
+                            </button>
+                            <button
+                              onClick={(e) => handleDeleteFile(file.id, e)}
+                              className="p-1.5 hover:bg-red-50 rounded transition-colors"
+                              title="Delete"
+                            >
+                              <TrashIcon className="w-4 h-4 text-gray-500 hover:text-red-600" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -476,6 +650,45 @@ export default function StyleLibraryPage() {
             setSelectedFile(null);
           }}
         />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <TrashIcon className="w-6 h-6 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Delete {filesToDelete.length === 1 ? 'File' : 'Files'}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Are you sure you want to delete {filesToDelete.length === 1 ? 'this file' : filesToDelete.length + ' files'}? This action cannot be undone.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setFilesToDelete([]);
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -602,6 +815,40 @@ function UploadFileModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [progress, setProgress] = useState(0);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingReplaceFile, setPendingReplaceFile] = useState<{
+    file: globalThis.File;
+    existingFile: any;
+  } | null>(null);
+
+  const uploadFile = async (fileToUpload: globalThis.File, replaceExisting = false): Promise<
+    { isDuplicate: false } | { isDuplicate: true; existingFile: any; file: globalThis.File }
+  > => {
+    const formData = new FormData();
+    formData.append('file', fileToUpload);
+    if (folderId) formData.append('folder_id', folderId);
+    if (description) formData.append('description', description);
+    if (tags) formData.append('tags', tags);
+    if (replaceExisting) formData.append('replace_existing', 'true');
+
+    const response = await fetch('/api/style-library/files', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      
+      // Check if it's a duplicate file error
+      if (response.status === 409 && data.error === 'FILE_EXISTS') {
+        return { isDuplicate: true, existingFile: data.existingFile, file: fileToUpload };
+      }
+      
+      throw new Error(data.error || 'Failed to upload ' + fileToUpload.name);
+    }
+
+    return { isDuplicate: false };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -619,20 +866,14 @@ function UploadFileModal({
       let uploaded = 0;
 
       for (const file of Array.from(selectedFiles)) {
-        const formData = new FormData();
-        formData.append('file', file);
-        if (folderId) formData.append('folder_id', folderId);
-        if (description) formData.append('description', description);
-        if (tags) formData.append('tags', tags);
-
-        const response = await fetch('/api/style-library/files', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.error || `Failed to upload ${file.name}`);
+        const result = await uploadFile(file);
+        
+        if (result.isDuplicate) {
+          // Show confirmation dialog for this file
+          setPendingReplaceFile({ file: result.file, existingFile: result.existingFile });
+          setShowConfirmDialog(true);
+          setLoading(false);
+          return; // Stop processing and wait for user confirmation
         }
 
         uploaded++;
@@ -645,6 +886,31 @@ function UploadFileModal({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleConfirmReplace = async () => {
+    if (!pendingReplaceFile) return;
+
+    setShowConfirmDialog(false);
+    setLoading(true);
+    setError('');
+
+    try {
+      // Upload with replace flag
+      await uploadFile(pendingReplaceFile.file, true);
+      setPendingReplaceFile(null);
+      onSuccess();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelReplace = () => {
+    setShowConfirmDialog(false);
+    setPendingReplaceFile(null);
+    setLoading(false);
   };
 
   return (
@@ -714,6 +980,37 @@ function UploadFileModal({
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
               {error}
+            </div>
+          )}
+
+          {showConfirmDialog && pendingReplaceFile && (
+            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <h3 className="font-semibold text-yellow-900 mb-2">⚠️ File Already Exists</h3>
+              <p className="text-sm text-yellow-800 mb-3">
+                A file named <strong>{pendingReplaceFile.file.name}</strong> already exists in this folder.
+              </p>
+              <div className="text-xs text-yellow-700 mb-4 bg-yellow-100 p-2 rounded border border-yellow-200">
+                <div><strong>Existing file:</strong></div>
+                <div>Name: {pendingReplaceFile.existingFile.name}</div>
+                <div>Uploaded: {new Date(pendingReplaceFile.existingFile.created_at).toLocaleString()}</div>
+                <div>Size: {pendingReplaceFile.existingFile.file_size ? Math.round(pendingReplaceFile.existingFile.file_size / 1024) + ' KB' : 'Unknown'}</div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleConfirmReplace}
+                  className="flex-1 px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm font-medium"
+                >
+                  Replace Existing File
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelReplace}
+                  className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium"
+                >
+                  Cancel Upload
+                </button>
+              </div>
             </div>
           )}
 
