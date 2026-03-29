@@ -24,7 +24,57 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: "Next App",
-  description: "Modern Next.js application with advanced features",
+  description: "Modern Next.js application with advanced features, news, and client management",
+  keywords: ["Next.js", "React", "News", "Client Management", "Modern Web App"],
+  authors: [{ name: "Next App Team" }],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  
+  // Open Graph metadata for social media sharing
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    alternateLocale: ['ar_SA'],
+    url: '/',
+    siteName: 'Next App',
+    title: 'Next App - Modern Business Platform',
+    description: 'Modern Next.js application with advanced features, news management, and client services',
+    images: [
+      {
+        url: '/api/og',
+        width: 1200,
+        height: 630,
+        alt: 'Next App Preview',
+      },
+    ],
+  },
+  
+  // Twitter Card metadata
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Next App - Modern Business Platform',
+    description: 'Modern Next.js application with advanced features, news management, and client services',
+    images: ['/api/og'],
+    creator: '@nextapp',
+  },
+  
+  // Additional metadata
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  
+  // Icons
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({

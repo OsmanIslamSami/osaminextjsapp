@@ -136,7 +136,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   );
 }
 
-// Generate metadata for SEO
+// Generate metadata for SEO and social sharing
 export async function generateMetadata({ params }: NewsDetailPageProps) {
   const { id } = await params;
   const newsItem = await getNewsItem(id);
@@ -147,8 +147,50 @@ export async function generateMetadata({ params }: NewsDetailPageProps) {
     };
   }
 
+  const title = newsItem.title_en || newsItem.title_ar || 'News Detail';
+  const description = newsItem.description_en?.substring(0, 160) || newsItem.description_ar?.substring(0, 160) || 'Read more about this news item';
+  const imageUrl = getMediaUrl(newsItem.image_url);
+  const publishedDate = new Date(newsItem.published_date);
+
   return {
-    title: newsItem.title_en || newsItem.title_ar || 'News Detail',
-    description: newsItem.description_en?.substring(0, 160) || newsItem.description_ar?.substring(0, 160) || 'Read more about this news item',
+    title,
+    description,
+    keywords: ['news', 'updates', 'announcements', 'next app'],
+    authors: [{ name: 'Next App Team' }],
+    
+    // Open Graph metadata for social media
+    openGraph: {
+      type: 'article',
+      locale: 'en_US',
+      alternateLocale: ['ar_SA'],
+      url: `/news/${id}`,
+      siteName: 'Next App',
+      title,
+      description,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      publishedTime: publishedDate.toISOString(),
+    },
+    
+    // Twitter Card metadata
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+      creator: '@nextapp',
+    },
+    
+    // Additional metadata
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }

@@ -69,6 +69,7 @@
     "noAccount": "Don't have an account?"
   },
   "footer": {
+    "appName": "Next App",
     "contact": "Contact Us",
     "email": "info@example.com",
     "followUs": "Follow Us",

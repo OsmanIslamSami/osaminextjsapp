@@ -44,7 +44,7 @@ export default function Footer() {
           {/* Brand/Info */}
           <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-2">
-              MyApp
+              {t('footer.appName')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-zinc-400">
               {t('footer.contact')}
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-zinc-800 text-center">
           <p className="text-sm text-gray-600 dark:text-zinc-400">
-            © {currentYear} MyApp. {t('footer.rights')}.
+            © {currentYear} {t('footer.appName')}. {t('footer.rights')}.
           </p>
         </div>
       </div>
