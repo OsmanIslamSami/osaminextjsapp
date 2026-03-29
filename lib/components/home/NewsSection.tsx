@@ -15,7 +15,7 @@ interface News {
 async function getNews(): Promise<News[]> {
   try {
     // Query database directly instead of fetching API
-    const news = await prisma.news.findMany({
+    const newsItems = await prisma.news.findMany({
       where: {
         is_visible: true,
       },
@@ -35,6 +35,18 @@ async function getNews(): Promise<News[]> {
         updated_at: true,
       },
     });
+    
+    // Map to ensure proper typing
+    const news: News[] = newsItems.map(item => ({
+      id: item.id,
+      title_en: item.title_en,
+      title_ar: item.title_ar,
+      image_url: item.image_url,
+      storage_type: item.storage_type as 'blob' | 'local',
+      published_date: item.published_date.toISOString(),
+      created_at: item.created_at.toISOString(),
+      updated_at: item.updated_at.toISOString(),
+    }));
     
     console.log('[NewsSection Server] Fetched news:', news.length, 'items');
     return news;
