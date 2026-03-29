@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Cairo } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
+import { headers } from 'next/headers';
 import "./globals.css";
 import Header from "./header";
 import Footer from "@/lib/components/Footer";
@@ -22,12 +23,23 @@ const cairo = Cairo({
   display: "swap",
 });
 
+// Generate metadata base URL dynamically
+function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return 'http://localhost:3000';
+}
+
 export const metadata: Metadata = {
   title: "Next App",
   description: "Modern Next.js application with advanced features, news, and client management",
   keywords: ["Next.js", "React", "News", "Client Management", "Modern Web App"],
   authors: [{ name: "Next App Team" }],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  metadataBase: new URL(getBaseUrl()),
   
   // Open Graph metadata for social media sharing
   openGraph: {

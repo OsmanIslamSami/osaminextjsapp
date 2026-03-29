@@ -1,4 +1,5 @@
 import NewsGridClient from './NewsGridClient';
+import { prisma } from '@/lib/db';
 
 interface News {
   id: string;
@@ -13,20 +14,30 @@ interface News {
 
 async function getNews(): Promise<News[]> {
   try {
-    // Using full URL for server-side fetch
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/news?limit=6`, {
-      cache: 'no-store', // Always get fresh data
+    // Query database directly instead of fetching API
+    const news = await prisma.news.findMany({
+      where: {
+        is_visible: true,
+      },
+      orderBy: [
+        { published_date: 'desc' },
+        { created_at: 'desc' },
+      ],
+      take: 6,
+      select: {
+        id: true,
+        title_en: true,
+        title_ar: true,
+        image_url: true,
+        storage_type: true,
+        published_date: true,
+        created_at: true,
+        updated_at: true,
+      },
     });
     
-    if (!response.ok) {
-      console.error('[NewsSection] Failed to fetch news:', response.status);
-      return [];
-    }
-    
-    const data = await response.json();
-    console.log('[NewsSection Server] Fetched news:', data.news?.length || 0, 'items');
-    return data.news || [];
+    console.log('[NewsSection Server] Fetched news:', news.length, 'items');
+    return news;
   } catch (error) {
     console.error('[NewsSection] Error fetching news:', error);
     return [];
