@@ -162,7 +162,8 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                preload="auto"
+                crossOrigin="anonymous"
                 webkit-playsinline="true"
                 x-webkit-airplay="allow"
                 style={{ 
@@ -172,12 +173,16 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 onLoadedData={(e) => {
                   // Ensure video plays when loaded, especially on mobile
                   const video = e.currentTarget;
+                  console.log('Video loaded:', slide.media_url);
                   if (index === currentIndex) {
                     video.play().catch((err) => console.error('Video play error:', err));
                   }
                 }}
                 onError={(e) => {
-                  console.error('Video load error:', e);
+                  console.error('Video load error for:', slide.media_url, e);
+                }}
+                onCanPlay={() => {
+                  console.log('Video can play:', slide.media_url);
                 }}
               />
             ) : (

@@ -3,7 +3,7 @@ import { put } from '@vercel/blob';
 import { getCurrentUser } from '@/lib/auth/permissions';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm'];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
 
 // POST /api/slider/upload - Admin only, upload media files
 export async function POST(request: NextRequest) {
@@ -58,6 +58,8 @@ export async function POST(request: NextRequest) {
     const blob = await put(sanitizedName, file, {
       access: 'public',
       addRandomSuffix: false,
+      contentType: file.type,
+      cacheControlMaxAge: 31536000, // 1 year cache
     });
 
     return NextResponse.json(
