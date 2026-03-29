@@ -30,6 +30,29 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [videoRefs, setVideoRefs] = useState<{ [key: string]: HTMLVideoElement | null }>({});
+
+  // Handle video ref callback
+  const setVideoRef = useCallback((id: string, element: HTMLVideoElement | null) => {
+    setVideoRefs(prev => ({ ...prev, [id]: element }));
+  }, []);
+
+  // Play current video when slide changes
+  useEffect(() => {
+    if (!slides[currentIndex]) return;
+    const currentSlide = slides[currentIndex];
+    
+    if (currentSlide.media_type === 'video') {
+      const videoElement = videoRefs[currentSlide.id];
+      if (videoElement) {
+        // Reset and play video
+        videoElement.currentTime = 0;
+        videoElement.play().catch((error) => {
+          console.error('Error playing video:', error);
+        });
+      }
+    }
+  }, [currentIndex, slides, videoRefs]);
 
   // Fetch slides
   useEffect(() => {
@@ -131,12 +154,31 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
           >
             {slide.media_type === 'video' ? (
               <video
+                key={slide.id}
+                ref={(el) => setVideoRef(slide.id, el)}
                 src={slide.media_url}
                 className="w-full h-full object-cover"
                 autoPlay
                 loop
                 muted
                 playsInline
+                preload="metadata"
+                webkit-playsinline="true"
+                x-webkit-airplay="allow"
+                style={{ 
+                  objectFit: 'cover',
+                  backgroundColor: '#000'
+                }}
+                onLoadedData={(e) => {
+                  // Ensure video plays when loaded, especially on mobile
+                  const video = e.currentTarget;
+                  if (index === currentIndex) {
+                    video.play().catch((err) => console.error('Video play error:', err));
+                  }
+                }}
+                onError={(e) => {
+                  console.error('Video load error:', e);
+                }}
               />
             ) : (
               <img
