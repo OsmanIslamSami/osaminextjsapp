@@ -74,7 +74,7 @@ export function buildNewsWhereClause(
   const dateConditions: any = {};
   
   // For public queries, preserve the lte: now() filter
-  if (isPublic && where.published_date && typeof where.published_date === 'object') {
+  if (isPublic && where.published_date && typeof where.published_date === 'object' && 'lte' in where.published_date) {
     dateConditions.lte = where.published_date.lte;
   }
   
