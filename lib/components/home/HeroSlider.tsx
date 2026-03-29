@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
@@ -30,11 +30,11 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [videoRefs, setVideoRefs] = useState<{ [key: string]: HTMLVideoElement | null }>({});
+  const videoRefsMap = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
   // Handle video ref callback
   const setVideoRef = useCallback((id: string, element: HTMLVideoElement | null) => {
-    setVideoRefs(prev => ({ ...prev, [id]: element }));
+    videoRefsMap.current[id] = element;
   }, []);
 
   // Play current video when slide changes
@@ -43,16 +43,16 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
     const currentSlide = slides[currentIndex];
     
     if (currentSlide.media_type === 'video') {
-      const videoElement = videoRefs[currentSlide.id];
+      const videoElement = videoRefsMap.current[currentSlide.id];
       if (videoElement) {
         // Reset and play video
         videoElement.currentTime = 0;
-        videoElement.play().catch((error) => {
+        videoElement.play().catch((error: unknown) => {
           console.error('Error playing video:', error);
         });
       }
     }
-  }, [currentIndex, slides, videoRefs]);
+  }, [currentIndex, slides]);
 
   // Fetch slides
   useEffect(() => {
