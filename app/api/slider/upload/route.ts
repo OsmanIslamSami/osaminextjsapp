@@ -67,7 +67,8 @@ export async function POST(request: NextRequest) {
         url: blob.url,
         filename: sanitizedName,
         size: file.size,
-        type: file.type 
+        type: file.type,
+        storage_type: 'blob' // Indicate this is stored in Vercel Blob
       },
       { status: 201 }
     );

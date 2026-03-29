@@ -92,7 +92,8 @@ model SocialMediaLink {
 model SliderContent {
   id              String   @id @default(cuid())
   media_url       String
-  media_type      String
+  media_type      String   // 'image' | 'video' | 'gif'
+  storage_type    String   @default("blob") // 'blob' | 'local'
   title_en        String?
   title_ar        String?
   button_text_en  String?

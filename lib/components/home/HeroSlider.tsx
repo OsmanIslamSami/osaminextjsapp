@@ -8,6 +8,7 @@ interface Slide {
   id: string;
   media_url: string;
   media_type: 'image' | 'video' | 'gif';
+  storage_type?: 'blob' | 'local';
   title_en: string | null;
   title_ar: string | null;
   button_text_en: string | null;
@@ -94,6 +95,20 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
     setCurrentIndex((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
 
+  // Helper function to get the correct media URL based on storage type
+  const getMediaUrl = useCallback((slide: Slide) => {
+    // If no storage_type is specified, assume 'blob' for backward compatibility
+    const storageType = slide.storage_type || 'blob';
+    
+    if (storageType === 'local') {
+      // Local files are served from the public directory
+      return slide.media_url;
+    }
+    
+    // Blob storage URLs are already complete URLs
+    return slide.media_url;
+  }, []);
+
   // Touch handlers for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -156,7 +171,6 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
               <video
                 key={slide.id}
                 ref={(el) => setVideoRef(slide.id, el)}
-                src={slide.media_url}
                 className="w-full h-full object-cover"
                 autoPlay
                 loop
@@ -171,23 +185,19 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                   backgroundColor: '#000'
                 }}
                 onLoadedData={(e) => {
-                  // Ensure video plays when loaded, especially on mobile
                   const video = e.currentTarget;
-                  console.log('Video loaded:', slide.media_url);
                   if (index === currentIndex) {
-                    video.play().catch((err) => console.error('Video play error:', err));
+                    video.play().catch((err: unknown) => console.error('Video play error:', err));
                   }
                 }}
-                onError={(e) => {
-                  console.error('Video load error for:', slide.media_url, e);
-                }}
-                onCanPlay={() => {
-                  console.log('Video can play:', slide.media_url);
-                }}
-              />
+              >
+                <source src={getMediaUrl(slide)} type="video/mp4" />
+                <source src={getMediaUrl(slide)} type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
             ) : (
               <img
-                src={slide.media_url}
+                src={getMediaUrl(slide)}
                 alt={title || 'Slide'}
                 className="w-full h-full object-cover"
               />

@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     const {
       media_url,
       media_type,
+      storage_type,
       title_en,
       title_ar,
       button_text_en,
@@ -61,6 +62,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate storage_type
+    const validStorageTypes = ['blob', 'local'];
+    const finalStorageType = storage_type && validStorageTypes.includes(storage_type) 
+      ? storage_type 
+      : 'blob'; // Default to blob if not specified
+
     // Validate required fields
     if (!media_url || !media_type) {
       return NextResponse.json(
@@ -73,6 +80,7 @@ export async function POST(request: NextRequest) {
       data: {
         media_url,
         media_type,
+        storage_type: finalStorageType,
         title_en: title_en || null,
         title_ar: title_ar || null,
         button_text_en: button_text_en || null,

@@ -59,6 +59,7 @@ export async function PUT(
     const {
       media_url,
       media_type,
+      storage_type,
       title_en,
       title_ar,
       button_text_en,
@@ -80,6 +81,17 @@ export async function PUT(
       }
     }
 
+    // Validate storage_type if provided
+    if (storage_type) {
+      const validStorageTypes = ['blob', 'local'];
+      if (!validStorageTypes.includes(storage_type)) {
+        return NextResponse.json(
+          { error: 'Invalid storage_type. Must be one of: blob, local' },
+          { status: 400 }
+        );
+      }
+    }
+
     const slide = await prisma.sliderContent.updateMany({
       where: {
         id: id,
@@ -88,6 +100,7 @@ export async function PUT(
       data: {
         ...(media_url !== undefined && { media_url }),
         ...(media_type !== undefined && { media_type }),
+        ...(storage_type !== undefined && { storage_type }),
         ...(title_en !== undefined && { title_en }),
         ...(title_ar !== undefined && { title_ar }),
         ...(button_text_en !== undefined && { button_text_en }),

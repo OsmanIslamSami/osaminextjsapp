@@ -9,6 +9,7 @@ interface Slide {
   id: string;
   media_url: string;
   media_type: 'image' | 'video' | 'gif';
+  storage_type: 'blob' | 'local';
   title_en: string | null;
   title_ar: string | null;
   button_text_en: string | null;
@@ -33,6 +34,7 @@ export default function AdminSliderPage() {
   const [formData, setFormData] = useState({
     media_url: '',
     media_type: 'image' as 'image' | 'video' | 'gif',
+    storage_type: 'blob' as 'blob' | 'local',
     title_en: '',
     title_ar: '',
     button_text_en: '',
@@ -103,7 +105,8 @@ export default function AdminSliderPage() {
         setFormData(prev => ({ 
           ...prev, 
           media_url: data.url,
-          media_type: file.type.startsWith('video/') ? 'video' : file.type === 'image/gif' ? 'gif' : 'image'
+          media_type: file.type.startsWith('video/') ? 'video' : file.type === 'image/gif' ? 'gif' : 'image',
+          storage_type: data.storage_type || 'blob'
         }));
         alert('File uploaded successfully!');
       } else {
@@ -156,6 +159,7 @@ export default function AdminSliderPage() {
     setFormData({
       media_url: slide.media_url,
       media_type: slide.media_type,
+      storage_type: slide.storage_type || 'blob',
       title_en: slide.title_en || '',
       title_ar: slide.title_ar || '',
       button_text_en: slide.button_text_en || '',
@@ -231,6 +235,7 @@ export default function AdminSliderPage() {
     setFormData({
       media_url: '',
       media_type: 'image',
+      storage_type: 'blob',
       title_en: '',
       title_ar: '',
       button_text_en: '',
@@ -527,8 +532,10 @@ export default function AdminSliderPage() {
           setFormData({
             ...formData,
             media_url: file.file_url,
-            media_type: file.file_type.startsWith('video/') ? 'video' : file.file_type === 'image/gif' ? 'gif' : 'image'
+            media_type: file.file_type.startsWith('video/') ? 'video' : file.file_type === 'image/gif' ? 'gif' : 'image',
+            storage_type: 'blob' // Files from library are stored in Vercel Blob
           });
+          setShowFilePicker(false);
         }}
         fileType="all"
         title="Select Media for Slider"
