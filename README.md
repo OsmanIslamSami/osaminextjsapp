@@ -1,4 +1,4 @@
-# Client Management System
+# Next App
 
 A modern client management application built with Next.js, featuring a comprehensive dashboard with analytics, client search with full audit trails, and real-time metrics.
 

@@ -138,3 +138,52 @@ export interface UpdateSliderContentInput {
   display_order?: number;
   is_visible?: boolean;
 }
+
+// News types
+export interface News {
+  id: string;
+  title_en: string | null;
+  title_ar: string | null;
+  image_url: string;
+  storage_type: 'blob' | 'local';
+  file_data?: Uint8Array | null;
+  file_name?: string | null;
+  file_size?: number | null;
+  mime_type?: string | null;
+  published_date: string;
+  is_visible: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateNewsInput {
+  title_en?: string;
+  title_ar?: string;
+  image_url: string;
+  storage_type: 'blob' | 'local';
+  file_data?: Uint8Array;
+  file_name?: string;
+  file_size?: number;
+  mime_type?: string;
+  published_date: string;
+  is_visible?: boolean;
+}
+
+export interface UpdateNewsInput {
+  title_en?: string;
+  title_ar?: string;
+  image_url?: string;
+  published_date?: string;
+  is_visible?: boolean;
+}
+
+export interface NewsListResponse {
+  news: News[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}

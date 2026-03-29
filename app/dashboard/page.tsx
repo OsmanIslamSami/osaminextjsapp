@@ -6,11 +6,13 @@ import DonutChart from '@/lib/components/dashboard/DonutChart';
 import MetricCard from '@/lib/components/dashboard/MetricCard';
 import RecentActivity from '@/lib/components/dashboard/RecentActivity';
 import LatestClients from '@/lib/components/dashboard/LatestClients';
+import LatestNews from '@/lib/components/dashboard/LatestNews';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface DashboardMetrics {
   clientCount: number;
   orderCount: number;
+  newsCount: number;
   thisMonthClients: number;
   lastMonthClients: number;
   thisMonthOrders: number;
@@ -19,6 +21,7 @@ interface DashboardMetrics {
   recentClients: any[];
   recentOrders: any[];
   latestClients: any[];
+  latestNews: any[];
 }
 
 export default function DashboardPage() {
@@ -92,7 +95,7 @@ export default function DashboardPage() {
       <h1 className="text-3xl font-bold mb-8">{t('dashboard.title')}</h1>
 
       {/* Metric Cards with stagger animation */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="stagger-item">
           <MetricCard
             label={t('dashboard.totalClients')}
@@ -109,6 +112,14 @@ export default function DashboardPage() {
             lastMonth={metrics.lastMonthOrders}
           />
         </div>
+        <div className="stagger-item">
+          <MetricCard
+            label="Total News"
+            value={metrics.newsCount}
+            thisMonth={0}
+            lastMonth={0}
+          />
+        </div>
       </div>
 
       {/* Order Status Donut Chart */}
@@ -118,8 +129,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Activity */}
-      <div className="mb-8 stagger-item">
-        <RecentActivity
+      <div className="mb-8 stagger mb-8">
+        <LatestClients clients={metrics.latestClients} />
+      </div>
+
+      {/* Latest News */}
+      <div className="stagger-item">
+        <LatestNews news={metrics.latestNew
           recentClients={metrics.recentClients}
           recentOrders={metrics.recentOrders}
         />

@@ -96,6 +96,16 @@ export default function AdminLayout({
           >
             Social Media
           </Link>
+          <Link
+            href="/admin/news"
+            className={`px-4 py-2 border-b-2 transition-colors ${
+              pathname === '/admin/news'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400 font-medium'
+                : 'border-transparent text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-100 hover:border-gray-300 dark:hover:border-zinc-700'
+            }`}
+          >
+            News
+          </Link>
         </nav>
       </div>
 

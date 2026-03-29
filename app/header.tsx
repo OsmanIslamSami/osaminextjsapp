@@ -25,7 +25,7 @@ export default function Header() {
         <Link href="/" className="flex items-center">
           <Image 
             src="/logo.svg" 
-            alt="MyApp Logo" 
+            alt="Next App Logo" 
             width={120} 
             height={40}
             className="h-10 w-auto dark:invert"

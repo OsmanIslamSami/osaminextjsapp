@@ -1,4 +1,5 @@
 import { query } from '@/lib/db';
+import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 
@@ -61,9 +62,30 @@ export async function GET() {
       query('SELECT id, name, email, mobile, created_at FROM clients WHERE is_deleted = false ORDER BY created_at DESC LIMIT 10'),
     ]);
 
+    // Fetch news metrics using Prisma
+    const [totalNews, latestNews] = await Promise.all([
+      prisma.news.count({
+        where: { is_deleted: false },
+      }),
+      prisma.news.findMany({
+        where: { is_deleted: false },
+        orderBy: { created_at: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          title_en: true,
+          title_ar: true,
+          published_date: true,
+          is_visible: true,
+          storage_type: true,
+        },
+      }),
+    ]);
+
     return NextResponse.json({
       clientCount: parseInt(totalClientsResult.rows[0].count),
       orderCount: parseInt(totalOrdersResult.rows[0].count),
+      newsCount: totalNews,
       thisMonthClients: parseInt(thisMonthClientsResult.rows[0].count),
       lastMonthClients: parseInt(lastMonthClientsResult.rows[0].count),
       thisMonthOrders: parseInt(thisMonthOrdersResult.rows[0].count),
@@ -72,6 +94,7 @@ export async function GET() {
       recentClients: recentClientsResult.rows,
       recentOrders: recentOrdersResult.rows,
       latestClients: latestClientsResult.rows,
+      latestNews,
     });
   } catch (error) {
     console.error('Metrics API error:', error);

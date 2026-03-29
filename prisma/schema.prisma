@@ -114,6 +114,28 @@ model SliderContent {
   @@map("slider_content")
 }
 
+model News {
+  id             String   @id @default(cuid())
+  title_en       String?  @db.VarChar(500)
+  title_ar       String?  @db.VarChar(500)
+  description_en String?  @db.Text
+  description_ar String?  @db.Text
+  image_url      String
+  storage_type   String   @default("blob") // 'blob' | 'local'
+  file_data      Bytes?   // Binary image data for local storage
+  file_name      String?  // Original filename for local storage
+  file_size      Int?     // File size in bytes
+  mime_type      String?  // MIME type (image/jpeg, image/png, etc.)
+  published_date DateTime @db.Timestamp(6)
+  is_visible     Boolean  @default(true)
+  is_deleted     Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@index([is_deleted, is_visible, published_date(sort: Desc)])
+  @@map("news")
+}
+
 model StyleLibraryFolder {
   id           String                @id @default(cuid())
   name         String

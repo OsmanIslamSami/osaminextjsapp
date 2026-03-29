@@ -247,22 +247,20 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
         </>
       )}
 
-      {/* Navigation Dots */}
+      {/* Navigation Dashes - Modern Design with Blue Circle */}
       {slides.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2 md:gap-3">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center ${
-                index === currentIndex
-                  ? 'bg-white scale-110'
-                  : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-              }`}
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center group"
               aria-label={`Go to slide ${index + 1}`}
             >
-              <span className={`w-3 h-3 md:w-4 md:h-4 rounded-full ${
-                index === currentIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+              <span className={`h-1 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? 'w-12 md:w-16 bg-white border border-white shadow-[0_0_0_1px_rgba(255,255,255,0.5)]'
+                  : 'w-6 md:w-8 bg-white bg-opacity-50 group-hover:bg-opacity-75'
               }`}></span>
             </button>
           ))}

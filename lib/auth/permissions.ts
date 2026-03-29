@@ -51,3 +51,40 @@ export async function canDeleteClients(): Promise<boolean> {
 
   return user.role === 'admin' && user.is_active;
 }
+
+/**
+ * Generic permission checker based on permission strings.
+ * Permission format: "resource:action" (e.g., "news:write", "slider:delete")
+ * 
+ * @param userId - The Clerk user ID
+ * @param permission - The permission string to check
+ * @returns true if the user has the permission, false otherwise
+ */
+export async function hasPermission(
+  userId: string,
+  permission: string
+): Promise<boolean> {
+  const dbUser = await prisma.user.findUnique({
+    where: { clerk_user_id: userId },
+  });
+
+  if (!dbUser || !dbUser.is_active) {
+    return false;
+  }
+
+  // Admin users have all permissions
+  if (dbUser.role === 'admin') {
+    return true;
+  }
+
+  // Parse permission string
+  const [resource, action] = permission.split(':');
+
+  // For now, only admin users have write/delete permissions
+  // Regular users only have read permissions
+  if (action === 'read') {
+    return true;
+  }
+
+  return false;
+}

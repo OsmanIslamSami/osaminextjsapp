@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface Stat {
   label: string;
@@ -15,10 +15,12 @@ interface MetricsData {
   thisMonthOrders: number;
 }
 
-function CountUpAnimation({ end, duration = 2000 }: { end: number; duration?: number }) {
+function CountUpAnimation({ end, duration = 2000, startCounting }: { end: number; duration?: number; startCounting: boolean }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (!startCounting) return;
+    
     let startTime: number;
     let animationFrame: number;
 
@@ -47,12 +49,12 @@ function CountUpAnimation({ end, duration = 2000 }: { end: number; duration?: nu
         cancelAnimationFrame(animationFrame);
       }
     };
-  }, [end, duration]);
+  }, [end, duration, startCounting]);
 
   return <span>{count.toLocaleString()}</span>;
 }
 
-function StatCard({ label, value, icon, color }: Stat) {
+function StatCard({ label, value, icon, color, startCounting }: Stat & { startCounting: boolean }) {
   return (
     <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-gray-100 hover:border-gray-200 transition-all duration-300 overflow-hidden">
       {/* Colored accent line */}
@@ -70,7 +72,7 @@ function StatCard({ label, value, icon, color }: Stat) {
       {/* Value */}
       <div className="mb-2">
         <div className="text-3xl font-bold text-gray-900">
-          <CountUpAnimation end={value} duration={3500} />
+          <CountUpAnimation end={value} duration={2500} startCounting={startCounting} />
         </div>
       </div>
 
@@ -85,6 +87,8 @@ function StatCard({ label, value, icon, color }: Stat) {
 export default function StatsSection() {
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [startCounting, setStartCounting] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -104,10 +108,38 @@ export default function StatsSection() {
     fetchMetrics();
   }, []);
 
+  // Intersection Observer for scroll-triggered counter animation
+  useEffect(() => {
+    if (loading || !sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !startCounting) {
+          setStartCounting(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    // Check if already in viewport on mount
+    const rect = sectionRef.current.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setStartCounting(true);
+    }
+
+    return () => observer.disconnect();
+  }, [loading, startCounting]);
+
   if (loading) {
     return (
-      <div className="py-16 px-4">
+      <div className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <div className="h-10 w-64 bg-gray-200 rounded-lg mx-auto mb-3 animate-pulse" />
+            <div className="h-6 w-96 bg-gray-200 rounded mx-auto animate-pulse" />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse">
@@ -168,7 +200,10 @@ export default function StatsSection() {
   ];
 
   return (
-    <div className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
+    <div 
+      ref={sectionRef}
+      className="py-16 px-4 bg-gradient-to-b from-white to-gray-50"
+    >
       <div className="container mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -183,7 +218,9 @@ export default function StatsSection() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
-            <StatCard key={index} {...stat} />
+            <div key={index}>
+              <StatCard {...stat} startCounting={startCounting} />
+            </div>
           ))}
         </div>
       </div>
