@@ -87,7 +87,7 @@ async function updateNewsDescriptions() {
     const newsItem = existingNews[i];
     const descriptions = newsDescriptions[i];
     
-    console.log(`Updating: ${newsItem.title_en.substring(0, 50)}...`);
+    console.log(`Updating: ${newsItem.title_en?.substring(0, 50) || 'Untitled'}...`);
     
     await prisma.news.update({
       where: { id: newsItem.id },
