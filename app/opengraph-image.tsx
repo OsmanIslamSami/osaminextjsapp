@@ -82,6 +82,8 @@ export default async function Image() {
           {/* Main Headline */}
           <div
             style={{
+              display: 'flex',
+              flexDirection: 'column',
               fontSize: '62px',
               fontWeight: 'bold',
               color: 'white',
@@ -91,9 +93,8 @@ export default async function Image() {
               lineHeight: '1.2',
             }}
           >
-            Your Complete Business
-            <br />
-            Management Solution
+            <div>Your Complete Business</div>
+            <div>Management Solution</div>
           </div>
 
           {/* App Description */}

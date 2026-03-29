@@ -75,6 +75,8 @@ export async function GET() {
             {/* Main Headline */}
             <div
               style={{
+                display: 'flex',
+                flexDirection: 'column',
                 fontSize: '62px',
                 fontWeight: 'bold',
                 color: 'white',
@@ -84,9 +86,8 @@ export async function GET() {
                 lineHeight: '1.2',
               }}
             >
-              Your Complete Business
-              <br />
-              Management Solution
+              <div>Your Complete Business</div>
+              <div>Management Solution</div>
             </div>
 
             {/* App Description */}
@@ -169,31 +170,6 @@ export async function GET() {
               }}
             >
               Get Started Today →
-            </div>
-                  padding: '12px 24px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  borderRadius: '12px',
-                  color: 'white',
-                  fontSize: '24px',
-                  fontWeight: '600',
-                  backdropFilter: 'blur(10px)',
-                }}
-              >
-                👥 Clients
-              </div>
-              <div
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  borderRadius: '12px',
-                  color: 'white',
-                  fontSize: '24px',
-                  fontWeight: '600',
-                  backdropFilter: 'blur(10px)',
-                }}
-              >
-                📊 Dashboard
-              </div>
             </div>
           </div>
         </div>
