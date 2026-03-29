@@ -37,9 +37,9 @@ function getBaseUrl() {
 const baseUrl = getBaseUrl();
 
 export const metadata: Metadata = {
-  title: "Next App",
-  description: "Modern Next.js application with advanced features, news, and client management",
-  keywords: ["Next.js", "React", "News", "Client Management", "Modern Web App"],
+  title: "Next App - Complete Business Management Platform",
+  description: "Streamline your business with Next App: powerful client management, real-time analytics dashboard, news publishing, and comprehensive reporting tools. Perfect for modern businesses looking to scale efficiently.",
+  keywords: ["Business Management", "Client Management", "CRM", "Analytics Dashboard", "News Publishing", "Next.js", "React", "Business Platform", "Modern Web App", "Enterprise Software"],
   authors: [{ name: "Next App Team" }],
   metadataBase: new URL(baseUrl),
   
@@ -51,16 +51,16 @@ export const metadata: Metadata = {
     alternateLocale: ['ar_SA'],
     url: baseUrl,
     siteName: 'Next App',
-    title: 'Next App - Modern Business Platform',
-    description: 'Modern Next.js application with advanced features, news management, and client services',
+    title: 'Next App - Your Complete Business Management Solution',
+    description: 'Streamline client management, track analytics, publish news updates, and grow your business with our modern platform. Get started today with Next App.',
   },
   
   // Twitter Card metadata
   // Next.js will automatically use twitter-image.tsx or fall back to opengraph-image.tsx
   twitter: {
     card: 'summary_large_image',
-    title: 'Next App - Modern Business Platform',
-    description: 'Modern Next.js application with advanced features, news management, and client services',
+    title: 'Next App - Your Complete Business Management Solution',
+    description: 'Streamline client management, track analytics, publish news updates, and grow your business with our modern platform. Get started today with Next App.',
     creator: '@nextapp',
   },
   

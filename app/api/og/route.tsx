@@ -24,55 +24,84 @@ export async function GET() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '40px',
+              padding: '60px',
+              maxWidth: '1100px',
             }}
           >
-            {/* App Icon/Logo */}
+            {/* Logo Box - Text Based */}
             <div
               style={{
-                width: '120px',
-                height: '120px',
-                borderRadius: '24px',
-                backgroundColor: 'white',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '64px',
-                fontWeight: 'bold',
-                color: '#667eea',
-                marginBottom: '40px',
-                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.3)',
+                marginBottom: '50px',
               }}
             >
-              📱
+              <div
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '20px',
+                  backgroundColor: '#3B82F6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '20px',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.3)',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '48px',
+                    fontWeight: 'bold',
+                    color: 'white',
+                  }}
+                >
+                  NA
+                </div>
+              </div>
+              <div
+                style={{
+                  fontSize: '56px',
+                  fontWeight: 'bold',
+                  color: 'white',
+                  textShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                Next App
+              </div>
             </div>
 
-            {/* App Title */}
+            {/* Main Headline */}
             <div
               style={{
-                fontSize: '72px',
+                fontSize: '62px',
                 fontWeight: 'bold',
                 color: 'white',
                 textAlign: 'center',
-                marginBottom: '20px',
+                marginBottom: '25px',
                 textShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                lineHeight: '1.2',
               }}
             >
-              Next App
+              Your Complete Business
+              <br />
+              Management Solution
             </div>
 
             {/* App Description */}
             <div
               style={{
-                fontSize: '32px',
+                fontSize: '28px',
                 color: 'rgba(255, 255, 255, 0.95)',
                 textAlign: 'center',
-                maxWidth: '900px',
-                lineHeight: '1.4',
+                maxWidth: '950px',
+                lineHeight: '1.5',
                 textShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                marginBottom: '10px',
               }}
             >
-              Modern Next.js Application with Advanced Features
+              Streamline client management, track analytics, publish news updates, and grow your business with our modern platform
             </div>
 
             {/* Features badges */}
@@ -80,24 +109,67 @@ export async function GET() {
               style={{
                 display: 'flex',
                 gap: '16px',
-                marginTop: '40px',
+                marginTop: '45px',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
               }}
             >
               <div
                 style={{
-                  padding: '12px 24px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  borderRadius: '12px',
+                  padding: '14px 28px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                  borderRadius: '14px',
                   color: 'white',
-                  fontSize: '24px',
+                  fontSize: '22px',
                   fontWeight: '600',
-                  backdropFilter: 'blur(10px)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
                 }}
               >
-                📰 News
+                Client Management
               </div>
               <div
                 style={{
+                  padding: '14px 28px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                  borderRadius: '14px',
+                  color: 'white',
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                }}
+              >
+                News Publishing
+              </div>
+              <div
+                style={{
+                  padding: '14px 28px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                  borderRadius: '14px',
+                  color: 'white',
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                }}
+              >
+                Analytics Dashboard
+              </div>
+            </div>
+            
+            {/* Call to Action */}
+            <div
+              style={{
+                marginTop: '50px',
+                padding: '18px 45px',
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                color: '#667eea',
+                fontSize: '26px',
+                fontWeight: 'bold',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+              }}
+            >
+              Get Started Today →
+            </div>
                   padding: '12px 24px',
                   backgroundColor: 'rgba(255, 255, 255, 0.2)',
                   borderRadius: '12px',
