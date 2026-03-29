@@ -1,15 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import NewsCard from '@/lib/components/home/NewsCard';
 import SearchBar from '@/lib/components/news/SearchBar';
 import DateRangeFilter from '@/lib/components/news/DateRangeFilter';
 import PaginationControls from '@/lib/components/news/PaginationControls';
-
-// Force dynamic rendering for search params
-export const dynamic = 'force-dynamic';
 
 interface News {
   id: string;
@@ -29,7 +26,7 @@ interface Pagination {
   totalPages: number;
 }
 
-export default function AllNewsPage() {
+function AllNewsContent() {
   const [news, setNews] = useState<News[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
@@ -211,6 +208,44 @@ export default function AllNewsPage() {
             )}
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+export default function AllNewsPage() {
+  return (
+    <Suspense fallback={<NewsLoadingFallback />}>
+      <AllNewsContent />
+    </Suspense>
+  );
+}
+
+function NewsLoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 py-16 px-4">
+      <div className="container mx-auto max-w-7xl">
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Loading...
+          </h1>
+        </div>
+
+        {/* Loading skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden shadow-lg"
+            >
+              <div className="h-48 bg-gray-200 dark:bg-zinc-800 animate-pulse"></div>
+              <div className="p-6">
+                <div className="h-4 bg-gray-200 dark:bg-zinc-800 rounded mb-2 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 dark:bg-zinc-800 rounded w-2/3 animate-pulse"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
