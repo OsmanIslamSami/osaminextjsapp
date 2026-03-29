@@ -8,6 +8,9 @@ import SearchBar from '@/lib/components/news/SearchBar';
 import DateRangeFilter from '@/lib/components/news/DateRangeFilter';
 import PaginationControls from '@/lib/components/news/PaginationControls';
 
+// Force dynamic rendering for search params
+export const dynamic = 'force-dynamic';
+
 interface News {
   id: string;
   title_en: string | null;
