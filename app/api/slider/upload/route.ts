@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { prisma } from '@/lib/db';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
 
-// POST /api/slider/upload - Admin only, upload media files
+// POST /api/slider/upload - Admin only, upload media files to database (local storage)
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser();
@@ -42,33 +42,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Sanitize filename: remove special chars, keep only alphanumeric, dots, dashes, underscores
-    const originalName = file.name;
-    const extension = originalName.substring(originalName.lastIndexOf('.'));
-    const baseName = originalName
-      .substring(0, originalName.lastIndexOf('.'))
-      .replace(/[^a-zA-Z0-9-_]/g, '_')
-      .substring(0, 50); // Limit base name length
-    
-    // Add timestamp to avoid collisions
-    const timestamp = Date.now();
-    const sanitizedName = `slides/${baseName}_${timestamp}${extension}`;
+    // Convert file to buffer for database storage
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    // Upload to Vercel Blob
-    const blob = await put(sanitizedName, file, {
-      access: 'public',
-      addRandomSuffix: false,
-      contentType: file.type,
-      cacheControlMaxAge: 31536000, // 1 year cache
+    // Create a database record with the file data
+    const slide = await prisma.sliderContent.create({
+      data: {
+        media_url: '', // Will be updated with the ID after creation
+        media_type: file.type.startsWith('video/') ? 'video' : file.type === 'image/gif' ? 'gif' : 'image',
+        storage_type: 'local',
+        file_data: buffer,
+        file_name: file.name,
+        file_size: file.size,
+        mime_type: file.type,
+        is_visible: false, // Set to false initially, admin needs to configure and publish
+      },
+    });
+
+    // Update media_url to point to the API endpoint
+    const mediaUrl = `/api/slider/media/${slide.id}`;
+    await prisma.sliderContent.update({
+      where: { id: slide.id },
+      data: { media_url: mediaUrl },
     });
 
     return NextResponse.json(
       { 
-        url: blob.url,
-        filename: sanitizedName,
+        url: mediaUrl,
+        id: slide.id,
+        filename: file.name,
         size: file.size,
         type: file.type,
-        storage_type: 'blob' // Indicate this is stored in Vercel Blob
+        storage_type: 'local' // Indicate this is stored in database (local)
       },
       { status: 201 }
     );

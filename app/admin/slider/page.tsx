@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
@@ -29,6 +29,8 @@ export default function AdminSliderPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showFilePicker, setShowFilePicker] = useState(false);
+  const [uploadedSlideId, setUploadedSlideId] = useState<string | null>(null); // Track uploaded slide ID
+  const formRef = useRef<HTMLDivElement>(null); // Reference to form section
 
   // Form state
   const [formData, setFormData] = useState({
@@ -108,6 +110,12 @@ export default function AdminSliderPage() {
           media_type: file.type.startsWith('video/') ? 'video' : file.type === 'image/gif' ? 'gif' : 'image',
           storage_type: data.storage_type || 'blob'
         }));
+        
+        // Store the uploaded slide ID if it's a local storage upload
+        if (data.storage_type === 'local' && data.id) {
+          setUploadedSlideId(data.id);
+        }
+        
         alert('File uploaded successfully!');
       } else {
         const error = await response.json();
@@ -131,8 +139,12 @@ export default function AdminSliderPage() {
     }
 
     try {
-      const url = editingSlide ? `/api/slider/${editingSlide.id}` : '/api/slider';
-      const method = editingSlide ? 'PUT' : 'POST';
+      // If we have an uploaded slide ID (local storage), update it
+      // Otherwise, if editing an existing slide, update that
+      // Otherwise, create a new slide
+      const slideId = uploadedSlideId || editingSlide?.id;
+      const url = slideId ? `/api/slider/${slideId}` : '/api/slider';
+      const method = slideId ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
@@ -141,7 +153,7 @@ export default function AdminSliderPage() {
       });
 
       if (response.ok) {
-        alert(editingSlide ? 'Slide updated!' : 'Slide created!');
+        alert(slideId ? 'Slide updated!' : 'Slide created!');
         resetForm();
         fetchSlides();
       } else {
@@ -168,6 +180,11 @@ export default function AdminSliderPage() {
       show_button: slide.show_button,
     });
     setShowAddForm(true);
+    
+    // Scroll to form section
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleDelete = async (id: string) => {
@@ -244,6 +261,7 @@ export default function AdminSliderPage() {
       show_button: false,
     });
     setEditingSlide(null);
+    setUploadedSlideId(null);
     setShowAddForm(false);
   };
 
@@ -272,7 +290,7 @@ export default function AdminSliderPage() {
 
       {/* Add/Edit Form */}
       {showAddForm && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
+        <div ref={formRef} className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">
             {editingSlide ? 'Edit Slide' : 'Add New Slide'}
           </h2>
@@ -325,9 +343,35 @@ export default function AdminSliderPage() {
                 <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-green-600">✓ File ready</p>
                   <p className="text-xs text-gray-600 mt-1 truncate">{formData.media_url}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Storage: <span className="font-medium">{formData.storage_type === 'blob' ? 'Vercel Blob' : 'Database (Local)'}</span>
+                  </p>
                 </div>
               )}
             </div>
+
+            {/* Storage Type Display */}
+            {formData.media_url && (
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-blue-900">Storage Type:</span>
+                  <span className={
+                    `text-sm px-2 py-1 rounded ${
+                      formData.storage_type === 'blob' 
+                        ? 'bg-purple-100 text-purple-700' 
+                        : 'bg-green-100 text-green-700'
+                    }`
+                  }>
+                    {formData.storage_type === 'blob' ? '☁️ Vercel Blob Storage' : '💾 Database Storage'}
+                  </span>
+                </div>
+                <p className="text-xs text-blue-700 mt-1">
+                  {formData.storage_type === 'blob' 
+                    ? 'File stored in Vercel Blob (external CDN)' 
+                    : 'File stored in database (local storage)'}
+                </p>
+              </div>
+            )}
 
             {/* Titles */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -467,9 +511,22 @@ export default function AdminSliderPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">
-                  Type: {slide.media_type} | Order: {index + 1}
-                </p>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                  <span>Type: <span className="font-medium">{slide.media_type}</span></span>
+                  <span className="text-gray-400">•</span>
+                  <span>Order: <span className="font-medium">{index + 1}</span></span>
+                  <span className="text-gray-400">•</span>
+                  <span className="flex items-center gap-1">
+                    Storage: 
+                    <span className={`text-xs px-2 py-0.5 rounded font-medium ${
+                      slide.storage_type === 'blob' 
+                        ? 'bg-purple-100 text-purple-700' 
+                        : 'bg-green-100 text-green-700'
+                    }`}>
+                      {slide.storage_type === 'blob' ? 'Blob' : 'Local'}
+                    </span>
+                  </span>
+                </div>
                 {slide.show_button && slide.button_url && (
                   <p className="text-sm text-blue-600 mt-1">CTA: {slide.button_url}</p>
                 )}
