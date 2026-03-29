@@ -34,38 +34,33 @@ function getBaseUrl() {
   return 'http://localhost:3000';
 }
 
+const baseUrl = getBaseUrl();
+
 export const metadata: Metadata = {
   title: "Next App",
   description: "Modern Next.js application with advanced features, news, and client management",
   keywords: ["Next.js", "React", "News", "Client Management", "Modern Web App"],
   authors: [{ name: "Next App Team" }],
-  metadataBase: new URL(getBaseUrl()),
+  metadataBase: new URL(baseUrl),
   
-  // Open Graph metadata for social media sharing
+  // Open Graph metadata for social media sharing (Teams, Facebook, LinkedIn)
+  // Next.js will automatically use opengraph-image.tsx for the image
   openGraph: {
     type: 'website',
     locale: 'en_US',
     alternateLocale: ['ar_SA'],
-    url: '/',
+    url: baseUrl,
     siteName: 'Next App',
     title: 'Next App - Modern Business Platform',
     description: 'Modern Next.js application with advanced features, news management, and client services',
-    images: [
-      {
-        url: '/api/og',
-        width: 1200,
-        height: 630,
-        alt: 'Next App Preview',
-      },
-    ],
   },
   
   // Twitter Card metadata
+  // Next.js will automatically use twitter-image.tsx or fall back to opengraph-image.tsx
   twitter: {
     card: 'summary_large_image',
     title: 'Next App - Modern Business Platform',
     description: 'Modern Next.js application with advanced features, news management, and client services',
-    images: ['/api/og'],
     creator: '@nextapp',
   },
   
