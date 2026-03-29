@@ -135,10 +135,7 @@ export default function DashboardPage() {
 
       {/* Latest News */}
       <div className="stagger-item">
-        <LatestNews news={metrics.latestNew
-          recentClients={metrics.recentClients}
-          recentOrders={metrics.recentOrders}
-        />
+        <LatestNews news={metrics.latestNews} />
       </div>
 
       {/* Latest Clients */}
