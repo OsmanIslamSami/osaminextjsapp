@@ -31,11 +31,17 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [loadedMedia, setLoadedMedia] = useState<Set<string>>(new Set());
   const videoRefsMap = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
   // Handle video ref callback
   const setVideoRef = useCallback((id: string, element: HTMLVideoElement | null) => {
     videoRefsMap.current[id] = element;
+  }, []);
+
+  // Mark media as loaded
+  const handleMediaLoad = useCallback((slideId: string) => {
+    setLoadedMedia(prev => new Set(prev).add(slideId));
   }, []);
 
   // Play current video when slide changes
@@ -137,7 +143,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
 
   if (loading) {
     return (
-      <div className="w-full h-[400px] md:h-[500px] lg:h-[600px] bg-gray-200 animate-pulse"></div>
+      <div className="w-full h-[400px] md:h-[500px] lg:h-[600px] bg-gradient-to-br from-white via-gray-200 to-gray-400 animate-pulse"></div>
     );
   }
 
@@ -151,7 +157,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
 
   return (
     <div
-      className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden bg-gray-100"
+      className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden bg-gradient-to-br from-white via-gray-100 to-gray-300"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -163,10 +169,20 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ${
+            className={`absolute inset-0 transition-opacity duration-700 bg-gradient-to-br from-white via-gray-200 to-gray-400 ${
               index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
             }`}
           >
+            {/* Loading background - shows until media loads */}
+            {!loadedMedia.has(slide.id) && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white via-gray-200 to-gray-400">
+                <div className="text-white text-center">
+                  <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-lg font-semibold">Loading...</p>
+                </div>
+              </div>
+            )}
+            
             {slide.media_type === 'video' ? (
               <video
                 key={slide.id}
@@ -185,6 +201,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                   backgroundColor: '#000'
                 }}
                 onLoadedData={(e) => {
+                  handleMediaLoad(slide.id);
                   const video = e.currentTarget;
                   if (index === currentIndex) {
                     video.play().catch((err: unknown) => console.error('Video play error:', err));
@@ -200,6 +217,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 src={getMediaUrl(slide)}
                 alt={title || 'Slide'}
                 className="w-full h-full object-cover"
+                onLoad={() => handleMediaLoad(slide.id)}
               />
             )}
 
