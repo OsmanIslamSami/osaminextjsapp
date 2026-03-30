@@ -6,64 +6,76 @@ import QuickLinksSection from "@/lib/components/home/QuickLinksSection";
 import { PhotosSection } from "@/lib/components/home/PhotosSection";
 import { VideosSection } from "@/lib/components/home/VideosSection";
 import { PartnersSection } from "@/lib/components/home/PartnersSection";
+import { prisma } from "@/lib/db";
 
 /**
- * Fetch photos for home page (5 featured items)
+ * Fetch photos for home page (featured items)
  */
 async function getHomePhotos() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/photos?context=home`, {
-      cache: 'no-store',
+    const photos = await prisma.photos.findMany({
+      where: {
+        is_deleted: false,
+        is_visible: true,
+        published_date: { lte: new Date() },
+      },
+      orderBy: [
+        { is_featured: 'desc' },
+        { published_date: 'desc' },
+      ],
+      take: 6,
     });
-    
-    if (!response.ok) return null;
-    
-    const data = await response.json();
-    return data.success ? data.data : null;
+    return photos;
   } catch (error) {
     console.error('Failed to fetch home photos:', error);
-    return null;
+    return [];
   }
 }
 
 /**
- * Fetch videos for home page (6 featured items)
+ * Fetch videos for home page (featured items)
  */
 async function getHomeVideos() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/videos?context=home`, {
-      cache: 'no-store',
+    const videos = await prisma.videos.findMany({
+      where: {
+        is_deleted: false,
+        is_visible: true,
+        published_date: { lte: new Date() },
+      },
+      orderBy: [
+        { is_featured: 'desc' },
+        { published_date: 'desc' },
+      ],
+      take: 6,
     });
-    
-    if (!response.ok) return null;
-    
-    const data = await response.json();
-    return data.success ? data.data : null;
+    return videos;
   } catch (error) {
     console.error('Failed to fetch home videos:', error);
-    return null;
+    return [];
   }
 }
 
 /**
- * Fetch partners for home page (configurable count)
+ * Fetch partners for home page
  */
 async function getHomePartners() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/partners?context=home`, {
-      cache: 'no-store',
+    const partners = await prisma.partners.findMany({
+      where: {
+        is_deleted: false,
+        is_visible: true,
+      },
+      orderBy: [
+        { is_featured: 'desc' },
+        { created_at: 'desc' },
+      ],
+      take: 6,
     });
-    
-    if (!response.ok) return null;
-    
-    const data = await response.json();
-    return data.success ? data.data : null;
+    return partners;
   } catch (error) {
     console.error('Failed to fetch home partners:', error);
-    return null;
+    return [];
   }
 }
 
@@ -72,15 +84,12 @@ async function getHomePartners() {
  */
 async function getHomeSectionConfig(sectionType: 'photos' | 'videos' | 'partners') {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/home-sections?section_type=${sectionType}`, {
-      cache: 'no-store',
+    const config = await prisma.home_sections.findFirst({
+      where: {
+        section_type: sectionType,
+      },
     });
-    
-    if (!response.ok) return null;
-    
-    const data = await response.json();
-    return data.success ? data.data : null;
+    return config;
   } catch (error) {
     console.error('Failed to fetch section config:', error);
     return null;
@@ -99,9 +108,9 @@ export default async function Home() {
   ]);
 
   // Determine which sections to show based on visibility and content
-  const showPhotos = photosConfig?.is_visible && photos && photos.length > 0;
-  const showVideos = videosConfig?.is_visible && videos && videos.length > 0;
-  const showPartners = partnersConfig?.is_visible && partners && partners.length > 0;
+  const showPhotos = (photosConfig?.is_visible ?? true) && photos.length > 0;
+  const showVideos = (videosConfig?.is_visible ?? true) && videos.length > 0;
+  const showPartners = (partnersConfig?.is_visible ?? true) && partners.length > 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white page-transition">
@@ -116,8 +125,8 @@ export default async function Home() {
         <PhotosSection 
           photos={photos} 
           title={{
-            en: photosConfig.title_en,
-            ar: photosConfig.title_ar,
+            en: photosConfig?.title_en || 'Photos',
+            ar: photosConfig?.title_ar || 'الصور',
           }}
         />
       )}
@@ -127,8 +136,8 @@ export default async function Home() {
         <VideosSection 
           videos={videos} 
           title={{
-            en: videosConfig.title_en,
-            ar: videosConfig.title_ar,
+            en: videosConfig?.title_en || 'Videos',
+            ar: videosConfig?.title_ar || 'الفيديوهات',
           }}
         />
       )}
@@ -138,8 +147,8 @@ export default async function Home() {
         <PartnersSection 
           partners={partners} 
           title={{
-            en: partnersConfig.title_en,
-            ar: partnersConfig.title_ar,
+            en: partnersConfig?.title_en || 'Our Partners',
+            ar: partnersConfig?.title_ar || 'شركاؤنا',
           }}
         />
       )}
