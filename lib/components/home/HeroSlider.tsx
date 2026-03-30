@@ -49,14 +49,26 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
     if (!slides[currentIndex]) return;
     const currentSlide = slides[currentIndex];
     
+    // Pause all videos first
+    Object.values(videoRefsMap.current).forEach(video => {
+      if (video && !video.paused) {
+        video.pause();
+      }
+    });
+    
+    // Play current video if it's a video slide
     if (currentSlide.media_type === 'video') {
       const videoElement = videoRefsMap.current[currentSlide.id];
       if (videoElement) {
-        // Reset and play video
         videoElement.currentTime = 0;
-        videoElement.play().catch((error: unknown) => {
-          console.error('Error playing video:', error);
-        });
+        // Use a timeout to ensure the video element is ready
+        const playPromise = videoElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Silently handle autoplay prevention - this is expected behavior
+            // User interaction will trigger playback if needed
+          });
+        }
       }
     }
   }, [currentIndex, slides]);
@@ -176,8 +188,8 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
             {/* Loading background - shows until media loads */}
             {!loadedMedia.has(slide.id) && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white via-gray-200 to-gray-400">
-                <div className="text-white text-center">
-                  <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <div className="text-gray-800 text-center">
+                  <div className="w-16 h-16 border-4 border-gray-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                   <p className="text-lg font-semibold">Loading...</p>
                 </div>
               </div>
@@ -187,7 +199,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
               <video
                 key={slide.id}
                 ref={(el) => setVideoRef(slide.id, el)}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-pointer"
                 autoPlay
                 loop
                 muted
@@ -196,6 +208,14 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 crossOrigin="anonymous"
                 webkit-playsinline="true"
                 x-webkit-airplay="allow"
+                onClick={(e) => {
+                  const video = e.currentTarget;
+                  if (video.paused) {
+                    video.play().catch(() => {
+                      // Silently handle autoplay restrictions
+                    });
+                  }
+                }}
                 style={{ 
                   objectFit: 'cover',
                   backgroundColor: '#000'
@@ -204,7 +224,12 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                   handleMediaLoad(slide.id);
                   const video = e.currentTarget;
                   if (index === currentIndex) {
-                    video.play().catch((err: unknown) => console.error('Video play error:', err));
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                      playPromise.catch(() => {
+                        // Silently handle - autoplay may be blocked by browser
+                      });
+                    }
                   }
                 }}
               >
@@ -217,6 +242,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 src={getMediaUrl(slide)}
                 alt={title || 'Slide'}
                 className="w-full h-full object-cover"
+                loading="eager"
                 onLoad={() => handleMediaLoad(slide.id)}
               />
             )}
