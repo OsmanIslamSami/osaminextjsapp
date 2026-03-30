@@ -69,6 +69,14 @@ model User {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 
+  // Media Library relations
+  photosCreated     photos[]    @relation("PhotosCreatedBy")
+  photosUpdated     photos[]    @relation("PhotosUpdatedBy")
+  videosCreated     videos[]    @relation("VideosCreatedBy")
+  videosUpdated     videos[]    @relation("VideosUpdatedBy")
+  partnersCreated   partners[]  @relation("PartnersCreatedBy")
+  partnersUpdated   partners[]  @relation("PartnersUpdatedBy")
+
   @@index([clerk_user_id])
   @@index([email])
   @@index([role])
@@ -182,4 +190,151 @@ model StyleLibraryFile {
   @@index([file_type])
   @@index([created_at])
   @@map("style_library_files")
+}
+
+// Media Library: Photos
+model photos {
+  id              String    @id @default(cuid())
+  
+  // Content fields
+  title_en        String
+  title_ar        String
+  description_en  String?   @db.Text
+  description_ar  String?   @db.Text
+  
+  // Media storage
+  image_url       String
+  storage_type    String    @default("blob")  // 'blob' or 'local'
+  file_name       String?
+  file_size       Int?      // Bytes
+  mime_type       String?   // image/jpeg, image/png, etc.
+  file_data       Bytes?    // Optional local storage
+  
+  // Display control
+  is_featured     Boolean   @default(false)
+  is_visible      Boolean   @default(true)
+  is_deleted      Boolean   @default(false)
+  display_order   Int       @default(0)
+  published_date  DateTime  @default(now())
+  
+  // Audit trail
+  created_by      String?
+  updated_by      String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  
+  // Relations
+  createdByUser   User?     @relation("PhotosCreatedBy", fields: [created_by], references: [id])
+  updatedByUser   User?     @relation("PhotosUpdatedBy", fields: [updated_by], references: [id])
+  
+  @@index([is_deleted, is_visible, is_featured, published_date(sort: Desc)])
+  @@index([published_date(sort: Desc)])
+  @@index([created_at])
+  @@map("photos")
+}
+
+// Media Library: Videos
+model videos {
+  id              String    @id @default(cuid())
+  
+  // Content fields
+  title_en        String
+  title_ar        String
+  description_en  String?   @db.Text
+  description_ar  String?   @db.Text
+  
+  // Video source
+  youtube_url     String
+  video_id        String?   // Extracted YouTube video ID for embed
+  
+  // Thumbnail/background
+  thumbnail_url   String?
+  storage_type    String    @default("blob")
+  file_name       String?
+  file_size       Int?
+  mime_type       String?
+  
+  // Display control
+  is_featured     Boolean   @default(false)
+  is_visible      Boolean   @default(true)
+  is_deleted      Boolean   @default(false)
+  display_order   Int       @default(0)
+  published_date  DateTime  @default(now())
+  
+  // Audit trail
+  created_by      String?
+  updated_by      String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  
+  // Relations
+  createdByUser   User?     @relation("VideosCreatedBy", fields: [created_by], references: [id])
+  updatedByUser   User?     @relation("VideosUpdatedBy", fields: [updated_by], references: [id])
+  
+  @@index([is_deleted, is_visible, is_featured, published_date(sort: Desc)])
+  @@index([published_date(sort: Desc)])
+  @@index([video_id])
+  @@map("videos")
+}
+
+// Media Library: Partners
+model partners {
+  id              String    @id @default(cuid())
+  
+  // Content fields
+  title_en        String
+  title_ar        String
+  url             String?   // Partner website URL (clickable link)
+  
+  // Logo/image storage
+  image_url       String
+  storage_type    String    @default("blob")
+  file_name       String?
+  file_size       Int?
+  mime_type       String?
+  file_data       Bytes?
+  
+  // Display control
+  is_featured     Boolean   @default(false)
+  is_visible      Boolean   @default(true)
+  is_deleted      Boolean   @default(false)
+  display_order   Int       @default(0)
+  
+  // Audit trail
+  created_by      String?
+  updated_by      String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  
+  // Relations
+  createdByUser   User?     @relation("PartnersCreatedBy", fields: [created_by], references: [id])
+  updatedByUser   User?     @relation("PartnersUpdatedBy", fields: [updated_by], references: [id])
+  
+  @@index([is_deleted, is_visible, is_featured, created_at(sort: Desc)])
+  @@index([created_at(sort: Desc)])
+  @@map("partners")
+}
+
+// Media Library: Home Section Configuration
+model home_sections {
+  id                      String    @id @default(cuid())
+  
+  // Section identification
+  section_type            String    @unique  // 'photos', 'videos', 'partners'
+  
+  // Display configuration
+  is_visible              Boolean   @default(true)
+  title_en                String?
+  title_ar                String?
+  display_order           Int       @default(0)
+  
+  // Partners-specific configuration
+  partners_display_mode   String?   @default("all")  // 'all' or 'limit'
+  partners_max_count      Int?      // Only used when mode = 'limit'
+  
+  // Audit trail
+  created_at              DateTime  @default(now())
+  updated_at              DateTime  @updatedAt
+  
+  @@map("home_sections")
 }

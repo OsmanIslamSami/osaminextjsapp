@@ -33,6 +33,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
   const [touchEnd, setTouchEnd] = useState(0);
   const [loadedMedia, setLoadedMedia] = useState<Set<string>>(new Set());
   const videoRefsMap = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  const isRTL = language === 'ar';
 
   // Handle video ref callback
   const setVideoRef = useCallback((id: string, element: HTMLVideoElement | null) => {
@@ -275,18 +276,26 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
       {slides.length > 1 && (
         <>
           <button
-            onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 p-2 md:p-3 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="Previous slide"
+            onClick={isRTL ? goToNext : goToPrevious}
+            className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 p-2 md:p-3 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center`}
+            aria-label={isRTL ? 'السابق' : 'Previous slide'}
           >
-            <ChevronLeftIcon className="w-6 h-6" />
+            {isRTL ? (
+              <ChevronRightIcon className="w-6 h-6" />
+            ) : (
+              <ChevronLeftIcon className="w-6 h-6" />
+            )}
           </button>
           <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 p-2 md:p-3 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="Next slide"
+            onClick={isRTL ? goToPrevious : goToNext}
+            className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 p-2 md:p-3 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center`}
+            aria-label={isRTL ? 'التالي' : 'Next slide'}
           >
-            <ChevronRightIcon className="w-6 h-6" />
+            {isRTL ? (
+              <ChevronLeftIcon className="w-6 h-6" />
+            ) : (
+              <ChevronRightIcon className="w-6 h-6" />
+            )}
           </button>
         </>
       )}
