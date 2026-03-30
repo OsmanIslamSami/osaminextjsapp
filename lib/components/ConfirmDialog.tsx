@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -23,6 +23,8 @@ export default function ConfirmDialog({
   cancelText = 'Cancel',
   confirmButtonClass = 'bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700',
 }: ConfirmDialogProps) {
+  const [isAnimating, setIsAnimating] = useState(false);
+
   // Handle ESC key to close dialog
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -37,39 +39,95 @@ export default function ConfirmDialog({
     }
   }, [isOpen, onCancel]);
 
-  if (!isOpen) return null;
+  // Prevent body scroll when dialog is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      setIsAnimating(true);
+    } else {
+      document.body.style.overflow = 'unset';
+      setIsAnimating(false);
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  if (!isOpen && !isAnimating) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+    <div 
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 transition-opacity duration-300 ${
+        isOpen ? 'opacity-100' : 'opacity-0'
+      }`}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+    >
+      {/* Backdrop with animation */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-50 dark:bg-opacity-70"
+        className={`absolute inset-0 bg-black transition-opacity duration-300 ${
+          isOpen ? 'bg-opacity-50 dark:bg-opacity-70' : 'bg-opacity-0'
+        }`}
         onClick={onCancel}
+        aria-label="Close dialog"
       ></div>
       
-      {/* Dialog */}
-      <div className="relative bg-white dark:bg-zinc-900 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-zinc-50 mb-3">
-          {title}
-        </h3>
-        
-        <div className="text-gray-700 dark:text-zinc-300 mb-6">
-          {message}
-        </div>
-        
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-gray-900 dark:text-zinc-50"
+      {/* Dialog with scale animation and responsive sizing */}
+      <div 
+        className={`relative bg-white dark:bg-zinc-900 rounded-xl shadow-2xl 
+          w-full max-w-sm sm:max-w-md md:max-w-lg
+          transform transition-all duration-300 ease-out
+          ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
+          border border-gray-200 dark:border-zinc-800`}
+      >
+        {/* Content container with responsive padding */}
+        <div className="p-5 sm:p-6 md:p-7">
+          {/* Title */}
+          <h3 
+            id="dialog-title"
+            className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-zinc-50 mb-3 sm:mb-4 leading-tight"
           >
-            {cancelText}
-          </button>
-          <button
-            onClick={onConfirm}
-            className={`px-4 py-2 text-white rounded-lg transition-colors ${confirmButtonClass}`}
-          >
-            {confirmText}
-          </button>
+            {title}
+          </h3>
+          
+          {/* Message */}
+          <div className="text-sm sm:text-base text-gray-700 dark:text-zinc-300 mb-6 sm:mb-8 leading-relaxed">
+            {message}
+          </div>
+          
+          {/* Action buttons - responsive layout */}
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
+            <button
+              onClick={onCancel}
+              className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-2 
+                border border-gray-300 dark:border-zinc-700 
+                rounded-lg sm:rounded-md
+                hover:bg-gray-100 dark:hover:bg-zinc-800 
+                active:bg-gray-200 dark:active:bg-zinc-700
+                transition-all duration-200
+                text-gray-900 dark:text-zinc-50
+                font-medium text-sm sm:text-base
+                focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-600 focus:ring-offset-2 dark:focus:ring-offset-zinc-900"
+              type="button"
+            >
+              {cancelText}
+            </button>
+            <button
+              onClick={onConfirm}
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-2 
+                text-white rounded-lg sm:rounded-md
+                font-medium text-sm sm:text-base
+                transition-all duration-200
+                focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-zinc-900
+                active:scale-95
+                ${confirmButtonClass}`}
+              type="button"
+            >
+              {confirmText}
+            </button>
+          </div>
         </div>
       </div>
     </div>

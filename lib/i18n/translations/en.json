@@ -96,10 +96,40 @@
   },
   "admin": {
     "title": "Admin Panel",
+    "subtitle": "Manage your application settings and content",
     "slider": "Slider Management",
     "header": "Header Settings",
     "footer": "Footer Settings",
-    "users": "User Management"
+    "users": "User Management",
+    "tabs": {
+      "overview": "Overview",
+      "news": "News",
+      "slider": "Slider",
+      "users": "Users",
+      "social": "Social Media",
+      "styleLibrary": "Style Library"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "administrators": "Administrators",
+      "sliderSlides": "Slider Slides",
+      "socialLinks": "Social Links"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "manageUsers": "Manage Users",
+      "manageUsersDesc": "View and edit user roles and permissions",
+      "manageSlider": "Manage Slider",
+      "manageSliderDesc": "Add and edit home page slider content",
+      "manageSocial": "Social Media Links",
+      "manageSocialDesc": "Manage footer social media links",
+      "manageClients": "Manage Clients",
+      "manageClientsDesc": "View and manage client database"
+    },
+    "info": {
+      "title": "Admin Panel Ready",
+      "description": "This admin panel provides complete management capabilities for users, slider content, and social media links. Use the links above to access each section."
+    }
   },
   "errors": {
     "required": "This field is required",

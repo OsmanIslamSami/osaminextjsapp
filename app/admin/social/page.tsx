@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { SocialMediaLink } from '@/lib/types';
 import { PencilIcon, TrashIcon, PlusIcon, XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
+import { useToast } from '@/lib/components/ToastContainer';
+import ConfirmDialog from '@/lib/components/ConfirmDialog';
 
 interface FormData {
   platform: string;
@@ -12,6 +14,7 @@ interface FormData {
 }
 
 export default function AdminSocialPage() {
+  const { showError, showSuccess } = useToast();
   const [links, setLinks] = useState<SocialMediaLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -27,6 +30,8 @@ export default function AdminSocialPage() {
   const [uploadingFile, setUploadingFile] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [showFilePicker, setShowFilePicker] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletingLinkId, setDeletingLinkId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLinks();
@@ -91,13 +96,13 @@ export default function AdminSocialPage() {
       // Validate file type
       const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
       if (!validTypes.includes(file.type)) {
-        alert('Please select a valid image file (SVG, PNG, JPG, or WebP)');
+        showError('Please select a valid image file (SVG, PNG, JPG, or WebP)');
         return;
       }
 
       // Validate file size (max 2MB)
       if (file.size > 2 * 1024 * 1024) {
-        alert('File size must be less than 2MB');
+        showError('File size must be less than 2MB');
         return;
       }
 
@@ -135,7 +140,7 @@ export default function AdminSocialPage() {
     
     // Validation - check if icon is provided (either file upload or from library)
     if (!editingId && !selectedFile && !formData.icon_path) {
-      alert('Please upload an icon file or select one from the library');
+      showError('Please upload an icon file or select one from the library');
       return;
     }
     
@@ -173,11 +178,11 @@ export default function AdminSocialPage() {
         handleCloseForm();
       } else {
         const error = await response.json();
-        alert(error.error || `Failed to ${editingId ? 'update' : 'create'} link`);
+        showError(error.error || `Failed to ${editingId ? 'update' : 'create'} link`);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert(`Failed to ${editingId ? 'update' : 'create'} link`);
+      showError(`Failed to ${editingId ? 'update' : 'create'} link`);
     } finally {
       setSubmitting(false);
       setUploadingFile(false);
@@ -185,12 +190,15 @@ export default function AdminSocialPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this social media link?')) {
-      return;
-    }
+    setDeletingLinkId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingLinkId) return;
 
     try {
-      const response = await fetch(`/api/social-media/${id}`, {
+      const response = await fetch(`/api/social-media/${deletingLinkId}`, {
         method: 'DELETE',
       });
 
@@ -198,11 +206,14 @@ export default function AdminSocialPage() {
         await fetchLinks();
       } else {
         const error = await response.json();
-        alert(error.error || 'Failed to delete link');
+        showError(error.error || 'Failed to delete link');
       }
     } catch (error) {
       console.error('Error deleting link:', error);
-      alert('Failed to delete link');
+      showError('Failed to delete link');
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeletingLinkId(null);
     }
   };
 
@@ -509,6 +520,29 @@ export default function AdminSocialPage() {
         }}
         fileType="image"
         title="Select Icon from Library"
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Social Media Link"
+        message={
+          <>
+            Are you sure you want to delete this social media link?
+            <br />
+            <span className="text-sm text-gray-600 dark:text-zinc-400 mt-2 block">
+              This action cannot be undone.
+            </span>
+          </>
+        }
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setDeletingLinkId(null);
+        }}
+        onConfirm={confirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmButtonClass="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 focus:ring-red-500"
       />
     </div>
   );

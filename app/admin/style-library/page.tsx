@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useToast } from '@/lib/components/ToastContainer';
 import {
   FolderIcon,
   FolderOpenIcon,
@@ -53,6 +54,7 @@ interface File {
 }
 
 export default function StyleLibraryPage() {
+  const { showError, showSuccess } = useToast();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [totalFileCount, setTotalFileCount] = useState(0);
@@ -109,10 +111,10 @@ export default function StyleLibraryPage() {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(fileUrl);
-      alert('File URL copied to clipboard!');
+      showSuccess('File URL copied to clipboard!');
     } catch (err) {
       console.error('Failed to copy:', err);
-      alert('Failed to copy URL');
+      showError('Failed to copy URL');
     }
   };
 
@@ -143,7 +145,7 @@ export default function StyleLibraryPage() {
       fetchFiles();
     } catch (error) {
       console.error('Error deleting files:', error);
-      alert('Failed to delete some files');
+      showError('Failed to delete some files');
     }
   };
 
@@ -1050,6 +1052,7 @@ function FileDetailsModal({
   onDelete: () => void;
 }) {
   const [loading, setLoading] = useState(false);
+  const { showError, showSuccess } = useToast();
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this file?')) return;
@@ -1067,7 +1070,7 @@ function FileDetailsModal({
       onDelete();
     } catch (error) {
       console.error('Error deleting file:', error);
-      alert('Failed to delete file');
+      showError('Failed to delete file');
     } finally {
       setLoading(false);
     }
@@ -1075,7 +1078,7 @@ function FileDetailsModal({
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert('URL copied to clipboard!');
+    showSuccess('URL copied to clipboard!');
   };
 
   return (

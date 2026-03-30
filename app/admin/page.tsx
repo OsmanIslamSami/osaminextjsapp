@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { User } from '@/lib/types';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminPage() {
+  const { t, direction } = useLanguage();
   const [stats, setStats] = useState({
     totalUsers: 0,
     adminUsers: 0,
@@ -70,7 +72,7 @@ export default function AdminPage() {
         {/* Total Users */}
         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6">
           <div className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-1">
-            Total Users
+            {t('admin.stats.totalUsers')}
           </div>
           <div className="text-3xl font-bold text-gray-900 dark:text-zinc-100">
             {stats.totalUsers}
@@ -80,7 +82,7 @@ export default function AdminPage() {
         {/* Admin Users */}
         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6">
           <div className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-1">
-            Administrators
+            {t('admin.stats.administrators')}
           </div>
           <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
             {stats.adminUsers}
@@ -90,7 +92,7 @@ export default function AdminPage() {
         {/* Slider Slides */}
         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6">
           <div className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-1">
-            Slider Slides
+            {t('admin.stats.sliderSlides')}
           </div>
           <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
             {stats.sliderSlides}
@@ -100,7 +102,7 @@ export default function AdminPage() {
         {/* Social Links */}
         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6">
           <div className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-1">
-            Social Media Links
+            {t('admin.stats.socialLinks')}
           </div>
           <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
             {stats.socialLinks}
@@ -111,7 +113,7 @@ export default function AdminPage() {
       {/* Quick Actions */}
       <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-zinc-100 mb-4">
-          Quick Actions
+          {t('admin.quickActions.title')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <a
@@ -120,13 +122,18 @@ export default function AdminPage() {
           >
             <div>
               <div className="font-medium text-gray-900 dark:text-zinc-100">
-                Manage Users
+                {t('admin.quickActions.manageUsers')}
               </div>
               <div className="text-sm text-gray-600 dark:text-zinc-400">
-                View and edit user roles and permissions
+                {t('admin.quickActions.manageUsersDesc')}
               </div>
             </div>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg 
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 ${direction === 'rtl' ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </a>
@@ -137,13 +144,18 @@ export default function AdminPage() {
           >
             <div>
               <div className="font-medium text-gray-900 dark:text-zinc-100">
-                Manage Slider
+                {t('admin.quickActions.manageSlider')}
               </div>
               <div className="text-sm text-gray-600 dark:text-zinc-400">
-                Add and edit home page slider content
+                {t('admin.quickActions.manageSliderDesc')}
               </div>
             </div>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg 
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 ${direction === 'rtl' ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </a>
@@ -154,13 +166,18 @@ export default function AdminPage() {
           >
             <div>
               <div className="font-medium text-gray-900 dark:text-zinc-100">
-                Social Media Links
+                {t('admin.quickActions.manageSocial')}
               </div>
               <div className="text-sm text-gray-600 dark:text-zinc-400">
-                Manage footer social media links
+                {t('admin.quickActions.manageSocialDesc')}
               </div>
             </div>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg 
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 ${direction === 'rtl' ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </a>
@@ -171,13 +188,18 @@ export default function AdminPage() {
           >
             <div>
               <div className="font-medium text-gray-900 dark:text-zinc-100">
-                Manage Clients
+                {t('admin.quickActions.manageClients')}
               </div>
               <div className="text-sm text-gray-600 dark:text-zinc-400">
-                View and manage client database
+                {t('admin.quickActions.manageClientsDesc')}
               </div>
             </div>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg 
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 ${direction === 'rtl' ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </a>
@@ -187,15 +209,15 @@ export default function AdminPage() {
       {/* Info Notice */}
       <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
         <div className="flex items-start gap-3">
-          <svg className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
           <div>
             <h3 className="font-medium text-green-900 dark:text-green-100 mb-1">
-              Admin Panel Ready
+              {t('admin.info.title')}
             </h3>
             <p className="text-sm text-green-800 dark:text-green-200">
-              This admin panel provides complete management capabilities for users, slider content, and social media links. 
+              {t('admin.info.description')} 
               All core features are now available including the home page slider management, bilingual support (English/Arabic with RTL), 
               mobile-responsive layouts, and smooth animations.
             </p>

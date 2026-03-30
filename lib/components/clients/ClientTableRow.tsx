@@ -6,6 +6,7 @@ import StatusBadge from './StatusBadge';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
 import { EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useToast } from '@/lib/components/ToastContainer';
 
 interface Client {
   id: number;
@@ -23,6 +24,7 @@ interface ClientTableRowProps {
 }
 
 export default function ClientTableRow({ client, index, onDelete, isAdmin = false }: ClientTableRowProps) {
+  const { showError } = useToast();
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -42,11 +44,11 @@ export default function ClientTableRow({ client, index, onDelete, isAdmin = fals
         onDelete?.();
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to delete client');
+        showError(data.error || 'Failed to delete client');
       }
     } catch (error) {
       console.error('Error deleting client:', error);
-      alert('An error occurred while deleting the client');
+      showError('An error occurred while deleting the client');
     } finally {
       setDeleting(false);
     }

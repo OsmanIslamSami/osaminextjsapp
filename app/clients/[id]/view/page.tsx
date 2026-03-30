@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import StatusBadge from '@/lib/components/clients/StatusBadge';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
+import { useToast } from '@/lib/components/ToastContainer';
 
 interface Client {
   id: number;
@@ -28,6 +29,7 @@ interface Order {
 export default function ViewClient() {
   const params = useParams();
   const id = params.id as string;
+  const { showError } = useToast();
 
   const [client, setClient] = useState<Client | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -91,7 +93,7 @@ export default function ViewClient() {
       });
 
       if (!response.ok) {
-        alert('Failed to create order');
+        showError('Failed to create order');
         return;
       }
 
@@ -100,7 +102,7 @@ export default function ViewClient() {
       fetchOrders();
     } catch (err) {
       console.error('Error creating order:', err);
-      alert('An error occurred');
+      showError('An error occurred');
     } finally {
       setSubmittingOrder(false);
     }

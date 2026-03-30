@@ -27,8 +27,8 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
           placeholder={
             language === 'ar' ? 'ابحث عن الأخبار...' : 'Search news...'
           }
-          className={`w-full px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 ${
-            language === 'ar' ? 'text-right' : 'text-left'
+          className={`w-full py-3 border border-gray-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 ${
+            language === 'ar' ? 'pr-12 pl-4' : 'pl-4 pr-12'
           }`}
           dir={language === 'ar' ? 'rtl' : 'ltr'}
         />

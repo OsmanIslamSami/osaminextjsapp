@@ -35,7 +35,7 @@ export default function NewsTable({
   onRestore,
   onToggleVisibility,
 }: NewsTableProps) {
-  const { language } = useLanguage();
+  const { language, direction } = useLanguage();
 
   if (news.length === 0) {
     return (
@@ -61,22 +61,22 @@ export default function NewsTable({
   };
 
   return (
-    <>
+    <div dir={direction}>
       {/* Desktop Table */}
       <div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg shadow overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+              <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
                 {language === 'ar' ? 'صورة' : 'Image'}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+              <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
                 {language === 'ar' ? 'العنوان' : 'Title'}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+              <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
                 {language === 'ar' ? 'التاريخ' : 'Date'}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+              <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
                 {language === 'ar' ? 'الحالة' : 'Status'}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
@@ -284,6 +284,6 @@ export default function NewsTable({
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

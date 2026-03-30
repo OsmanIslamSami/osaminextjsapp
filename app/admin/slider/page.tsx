@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useToast } from '@/lib/components/ToastContainer';
 import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
 
@@ -22,6 +23,7 @@ interface Slide {
 
 export default function AdminSliderPage() {
   const { t } = useTranslation();
+  const { showError, showSuccess } = useToast();
   const [slides, setSlides] = useState<Slide[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -72,13 +74,13 @@ export default function AdminSliderPage() {
     // Client-side validation
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      alert('File too large. Maximum size is 10MB.');
+      showError('File too large. Maximum size is 10MB.');
       return;
     }
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm'];
     if (!allowedTypes.includes(file.type)) {
-      alert('Invalid file type. Allowed: JPG, PNG, GIF, MP4, WebM');
+      showError('Invalid file type. Allowed: JPG, PNG, GIF, MP4, WebM');
       return;
     }
 
@@ -116,14 +118,14 @@ export default function AdminSliderPage() {
           setUploadedSlideId(data.id);
         }
         
-        alert('File uploaded successfully!');
+        showSuccess('File uploaded successfully!');
       } else {
         const error = await response.json();
-        alert(error.error || 'Upload failed');
+        showError(error.error || 'Upload failed');
       }
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('Upload failed');
+      showError('Upload failed');
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -134,7 +136,7 @@ export default function AdminSliderPage() {
     e.preventDefault();
 
     if (!formData.media_url) {
-      alert('Please upload a media file first');
+      showError('Please upload a media file first');
       return;
     }
 
@@ -153,16 +155,16 @@ export default function AdminSliderPage() {
       });
 
       if (response.ok) {
-        alert(slideId ? 'Slide updated!' : 'Slide created!');
+        showSuccess(slideId ? 'Slide updated!' : 'Slide created!');
         resetForm();
         fetchSlides();
       } else {
         const error = await response.json();
-        alert(error.error || 'Operation failed');
+        showError(error.error || 'Operation failed');
       }
     } catch (error) {
       console.error('Error saving slide:', error);
-      alert('Save failed');
+      showError('Save failed');
     }
   };
 
@@ -196,11 +198,11 @@ export default function AdminSliderPage() {
         fetchSlides();
       } else {
         const error = await response.json();
-        alert(error.error || 'Delete failed');
+        showError(error.error || 'Delete failed');
       }
     } catch (error) {
       console.error('Error deleting slide:', error);
-      alert('Delete failed');
+      showError('Delete failed');
     }
   };
 

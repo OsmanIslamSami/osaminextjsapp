@@ -16,7 +16,7 @@ export default function AdminDateRangeFilter({
 }: AdminDateRangeFilterProps) {
   const [dateFrom, setDateFrom] = useState(initialDateFrom);
   const [dateTo, setDateTo] = useState(initialDateTo);
-  const { language } = useLanguage();
+  const { language, direction } = useLanguage();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ export default function AdminDateRangeFilter({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 w-full">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 w-full" dir={direction}>
       <input
         type="date"
         value={dateFrom}

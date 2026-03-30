@@ -278,15 +278,6 @@ a.button,
   direction: ltr;
 }
 
-/* RTL text alignment */
-[dir="rtl"] .text-left {
-  text-align: right;
-}
-
-[dir="rtl"] .text-right {
-  text-align: left;
-}
-
 /* RTL margin and padding overrides */
 [dir="rtl"] .ml-auto {
   margin-left: 0;

@@ -1,10 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { User } from '@/lib/types';
+import { useToast } from '@/lib/components/ToastContainer';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const { showError } = useToast();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -41,11 +43,11 @@ export default function AdminUsersPage() {
         }
       } else {
         const error = await response.json();
-        alert(error.error || 'Failed to update role');
+        showError(error.error || 'Failed to update role');
       }
     } catch (error) {
       console.error('Error updating role:', error);
-      alert('Failed to update role');
+      showError('Failed to update role');
     }
   };
 
@@ -65,11 +67,11 @@ export default function AdminUsersPage() {
         }
       } else {
         const error = await response.json();
-        alert(error.error || `Failed to ${endpoint} user`);
+        showError(error.error || `Failed to ${endpoint} user`);
       }
     } catch (error) {
       console.error(`Error ${isActive ? 'deactivating' : 'activating'} user:`, error);
-      alert(`Failed to ${isActive ? 'deactivate' : 'activate'} user`);
+      showError(`Failed to ${isActive ? 'deactivate' : 'activate'} user`);
     }
   };
 

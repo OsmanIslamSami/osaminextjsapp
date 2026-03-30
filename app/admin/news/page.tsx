@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
+import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import NewsForm from '@/lib/components/admin/NewsForm';
 import NewsTable from '@/lib/components/admin/NewsTable';
 import AdminSearchBar from '@/lib/components/admin/AdminSearchBar';
@@ -32,6 +33,8 @@ export default function AdminNewsPage() {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingNews, setEditingNews] = useState<News | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletingNewsId, setDeletingNewsId] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -39,7 +42,7 @@ export default function AdminNewsPage() {
     totalPages: 0,
   });
 
-  const { language } = useLanguage();
+  const { language, direction } = useLanguage();
   const { showError } = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -88,12 +91,15 @@ export default function AdminNewsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا الخبر؟' : 'Are you sure you want to delete this news item?')) {
-      return;
-    }
+    setDeletingNewsId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingNewsId) return;
 
     try {
-      const response = await fetch(`/api/news/${id}`, {
+      const response = await fetch(`/api/news/${deletingNewsId}`, {
         method: 'DELETE',
       });
 
@@ -104,6 +110,9 @@ export default function AdminNewsPage() {
       fetchNews();
     } catch (err) {
       showError(language === 'ar' ? 'فشل الحذف' : 'Failed to delete');
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeletingNewsId(null);
     }
   };
 
@@ -205,7 +214,7 @@ export default function AdminNewsPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6" dir={direction}>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
           {language === 'ar' ? 'إدارة الأخبار' : 'News Management'}
@@ -380,6 +389,20 @@ export default function AdminNewsPage() {
           onClose={handleFormClose}
         />
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title={language === 'ar' ? 'تأكيد الحذف' : 'Confirm Delete'}
+        message={language === 'ar' ? 'هل أنت متأكد من حذف هذا الخبر؟' : 'Are you sure you want to delete this news item?'}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setDeletingNewsId(null);
+        }}
+        confirmText={language === 'ar' ? 'حذف' : 'Delete'}
+        cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
+      />
     </div>
   );
 }

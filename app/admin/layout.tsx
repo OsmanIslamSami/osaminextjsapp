@@ -3,14 +3,15 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const adminTabs = [
-  { path: '/admin', label: 'Overview' },
-  { path: '/admin/news', label: 'News' },
-  { path: '/admin/slider', label: 'Slider' },
-  { path: '/admin/users', label: 'Users' },
-  { path: '/admin/social', label: 'Social Media' },
-  { path: '/admin/style-library', label: 'Style Library' },
+  { path: '/admin', labelKey: 'admin.tabs.overview' },
+  { path: '/admin/news', labelKey: 'admin.tabs.news' },
+  { path: '/admin/slider', labelKey: 'admin.tabs.slider' },
+  { path: '/admin/users', labelKey: 'admin.tabs.users' },
+  { path: '/admin/social', labelKey: 'admin.tabs.social' },
+  { path: '/admin/style-library', labelKey: 'admin.tabs.styleLibrary' },
 ];
 
 export default function AdminLayout({
@@ -21,6 +22,7 @@ export default function AdminLayout({
   const { isAdmin, isLoading } = useCurrentUser();
   const router = useRouter();
   const pathname = usePathname();
+  const { t, direction } = useLanguage();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -48,13 +50,13 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 md:py-8">
+    <div className="container mx-auto px-4 py-6 md:py-8" dir={direction}>
       <div className="mb-6 md:mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
-          Admin Panel
+          {t('admin.title')}
         </h1>
         <p className="text-sm md:text-base text-gray-600 dark:text-zinc-400">
-          Manage your application settings and content
+          {t('admin.subtitle')}
         </p>
       </div>
 
@@ -67,14 +69,14 @@ export default function AdminLayout({
         >
           {adminTabs.map((tab) => (
             <option key={tab.path} value={tab.path}>
-              {tab.label}
+              {t(tab.labelKey)}
             </option>
           ))}
         </select>
       </div>
 
       {/* Desktop Tabs Navigation */}
-      <div className="hidden md:block border-b border-gray-200 dark:border-zinc-800 mb-8">
+      <div className="hidden md:block border-b border-gray-200 dark:border-zinc-800 mb-8" dir={direction}>
         <nav className="flex flex-wrap gap-2">
           {adminTabs.map((tab) => (
             <Link
@@ -86,7 +88,7 @@ export default function AdminLayout({
                   : 'border-transparent text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-100 hover:border-gray-300 dark:hover:border-zinc-700'
               }`}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </Link>
           ))}
         </nav>
