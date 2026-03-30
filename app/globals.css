@@ -320,6 +320,22 @@ a.button,
   min-height: 44px;
 }
 
+/* Toast Notification Animations */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 300ms ease-out;
+}
+
 /* Ensure buttons meet touch target requirements */
 button,
 a.button,

@@ -307,8 +307,8 @@ export default function StyleLibraryPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-full mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-full mx-auto px-4 md:px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Style Library</h1>
               <p className="text-sm text-gray-600 mt-1">
@@ -316,30 +316,30 @@ export default function StyleLibraryPage() {
               </p>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-3 w-full sm:w-auto">
               <button
                 onClick={() => setShowNewFolderModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors min-h-[44px]"
               >
                 <FolderPlusIcon className="w-5 h-5" />
-                New Folder
+                <span className="hidden sm:inline">New Folder</span>
               </button>
               
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors min-h-[44px]"
               >
                 <ArrowUpTrayIcon className="w-5 h-5" />
-                Upload Files
+                <span className="hidden sm:inline">Upload Files</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex h-[calc(100vh-140px)]">
+      <div className="flex flex-col md:flex-row h-auto md:h-[calc(100vh-200px)] min-h-[600px]">
         {/* Sidebar - Folder Tree */}
-        <div className="w-80 bg-white border-r overflow-y-auto">
+        <div className="w-full md:w-80 bg-white border-b md:border-r md:border-b-0 overflow-y-auto max-h-64 md:max-h-full">
           <div className="p-4 border-b">
             <h2 className="text-sm font-semibold text-gray-900 mb-3">Folders</h2>
             
@@ -361,8 +361,8 @@ export default function StyleLibraryPage() {
         </div>
 
         {/* Main Content - File List */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-6">
+        <div className="flex-1 overflow-y-auto bg-gray-50">
+          <div className="p-4 md:p-6">
             {/* Search and View Controls */}
             <div className="mb-6 flex items-center gap-4">
               <div className="flex-1 relative">
@@ -488,8 +488,8 @@ export default function StyleLibraryPage() {
 
             {/* File List */}
             {viewMode === 'list' && (
-              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                <table className="w-full">
+              <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
+                <table className="w-full min-w-[800px]">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="px-4 py-2 w-12">

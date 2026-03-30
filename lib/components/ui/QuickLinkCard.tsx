@@ -1,5 +1,7 @@
 // Quick link card component for home page navigation
+'use client';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface QuickLinkCardProps {
   title: string;
@@ -9,14 +11,17 @@ interface QuickLinkCardProps {
 }
 
 export default function QuickLinkCard({ title, description, href, icon }: QuickLinkCardProps) {
+  const { t, direction } = useTranslation();
+  const isRTL = direction === 'rtl';
+  
   return (
     <Link href={href}>
-      <div className="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl border border-gray-100 hover:border-gray-200 transition-all duration-300 overflow-hidden">
+      <div className="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl border border-gray-100 hover:border-gray-200 transition-all duration-300 overflow-hidden h-full flex flex-col">
         {/* Gradient background effect on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
         {/* Content */}
-        <div className="relative z-10">
+        <div className="relative z-10 flex flex-col h-full">
           {/* Icon container */}
           {icon && (
             <div className="mb-6 w-14 h-14 bg-gray-900 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
@@ -32,15 +37,15 @@ export default function QuickLinkCard({ title, description, href, icon }: QuickL
           </h2>
           
           {/* Description */}
-          <p className="text-gray-600 leading-relaxed mb-4">
+          <p className="text-gray-600 leading-relaxed flex-grow">
             {description}
           </p>
           
           {/* Arrow indicator */}
-          <div className="flex items-center text-gray-900 font-medium group-hover:gap-2 transition-all">
-            <span>Get Started</span>
+          <div className="flex items-center text-gray-900 font-medium group-hover:gap-2 transition-all mt-auto pt-4">
+            <span>{t('home.getStarted')}</span>
             <svg 
-              className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" 
+              className={`w-5 h-5 transform transition-transform ${isRTL ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`}
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"

@@ -68,6 +68,21 @@
     "signUpButton": "Sign Up",
     "noAccount": "Don't have an account?"
   },
+  "home": {
+    "quickOverview": "Quick Overview",
+    "statsSubtitle": "Real-time statistics from your business",
+    "totalClientsLabel": "Total Clients",
+    "totalOrdersLabel": "Total Orders",
+    "thisMonthClientsLabel": "This Month Clients",
+    "thisMonthOrdersLabel": "This Month Orders",
+    "welcomeTitle": "Welcome to Next App",
+    "welcomeSubtitle": "Choose an option below to get started",
+    "dashboardTitle": "Dashboard",
+    "dashboardDescription": "View analytics, metrics, and recent activity for your clients and orders",
+    "searchClientsTitle": "Search Clients",
+    "searchClientsDescription": "Search, view, and manage all your client information with full audit trails",
+    "getStarted": "Get Started"
+  },
   "footer": {
     "appName": "Next App",
     "contact": "Contact Us",

@@ -12,7 +12,7 @@ interface SocialMediaLink {
 }
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t, direction } = useTranslation();
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,19 +37,19 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-gray-50 dark:bg-zinc-950 border-t border-gray-200 dark:border-zinc-800 py-8 px-4 md:px-8">
+    <footer className="w-full bg-gray-50 dark:bg-zinc-950 border-t border-gray-200 dark:border-zinc-800 py-8 px-4 md:px-8" dir={direction}>
       <div className="max-w-7xl mx-auto">
         {/* Footer Content */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Brand/Info */}
-          <div className="text-center md:text-left">
+          <div className={`text-center ${direction === 'rtl' ? 'md:text-right' : 'md:text-left'}`}>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-2">
               {t('footer.appName')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-zinc-400">
               {t('footer.contact')}
             </p>
-            <p className="text-sm text-gray-600 dark:text-zinc-400">
+            <p className="text-sm text-gray-600 dark:text-zinc-400" dir="ltr">
               {t('footer.email')}
             </p>
           </div>

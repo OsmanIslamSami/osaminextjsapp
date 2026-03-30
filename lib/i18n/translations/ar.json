@@ -68,6 +68,21 @@
     "signUpButton": "إنشاء حساب",
     "noAccount": "ليس لديك حساب؟"
   },
+  "home": {
+    "quickOverview": "نظرة عامة سريعة",
+    "statsSubtitle": "إحصائيات في الوقت الفعلي من عملك",
+    "totalClientsLabel": "إجمالي العملاء",
+    "totalOrdersLabel": "إجمالي الطلبات",
+    "thisMonthClientsLabel": "عملاء هذا الشهر",
+    "thisMonthOrdersLabel": "طلبات هذا الشهر",
+    "welcomeTitle": "مرحباً بك في تطبيق الغد",
+    "welcomeSubtitle": "اختر أحد الخيارات أدناه للبدء",
+    "dashboardTitle": "لوحة التحكم",
+    "dashboardDescription": "عرض التحليلات والمقاييس والنشاط الأخير للعملاء والطلبات",
+    "searchClientsTitle": "البحث عن العملاء",
+    "searchClientsDescription": "البحث وعرض وإدارة جميع معلومات العملاء مع سجلات التدقيق الكاملة",
+    "getStarted": "ابدأ الآن"
+  },
   "footer": {
     "appName": "تطبيق الغد",
     "contact": "اتصل بنا",

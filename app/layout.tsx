@@ -8,6 +8,7 @@ import Footer from "@/lib/components/Footer";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { LanguageAwareHTML } from "@/lib/components/LanguageAwareHTML";
 import { UserSyncHandler } from "@/lib/components/UserSyncHandler";
+import { ToastProvider } from "@/lib/components/ToastContainer";
 
 // Modern English font
 const inter = Inter({
@@ -92,18 +93,20 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <LanguageProvider>
-        <LanguageAwareHTML>
-          <body
-            className={`${inter.variable} ${cairo.variable} antialiased flex flex-col min-h-screen`}
-          >
-            <UserSyncHandler />
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </body>
-        </LanguageAwareHTML>
+        <ToastProvider>
+          <LanguageAwareHTML>
+            <body
+              className={`${inter.variable} ${cairo.variable} antialiased flex flex-col min-h-screen`}
+            >
+              <UserSyncHandler />
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </body>
+          </LanguageAwareHTML>
+        </ToastProvider>
       </LanguageProvider>
     </ClerkProvider>
   );

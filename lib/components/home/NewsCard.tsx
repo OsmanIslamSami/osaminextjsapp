@@ -83,16 +83,17 @@ export default function NewsCard({ news, index, isVisible }: NewsCardProps) {
         {/* Content overlay at bottom */}
         <div className="absolute inset-x-0 bottom-0 p-6 text-white z-10">
           <h3
-            className={`text-2xl font-bold mb-3 drop-shadow-lg ${
-              language === 'ar' ? 'text-right' : 'text-left'
-            }`}
+            className="text-2xl font-bold mb-3 drop-shadow-lg"
             dir={language === 'ar' ? 'rtl' : 'ltr'}
+            style={{ textAlign: language === 'ar' ? 'right' : 'left' }}
           >
             {title}
           </h3>
           
           <div
-            className="flex items-center gap-2 text-sm text-white/90"
+            className={`flex items-center gap-2 text-sm text-white/90 ${
+              language === 'ar' ? 'flex-row-reverse justify-end' : ''
+            }`}
             aria-label={`${language === 'ar' ? 'تاريخ النشر' : 'Published date'}: ${publishedDate}`}
           >
             <svg

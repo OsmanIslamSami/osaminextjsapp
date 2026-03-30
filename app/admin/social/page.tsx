@@ -215,8 +215,8 @@ export default function AdminSocialPage() {
   }
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
+    <div className="p-4 md:p-6">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
             Social Media Links
@@ -227,7 +227,7 @@ export default function AdminSocialPage() {
         </div>
         <button
           onClick={handleOpenAddForm}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors min-h-[44px]"
         >
           <PlusIcon className="w-5 h-5" />
           Add New Link

@@ -12,7 +12,7 @@ export default function ExportButton({ onExport }: ExportButtonProps) {
   return (
     <button
       onClick={onExport}
-      className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2 min-h-[44px]"
+      className="w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 min-h-[44px]"
     >
       <svg
         className="w-5 h-5"

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface Stat {
   label: string;
@@ -85,6 +86,7 @@ function StatCard({ label, value, icon, color, startCounting }: Stat & { startCo
 }
 
 export default function StatsSection() {
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [startCounting, setStartCounting] = useState(false);
@@ -158,7 +160,7 @@ export default function StatsSection() {
 
   const stats: Stat[] = [
     {
-      label: 'Total Clients',
+      label: t('home.totalClientsLabel'),
       value: metrics.clientCount,
       color: 'bg-blue-500',
       icon: (
@@ -168,7 +170,7 @@ export default function StatsSection() {
       ),
     },
     {
-      label: 'Total Orders',
+      label: t('home.totalOrdersLabel'),
       value: metrics.orderCount,
       color: 'bg-green-500',
       icon: (
@@ -178,7 +180,7 @@ export default function StatsSection() {
       ),
     },
     {
-      label: 'This Month Clients',
+      label: t('home.thisMonthClientsLabel'),
       value: metrics.thisMonthClients,
       color: 'bg-purple-500',
       icon: (
@@ -188,7 +190,7 @@ export default function StatsSection() {
       ),
     },
     {
-      label: 'This Month Orders',
+      label: t('home.thisMonthOrdersLabel'),
       value: metrics.thisMonthOrders,
       color: 'bg-orange-500',
       icon: (
@@ -208,10 +210,10 @@ export default function StatsSection() {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-3">
-            Quick Overview
+            {t('home.quickOverview')}
           </h2>
           <p className="text-gray-600">
-            Real-time statistics from your business
+            {t('home.statsSubtitle')}
           </p>
         </div>
 

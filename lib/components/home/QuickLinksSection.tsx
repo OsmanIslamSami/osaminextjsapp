@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import QuickLinkCard from '@/lib/components/ui/QuickLinkCard';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function QuickLinksSection() {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -33,23 +35,23 @@ export default function QuickLinksSection() {
     >
       <div className="mb-12 text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Welcome to Next App
+          {t('home.welcomeTitle')}
         </h1>
         <p className="text-lg text-gray-600">
-          Choose an option below to get started
+          {t('home.welcomeSubtitle')}
         </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         <div 
-          className={`transition-all duration-700 ${
+          className={`transition-all duration-700 h-full ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
           style={{ transitionDelay: '100ms' }}
         >
           <QuickLinkCard
-            title="Dashboard"
-            description="View analytics, metrics, and recent activity for your clients and orders"
+            title={t('home.dashboardTitle')}
+            description={t('home.dashboardDescription')}
             href="/dashboard"
             icon={
               <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -59,14 +61,14 @@ export default function QuickLinksSection() {
           />
         </div>
         <div 
-          className={`transition-all duration-700 ${
+          className={`transition-all duration-700 h-full ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
           style={{ transitionDelay: '200ms' }}
         >
           <QuickLinkCard
-            title="Search Clients"
-            description="Search, view, and manage all your client information with full audit trails"
+            title={t('home.searchClientsTitle')}
+            description={t('home.searchClientsDescription')}
             href="/clients"
             icon={
               <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

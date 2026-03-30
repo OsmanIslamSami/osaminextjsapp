@@ -24,7 +24,7 @@ export default function AdminDateRangeFilter({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 w-full">
       <input
         type="date"
         value={dateFrom}
@@ -34,7 +34,8 @@ export default function AdminDateRangeFilter({
             onFilter(e.target.value, dateTo);
           }
         }}
-        className="flex-1 px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100"
+        placeholder={language === 'ar' ? 'من تاريخ' : 'From date'}
+        className="flex-1 px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px]"
       />
       <input
         type="date"
@@ -45,7 +46,8 @@ export default function AdminDateRangeFilter({
             onFilter(dateFrom, e.target.value);
           }
         }}
-        className="flex-1 px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100"
+        placeholder={language === 'ar' ? 'إلى تاريخ' : 'To date'}
+        className="flex-1 px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px]"
       />
     </form>
   );

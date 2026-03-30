@@ -82,7 +82,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div>
+    <div className="p-4 md:p-6">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
           User Management
@@ -92,7 +92,7 @@ export default function AdminUsersPage() {
         </p>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-800">
           <thead className="bg-gray-50 dark:bg-zinc-800">
             <tr>
