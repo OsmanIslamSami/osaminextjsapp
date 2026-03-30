@@ -5,14 +5,14 @@
 
 'use client';
 
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 /**
  * Hook to detect RTL direction based on current language
  * Returns true for Arabic ('ar'), false for English ('en')
  */
 export function useRTLDirection(): boolean {
-  const { language } = useTranslation();
+  const { language } = useLanguage();
   return language === 'ar';
 }
 
