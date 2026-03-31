@@ -30,12 +30,19 @@ const cairo = Cairo({
 
 // Generate metadata base URL dynamically
 function getBaseUrl() {
+  // Priority 1: Custom base URL from env
   if (process.env.NEXT_PUBLIC_BASE_URL) {
     return process.env.NEXT_PUBLIC_BASE_URL;
   }
+  // Priority 2: Use production URL on Vercel production environment
+  if (process.env.VERCEL_ENV === 'production') {
+    return 'https://osaminextjsapp.vercel.app';
+  }
+  // Priority 3: Vercel preview/development URL
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
+  // Priority 4: Local development
   return 'http://localhost:3000';
 }
 
