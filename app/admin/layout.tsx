@@ -12,10 +12,10 @@ const adminTabs = [
   { path: '/admin/photos', labelKey: 'admin.tabs.photos' },
   { path: '/admin/videos', labelKey: 'admin.tabs.videos' },
   { path: '/admin/partners', labelKey: 'admin.tabs.partners' },
-  { path: '/admin/home-sections', labelKey: 'admin.tabs.homeSections' },
   { path: '/admin/users', labelKey: 'admin.tabs.users' },
   { path: '/admin/social', labelKey: 'admin.tabs.social' },
   { path: '/admin/style-library', labelKey: 'admin.tabs.styleLibrary' },
+  { path: '/admin/app-settings', labelKey: 'admin.tabs.appSettings' },
 ];
 
 export default function AdminLayout({
@@ -80,17 +80,30 @@ export default function AdminLayout({
       </div>
 
       {/* Desktop Tabs Navigation */}
-      <div className="hidden md:block border-b border-gray-200 dark:border-zinc-800 mb-8" dir={direction}>
+      <div className="hidden md:block mb-8" dir={direction} style={{ borderBottom: '1px solid var(--color-border)' }}>
         <nav className="flex flex-wrap gap-2">
           {adminTabs.map((tab) => (
             <Link
               key={tab.path}
               href={tab.path}
-              className={`px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                pathname === tab.path
-                  ? 'border-blue-600 text-blue-600 dark:text-blue-400 font-medium'
-                  : 'border-transparent text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-100 hover:border-gray-300 dark:hover:border-zinc-700'
-              }`}
+              className="px-4 py-3 transition-colors whitespace-nowrap"
+              style={{
+                borderBottom: pathname === tab.path ? '2px solid var(--color-primary)' : '2px solid transparent',
+                color: pathname === tab.path ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                fontWeight: pathname === tab.path ? '500' : '400',
+              }}
+              onMouseEnter={(e) => {
+                if (pathname !== tab.path) {
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                  e.currentTarget.style.borderBottomColor = 'var(--color-border-hover)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (pathname !== tab.path) {
+                  e.currentTarget.style.color = 'var(--color-text-secondary)';
+                  e.currentTarget.style.borderBottomColor = 'transparent';
+                }
+              }}
             >
               {t(tab.labelKey)}
             </Link>

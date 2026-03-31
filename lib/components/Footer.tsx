@@ -37,19 +37,29 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-gray-50 dark:bg-zinc-950 border-t border-gray-200 dark:border-zinc-800 py-8 px-4 md:px-8" dir={direction}>
-      <div className="max-w-7xl mx-auto">
+    <footer 
+      className="w-full py-8 px-4 md:px-8 relative overflow-hidden" 
+      dir={direction}
+      style={{
+        background: 'linear-gradient(to top, var(--color-primary-dark), var(--color-primary))',
+        borderTop: '1px solid var(--color-border)',
+      }}
+    >
+      {/* Gradient Overlay for better text contrast */}
+      <div className="absolute inset-0 bg-black/30"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Footer Content */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Brand/Info */}
           <div className={`text-center ${direction === 'rtl' ? 'md:text-right' : 'md:text-left'}`}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-2">
+            <h3 className="text-lg font-semibold mb-2" style={{ color: 'white' }}>
               {t('footer.appName')}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-zinc-400">
+            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
               {t('footer.contact')}
             </p>
-            <p className="text-sm text-gray-600 dark:text-zinc-400" dir="ltr">
+            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.9)' }} dir="ltr">
               {t('footer.email')}
             </p>
           </div>
@@ -57,7 +67,7 @@ export default function Footer() {
           {/* Social Media Links */}
           {!loading && socialLinks.length > 0 && (
             <div className="flex flex-col items-center gap-3">
-              <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+              <p className="text-sm font-medium" style={{ color: 'white' }}>
                 {t('footer.followUs')}
               </p>
               <div className="flex items-center gap-4">
@@ -67,7 +77,19 @@ export default function Footer() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors"
+                    className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300"
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backdropFilter: 'blur(10px)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                      e.currentTarget.style.transform = 'scale(1.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
                     aria-label={link.platform}
                   >
                     <img
@@ -83,8 +105,8 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-zinc-800 text-center">
-          <p className="text-sm text-gray-600 dark:text-zinc-400">
+        <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
+          <p className="text-sm text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
             © {currentYear} {t('footer.appName')}. {t('footer.rights')}.
           </p>
         </div>

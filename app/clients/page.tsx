@@ -140,7 +140,17 @@ export default function ClientsList() {
           <ExportButton searchQuery={search} />
           <Link 
             href="/clients/add" 
-            className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors text-center text-sm sm:text-base"
+            className="px-4 sm:px-6 py-2 rounded-lg transition-colors text-center text-sm sm:text-base"
+            style={{
+              backgroundColor: 'var(--color-primary)',
+              color: 'white',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+            }}
           >
             {t('clients.addClient')}
           </Link>
@@ -170,7 +180,7 @@ export default function ClientsList() {
         <div className="text-center py-12 bg-gray-50 dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800">
           <p className="text-gray-600 dark:text-zinc-400">
             {search ? `No clients match "${search}".` : 'No clients found.'}{' '}
-            {!search && <Link href="/clients/add" className="text-blue-500 hover:underline">Add one?</Link>}
+            {!search && <Link href="/clients/add" className="hover:underline" style={{ color: 'var(--color-primary)' }}>Add one?</Link>}
           </p>
         </div>
       ) : (

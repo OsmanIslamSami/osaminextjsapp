@@ -214,7 +214,7 @@ export default function AdminVideosPage() {
               ? `${pagination.total} فيديو إجمالاً` 
               : `${pagination.total} total videos`}
             {selectedVideos.size > 0 && (
-              <span className="mx-2 text-blue-600 dark:text-blue-400 font-semibold">
+              <span className="mx-2 font-semibold" style={{ color: 'var(--color-primary)' }}>
                 ({language === 'ar' 
                   ? `${selectedVideos.size} محدد` 
                   : `${selectedVideos.size} selected`})
@@ -234,7 +234,16 @@ export default function AdminVideosPage() {
           )}
           <button
             onClick={handleAdd}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold transition-all shadow-sm"
+            style={{
+              backgroundColor: 'var(--color-primary)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+            }}
           >
             <PlusIcon className="w-5 h-5" />
             {language === 'ar' ? 'إضافة فيديو' : 'Add Video'}
@@ -352,7 +361,8 @@ export default function AdminVideosPage() {
                       href={video.youtube_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                      className="hover:underline flex items-center gap-1"
+                      style={{ color: 'var(--color-primary)' }}
                     >
                       <span className="truncate max-w-[200px]">{video.youtube_url}</span>
                       <ArrowTopRightOnSquareIcon className="w-3 h-3 flex-shrink-0" />
@@ -383,7 +393,14 @@ export default function AdminVideosPage() {
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={() => handleEdit(video)}
-                        className="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded text-blue-600 dark:text-blue-400"
+                        className="p-2 rounded transition-colors"
+                        style={{ color: 'var(--color-primary)' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-primary-light)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
                         title="Edit"
                       >
                         <PencilIcon className="w-4 h-4" />

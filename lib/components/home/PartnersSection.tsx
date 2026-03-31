@@ -133,7 +133,14 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
         }`}>
           <div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 
+              className="text-4xl font-bold bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'linear-gradient(to right, var(--color-primary), var(--color-accent))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               {sectionTitle}
             </h2>
             <p className="text-gray-600 dark:text-zinc-400 mt-2">
@@ -144,7 +151,16 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
           </div>
           <Link
             href="/partners"
-            className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap"
+            className="inline-block text-white px-8 py-3 rounded-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap"
+            style={{
+              backgroundImage: 'linear-gradient(to right, var(--color-primary), var(--color-accent))',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundImage = 'linear-gradient(to right, var(--color-primary-hover), var(--color-accent))';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundImage = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+            }}
           >
             {language === 'ar' ? 'جميع الشركاء' : 'All Partners'}
           </Link>

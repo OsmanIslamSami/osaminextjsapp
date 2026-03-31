@@ -320,7 +320,7 @@ model home_sections {
   id                      String    @id @default(cuid())
   
   // Section identification
-  section_type            String    @unique  // 'photos', 'videos', 'partners'
+  section_type            String    @unique  // 'news', 'photos', 'videos', 'partners'
   
   // Display configuration
   is_visible              Boolean   @default(true)
@@ -337,4 +337,39 @@ model home_sections {
   updated_at              DateTime  @updatedAt
   
   @@map("home_sections")
+}
+
+// Application Settings
+model app_settings {
+  id                 String    @id @default(cuid())
+  
+  // Font Settings
+  arabic_font        String    @default("Cairo")      // Cairo, Amiri, Tajawal, Rubik, Almarai
+  english_font       String    @default("Inter")      // Inter, Roboto, Open Sans, Lato, Poppins
+  
+  // Theme Settings
+  theme              String    @default("default")    // default, modern, elegant, minimal, vibrant
+  
+  // Color overrides (optional, for future expansion)
+  primary_color      String?   // Hex color
+  secondary_color    String?   // Hex color
+  
+  // Site Settings
+  site_title_en      String    @default("Next App")
+  site_title_ar      String    @default("تطبيق نكست")
+  site_description_en String   @default("A modern web application")
+  site_description_ar String   @default("تطبيق ويب حديث")
+  site_logo_url      String?   // URL or path to logo image
+  site_logo_storage_type String @default("upload")  // 'upload' or 'blob'
+  og_image_url       String?   // Open Graph image URL
+  og_image_storage_type String @default("upload")  // 'upload' or 'blob'
+  site_keywords_en   String?   // SEO keywords
+  site_keywords_ar   String?   // SEO keywords
+  
+  // Audit trail
+  updated_by         String?   // User ID who last updated
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+  
+  @@map("app_settings")
 }

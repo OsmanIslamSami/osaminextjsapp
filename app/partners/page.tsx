@@ -126,13 +126,22 @@ export default function PartnersDirectoryPage() {
 
                     {/* Partner Info */}
                     <div className="mt-4">
-                      <h3 className="font-bold text-gray-900 text-center mb-2 group-hover:text-blue-600 transition-colors">
+                      <h3 
+                        className="font-bold text-center mb-2 group-hover:transition-colors"
+                        style={{ color: 'var(--color-text-primary)' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--color-primary)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'var(--color-text-primary)';
+                        }}
+                      >
                         {partnerName}
                       </h3>
                       
                       {/* Website Link Badge (if URL provided) */}
                       {partner.url && (
-                        <div className="flex items-center justify-center gap-1 text-sm text-blue-600 group-hover:text-blue-800">
+                        <div className="flex items-center justify-center gap-1 text-sm" style={{ color: 'var(--color-primary)' }}>
                           <ArrowTopRightOnSquareIcon className="w-4 h-4" />
                           <span>{language === 'ar' ? 'زيارة الموقع' : 'Visit Website'}</span>
                         </div>

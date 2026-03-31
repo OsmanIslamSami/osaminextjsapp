@@ -147,7 +147,21 @@ export default function AddClient() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] transition-colors"
+            className="w-full sm:w-auto px-6 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] transition-colors"
+            style={{
+              backgroundColor: 'var(--color-primary)',
+              color: 'white',
+            }}
+            onMouseEnter={(e) => {
+              if (!creating) {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!creating) {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+              }
+            }}
           >
             {loading ? t('buttons.creating') : t('buttons.createClient')}
           </button>

@@ -19,7 +19,14 @@ export default function Header() {
   };
 
   return (
-    <header dir={direction} className="w-full flex items-center justify-between px-4 md:px-8 py-4 bg-white dark:bg-black border-b border-zinc-200 dark:border-zinc-800">
+    <header 
+      dir={direction} 
+      className="w-full flex items-center justify-between px-4 md:px-8 py-4"
+      style={{
+        backgroundColor: 'var(--color-background)',
+        borderBottom: '1px solid var(--color-border)',
+      }}
+    >
       {/* Left: Logo + Navigation Tabs */}
       <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center">
@@ -36,16 +43,58 @@ export default function Header() {
         {/* Desktop Navigation Tabs */}
         <nav className="hidden md:flex items-center gap-2">
           <Show when="signed-in">
-            <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded transition-colors">
+            <Link 
+              href="/dashboard" 
+              className="flex items-center gap-2 px-4 py-2 rounded transition-colors"
+              style={{
+                color: 'var(--color-text-primary)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
+                e.currentTarget.style.color = 'var(--color-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--color-text-primary)';
+              }}
+            >
               <ChartBarIcon className="w-5 h-5" />
               <span>{t('nav.dashboard')}</span>
             </Link>
-            <Link href="/clients" className="flex items-center gap-2 px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded transition-colors">
+            <Link 
+              href="/clients" 
+              className="flex items-center gap-2 px-4 py-2 rounded transition-colors"
+              style={{
+                color: 'var(--color-text-primary)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
+                e.currentTarget.style.color = 'var(--color-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--color-text-primary)';
+              }}
+            >
               <UsersIcon className="w-5 h-5" />
               <span>{t('nav.clients')}</span>
             </Link>
             {isAdmin && (
-              <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-black dark:text-white hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] rounded transition-colors">
+              <Link 
+                href="/admin" 
+                className="flex items-center gap-2 px-4 py-2 rounded transition-colors"
+                style={{
+                  color: 'var(--color-text-primary)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
+                  e.currentTarget.style.color = 'var(--color-primary)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                }}
+              >
                 <span>{t('nav.admin')}</span>
               </Link>
             )}
@@ -58,12 +107,40 @@ export default function Header() {
         <Show when="signed-out">
           <div className="flex items-center gap-2">
             <SignInButton mode="modal">
-              <button className="px-3 py-2 md:px-4 text-sm md:text-base rounded bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]">
+              <button 
+                className="px-3 py-2 md:px-4 text-sm md:text-base rounded transition-colors"
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                }}
+              >
                 {t('login.signInButton')}
               </button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <button className="hidden md:block px-4 py-2 rounded border border-black/[.08] dark:border-white/[.145] hover:bg-black/[.04] dark:hover:bg-[#1a1a1a]">
+              <button 
+                className="hidden md:block px-4 py-2 rounded transition-colors"
+                style={{
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--color-text-primary)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
+                  e.currentTarget.style.borderColor = 'var(--color-border-hover)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = 'var(--color-border)';
+                }}
+              >
                 {t('login.signUpButton')}
               </button>
             </SignUpButton>
@@ -79,10 +156,17 @@ export default function Header() {
           <button
             onClick={handleMobileMenuToggle}
             type="button"
-            className="md:hidden p-2 rounded-lg hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] transition-colors"
+            className="md:hidden p-2 rounded-lg transition-colors"
+            style={{ color: 'var(--color-text-primary)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
             aria-label="Open menu"
           >
-            <Bars3Icon className="w-6 h-6 text-black dark:text-white" />
+            <Bars3Icon className="w-6 h-6" />
           </button>
         </Show>
       </div>

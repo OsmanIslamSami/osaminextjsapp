@@ -111,7 +111,8 @@
       "homeSections": "Home Sections",
       "users": "Users",
       "social": "Social Media",
-      "styleLibrary": "Style Library"
+      "styleLibrary": "Style Library",
+      "appSettings": "App Information"
     },
     "stats": {
       "totalUsers": "Total Users",
@@ -133,6 +134,60 @@
     "info": {
       "title": "Admin Panel Ready",
       "description": "This admin panel provides complete management capabilities for users, slider content, and social media links. Use the links above to access each section."
+    },
+    "appSettings": {
+      "title": "Application Information",
+      "subtitle": "Configure fonts, themes, site information, and other application preferences",
+      "settingsTabs": {
+        "homeSections": "Home Sections",
+        "fonts": "Fonts",
+        "themes": "Themes"
+      },
+      "fonts": {
+        "title": "Font Settings",
+        "description": "Choose fonts for Arabic and English content",
+        "arabicFont": "Arabic Font",
+        "englishFont": "English Font",
+        "options": {
+          "cairo": "Cairo",
+          "amiri": "Amiri",
+          "tajawal": "Tajawal",
+          "rubik": "Rubik",
+          "almarai": "Almarai",
+          "inter": "Inter",
+          "roboto": "Roboto",
+          "openSans": "Open Sans",
+          "lato": "Lato",
+          "poppins": "Poppins"
+        },
+        "preview": "Font Preview",
+        "previewTextAr": "مثال على النص العربي",
+        "previewTextEn": "Sample English Text"
+      },
+      "themes": {
+        "title": "Theme Settings",
+        "description": "Choose a visual theme for the application",
+        "currentTheme": "Current Theme",
+        "selectTheme": "Select Theme",
+        "options": {
+          "default": "Default",
+          "modern": "Modern",
+          "elegant": "Elegant",
+          "minimal": "Minimal",
+          "vibrant": "Vibrant"
+        },
+        "descriptions": {
+          "default": "Classic and clean design",
+          "modern": "Contemporary and sleek",
+          "elegant": "Sophisticated and refined",
+          "minimal": "Simple and focused",
+          "vibrant": "Bold and colorful"
+        }
+      },
+      "save": "Save Settings",
+      "saving": "Saving...",
+      "saved": "Settings saved successfully",
+      "error": "Failed to save settings"
     }
   },
   "errors": {

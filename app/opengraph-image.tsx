@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og';
+import { prisma } from '@/lib/db';
 
 // Image metadata
 export const alt = 'Next App - Modern Business Management Platform for Client Services, News, and Analytics';
@@ -9,8 +10,44 @@ export const size = {
 
 export const contentType = 'image/png';
 
+// Fetch app settings for OG image
+async function getAppSettings() {
+  try {
+    const settings = await prisma.app_settings.findFirst();
+    return settings;
+  } catch (error) {
+    console.error('Failed to fetch app settings for OG image:', error);
+    return null;
+  }
+}
+
 // Image generation
 export default async function Image() {
+  const settings = await getAppSettings();
+  
+  // If custom OG image is set, redirect to it
+  if (settings?.og_image_url) {
+    // Return a response that redirects to the custom image
+    // Note: For direct image URL, we need to use the ImageResponse with the fetched image
+    try {
+      const imageResponse = await fetch(settings.og_image_url);
+      const imageBuffer = await imageResponse.arrayBuffer();
+      return new Response(imageBuffer, {
+        headers: {
+          'Content-Type': imageResponse.headers.get('Content-Type') || 'image/png',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      });
+    } catch (error) {
+      console.error('Failed to fetch custom OG image:', error);
+      // Fall back to generated image
+    }
+  }
+  
+  // Generate default OG image
+  const title = settings?.site_title_en || 'Next App';
+  const description = settings?.site_description_en || 'Streamline client management, track analytics, publish news updates, and grow your business with our modern platform';
+  
   return new ImageResponse(
     (
       <div
@@ -75,7 +112,7 @@ export default async function Image() {
                 textShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
               }}
             >
-              Next App
+              {title}
             </div>
           </div>
 
@@ -109,7 +146,7 @@ export default async function Image() {
               marginBottom: '10px',
             }}
           >
-            Streamline client management, track analytics, publish news updates, and grow your business with our modern platform
+            {description}
           </div>
 
           {/* Features badges */}

@@ -205,15 +205,18 @@ export default function AdminHomeSectionsPage() {
               <button
                 onClick={() => handleToggleVisibility(section.section_type, section.is_visible)}
                 disabled={saving === section.section_type}
-                className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
+                className={`relative inline-flex items-center h-7 rounded-full w-14 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 ${
                   section.is_visible
-                    ? 'bg-blue-600'
-                    : 'bg-gray-300 dark:bg-zinc-700'
-                } ${saving === section.section_type ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    ? 'bg-blue-600 hover:bg-blue-700'
+                    : 'bg-gray-300 dark:bg-zinc-700 hover:bg-gray-400 dark:hover:bg-zinc-600'
+                } ${saving === section.section_type ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                aria-label={language === 'ar' ? 'تبديل الرؤية' : 'Toggle visibility'}
+                role="switch"
+                aria-checked={section.is_visible}
               >
                 <span
-                  className={`inline-block w-4 h-4 transform transition-transform bg-white rounded-full ${
-                    section.is_visible ? 'translate-x-6' : 'translate-x-1'
+                  className={`inline-block w-5 h-5 transform transition-all duration-200 ease-in-out bg-white rounded-full shadow-md ${
+                    section.is_visible ? 'translate-x-8' : 'translate-x-1'
                   }`}
                 />
               </button>

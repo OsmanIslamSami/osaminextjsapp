@@ -84,7 +84,7 @@ export default function AdminPage() {
           <div className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-1">
             {t('admin.stats.administrators')}
           </div>
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="text-3xl font-bold" style={{ color: 'var(--color-primary)' }}>
             {stats.adminUsers}
           </div>
         </div>

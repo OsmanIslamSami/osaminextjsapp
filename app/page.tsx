@@ -82,7 +82,7 @@ async function getHomePartners() {
 /**
  * Fetch section visibility configuration
  */
-async function getHomeSectionConfig(sectionType: 'photos' | 'videos' | 'partners') {
+async function getHomeSectionConfig(sectionType: 'news' | 'photos' | 'videos' | 'partners') {
   try {
     const config = await prisma.home_sections.findFirst({
       where: {
@@ -98,7 +98,8 @@ async function getHomeSectionConfig(sectionType: 'photos' | 'videos' | 'partners
 
 export default async function Home() {
   // Fetch all media content and their configurations in parallel
-  const [photos, photosConfig, videos, videosConfig, partners, partnersConfig] = await Promise.all([
+  const [newsConfig, photos, photosConfig, videos, videosConfig, partners, partnersConfig] = await Promise.all([
+    getHomeSectionConfig('news'),
     getHomePhotos(),
     getHomeSectionConfig('photos'),
     getHomeVideos(),
@@ -108,6 +109,7 @@ export default async function Home() {
   ]);
 
   // Determine which sections to show based on visibility and content
+  const showNews = (newsConfig?.is_visible ?? true);
   const showPhotos = (photosConfig?.is_visible ?? true) && photos.length > 0;
   const showVideos = (videosConfig?.is_visible ?? true) && videos.length > 0;
   const showPartners = (partnersConfig?.is_visible ?? true) && partners.length > 0;
@@ -118,7 +120,7 @@ export default async function Home() {
       <HeroSlider />
       
       {/* News Section */}
-      <NewsSection />
+      {showNews && <NewsSection />}
       
       {/* Photos Section - 5 items in slider */}
       {showPhotos && (
@@ -164,7 +166,19 @@ export default async function Home() {
             </p>
             <div className="flex gap-4 justify-center">
               <SignInButton mode="modal">
-                <button className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors min-h-[44px]">
+                <button 
+                  className="px-6 py-3 rounded-lg transition-colors min-h-[44px]"
+                  style={{
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'white',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                  }}
+                >
                   Sign In
                 </button>
               </SignInButton>
