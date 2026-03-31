@@ -153,12 +153,12 @@ export default function AddClient() {
               color: 'white',
             }}
             onMouseEnter={(e) => {
-              if (!creating) {
+              if (!loading) {
                 e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
               }
             }}
             onMouseLeave={(e) => {
-              if (!creating) {
+              if (!loading) {
                 e.currentTarget.style.backgroundColor = 'var(--color-primary)';
               }
             }}
