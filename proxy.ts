@@ -1,15 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
+// Define which routes require authentication
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
-  '/profile(.*)',
-  // Add more protected routes here
+  '/clients(.*)',
+  '/admin(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Protect dashboard, clients, and admin routes
   if (isProtectedRoute(req)) {
-    const { userId, redirectToSignIn } = await auth();
-    if (!userId) return redirectToSignIn();
+    await auth.protect();
   }
 });
 
