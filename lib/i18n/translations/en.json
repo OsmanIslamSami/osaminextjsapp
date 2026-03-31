@@ -181,7 +181,17 @@
           "modern": "Contemporary and sleek",
           "elegant": "Sophisticated and refined",
           "minimal": "Simple and focused",
-          "vibrant": "Bold and colorful"
+          "vibrant": "Bold and colorful",
+          "nature": "Fresh green inspired by nature",
+          "sunset": "Warm rose and pink tones",
+          "ocean": "Cool cyan and teal colors",
+          "royal": "Rich indigo and purple",
+          "warm": "Cozy amber and orange",
+          "professional": "Classic slate and gray",
+          "bold": "Strong red and orange",
+          "fresh": "Bright lime and green",
+          "cosmic": "Deep purple space theme",
+          "classic": "Traditional brown and tan"
         }
       },
       "save": "Save Settings",
