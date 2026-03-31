@@ -359,8 +359,10 @@ model app_settings {
   site_title_ar      String    @default("تطبيق نكست")
   site_description_en String   @default("A modern web application")
   site_description_ar String   @default("تطبيق ويب حديث")
-  site_logo_url      String?   // URL or path to logo image
+  site_logo_url      String?   // URL or path to header logo image (wide format)
   site_logo_storage_type String @default("upload")  // 'upload' or 'blob'
+  site_favicon_url   String?   // URL or path to favicon (square format for browser tab)
+  site_favicon_storage_type String @default("upload")  // 'upload' or 'blob'
   og_image_url       String?   // Open Graph image URL
   og_image_storage_type String @default("upload")  // 'upload' or 'blob'
   site_keywords_en   String?   // SEO keywords

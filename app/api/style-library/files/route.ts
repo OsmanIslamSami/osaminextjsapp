@@ -176,9 +176,22 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-zA-Z0-9-_]/g, '_')
       .substring(0, 50);
     
-    const timestamp = Date.now();
-    const sanitizedName = baseName + '_' + timestamp + extension;
-    const blobPath = 'style-library/' + sanitizedName;
+    // When replacing, use the same filename WITHOUT timestamp to keep the same URL
+    // When uploading new, add timestamp to avoid conflicts
+    let sanitizedName: string;
+    let blobPath: string;
+    
+    if (existingFile && replaceExisting) {
+      // Use the original filename pattern (without timestamp) to maintain the same URL
+      sanitizedName = baseName + extension;
+      blobPath = 'style-library/' + sanitizedName;
+      console.log('🔄 Replacing file with same path:', blobPath);
+    } else {
+      // New upload: add timestamp to ensure uniqueness
+      const timestamp = Date.now();
+      sanitizedName = baseName + '_' + timestamp + extension;
+      blobPath = 'style-library/' + sanitizedName;
+    }
 
     // Upload to Vercel Blob
     let blob;
@@ -198,7 +211,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // If replacing existing file, delete the old one
+    // If replacing existing file, delete the old blob first
     if (existingFile && replaceExisting) {
       console.log('🔄 Replacing existing file:', existingFile.name);
       
@@ -211,13 +224,6 @@ export async function POST(request: NextRequest) {
           console.error('⚠️ Failed to delete old blob (continuing anyway):', delError);
         }
       }
-
-      // Delete old record from database
-      await prisma.styleLibraryFile.update({
-        where: { id: existingFile.id },
-        data: { is_deleted: true },
-      });
-      console.log('✓ Marked old file as deleted in database');
     }
 
     // Parse tags
@@ -231,32 +237,62 @@ export async function POST(request: NextRequest) {
     // For images, we could use sharp library. For now, we'll set them to null
     // and allow the admin UI to optionally update them.
 
-    // Create file record
-    const fileRecord = await prisma.styleLibraryFile.create({
-      data: {
-        folder_id: folderId || null,
-        name: originalName,
-        file_url: blob.url,
-        file_type: file.type,
-        file_size: file.size,
-        width,
-        height,
-        description: description?.trim() || null,
-        tags,
-        created_by: user.clerk_user_id,
-      },
-      include: {
-        folder: {
-          select: {
-            id: true,
-            name: true,
-            path: true
+    // Create or update file record
+    let fileRecord;
+    
+    if (existingFile && replaceExisting) {
+      // Update existing record to keep the same ID and maintain references
+      fileRecord = await prisma.styleLibraryFile.update({
+        where: { id: existingFile.id },
+        data: {
+          file_url: blob.url,
+          file_type: file.type,
+          file_size: file.size,
+          width,
+          height,
+          description: description?.trim() || existingFile.description,
+          tags: tags.length > 0 ? tags : existingFile.tags,
+          updated_at: new Date(),
+          is_deleted: false, // Ensure not marked as deleted
+        },
+        include: {
+          folder: {
+            select: {
+              id: true,
+              name: true,
+              path: true
+            }
           }
         }
-      }
-    });
-
-    console.log('✓ File record created in database:', fileRecord.id);
+      });
+      console.log('✓ File record updated in database:', fileRecord.id);
+    } else {
+      // Create new file record
+      fileRecord = await prisma.styleLibraryFile.create({
+        data: {
+          folder_id: folderId || null,
+          name: originalName,
+          file_url: blob.url,
+          file_type: file.type,
+          file_size: file.size,
+          width,
+          height,
+          description: description?.trim() || null,
+          tags,
+          created_by: user.clerk_user_id,
+        },
+        include: {
+          folder: {
+            select: {
+              id: true,
+              name: true,
+              path: true
+            }
+          }
+        }
+      });
+      console.log('✓ File record created in database:', fileRecord.id);
+    }
     return NextResponse.json({ file: fileRecord }, { status: 201 });
   } catch (error: any) {
     console.error('Error uploading file:', error);

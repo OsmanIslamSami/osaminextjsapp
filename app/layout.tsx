@@ -115,7 +115,7 @@ export async function generateMetadata(): Promise<Metadata> {
     
     // Icons
     icons: {
-      icon: settings?.site_logo_url || '/favicon.ico',
+      icon: settings?.site_favicon_url || '/favicon.ico',
       apple: '/apple-touch-icon.png',
     },
   };

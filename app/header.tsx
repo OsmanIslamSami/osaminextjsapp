@@ -1,23 +1,30 @@
 'use client';
 import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { ChartBarIcon, UsersIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { LanguageSwitcher } from "@/lib/components/LanguageSwitcher";
 import MobileMenu from "@/lib/components/MobileMenu";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
+import { useAppSettings } from "@/lib/contexts/AppSettingsContext";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t, direction } = useTranslation();
   const { isAdmin } = useCurrentUser();
   const { isSignedIn } = useAuth();
+  const { settings, loading } = useAppSettings();
 
   const handleMobileMenuToggle = () => {
     setMobileMenuOpen(true);
   };
+
+  // Debug logging
+  console.log('Header - Settings:', settings);
+  console.log('Header - Loading:', loading);
+  console.log('Header - Logo URL:', settings?.site_logo_url);
+  console.log('Header - Has Logo:', !!settings?.site_logo_url);
 
   return (
     <header 
@@ -30,15 +37,36 @@ export default function Header() {
     >
       {/* Left: Logo + Navigation Tabs */}
       <div className="flex items-center gap-6">
-        <Link href="/" className="flex items-center">
-          <Image 
-            src="/logo.svg" 
-            alt="Next App Logo" 
-            width={120} 
-            height={40}
-            className="h-10 w-auto dark:invert"
-            priority
-          />
+        <Link href="/" className="flex items-center min-h-[40px]">
+          {loading ? (
+            <div className="h-10 w-[120px] flex items-center justify-center">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-t-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+            </div>
+          ) : settings?.site_logo_url ? (
+            <img 
+              src={settings.site_logo_url} 
+              alt="Site Logo" 
+              style={{ 
+                height: '40px', 
+                width: 'auto', 
+                maxWidth: '150px', 
+                objectFit: 'contain',
+                display: 'block'
+              }}
+              onLoad={(e) => {
+                console.log('✅ Logo loaded successfully:', settings.site_logo_url);
+                console.log('Image dimensions:', e.currentTarget.naturalWidth, 'x', e.currentTarget.naturalHeight);
+              }}
+              onError={(e) => {
+                console.error('❌ Logo failed to load:', settings.site_logo_url);
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className="h-10 flex items-center px-2" style={{ color: 'var(--color-text-primary)' }}>
+              <span className="text-xl font-semibold">{settings?.site_title_en || 'App'}</span>
+            </div>
+          )}
         </Link>
         
         {/* Desktop Navigation Tabs */}

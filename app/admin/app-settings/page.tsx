@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
 import { useAppSettings } from '@/lib/contexts/AppSettingsContext';
-import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { getTheme } from '@/lib/themes/themeConfig';
 import FilePicker from '@/lib/components/FilePicker';
 
@@ -29,6 +29,8 @@ interface AppSettings {
   site_description_ar: string;
   site_logo_url?: string | null;
   site_logo_storage_type: string;
+  site_favicon_url?: string | null;
+  site_favicon_storage_type: string;
   og_image_url?: string | null;
   og_image_storage_type: string;
   site_keywords_en?: string | null;
@@ -110,7 +112,7 @@ export default function AppSettingsPage() {
     site_keywords_ar: '',
   });
   const [filePickerOpen, setFilePickerOpen] = useState(false);
-  const [filePickerTarget, setFilePickerTarget] = useState<'logo' | 'og_image' | null>(null);
+  const [filePickerTarget, setFilePickerTarget] = useState<'logo' | 'favicon' | 'og_image' | null>(null);
   const [sections, setSections] = useState<HomeSection[]>([]);
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -232,16 +234,22 @@ export default function AppSettingsPage() {
   const handleFileSelect = async (file: any) => {
     if (!filePickerTarget) return;
 
+    console.log('Selected file from library:', file);
+
     const updates: Partial<AppSettings> = {};
     
     if (filePickerTarget === 'logo') {
       updates.site_logo_url = file.file_url;
-      updates.site_logo_storage_type = 'blob'; // Assuming file from library is blob
+      updates.site_logo_storage_type = 'blob'; // Files from Style Library are always blob-stored
+    } else if (filePickerTarget === 'favicon') {
+      updates.site_favicon_url = file.file_url;
+      updates.site_favicon_storage_type = 'blob';
     } else if (filePickerTarget === 'og_image') {
       updates.og_image_url = file.file_url;
       updates.og_image_storage_type = 'blob';
     }
 
+    console.log('Updating app settings with:', updates);
     await handleUpdateAppSettings(updates);
     setFilePickerOpen(false);
     setFilePickerTarget(null);
@@ -996,11 +1004,52 @@ export default function AppSettingsPage() {
                 </div>
               </div>
 
-              {/* Logo and OG Image */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Style Library Notice */}
+              <div 
+                className="rounded-lg p-4 flex items-start gap-3"
+                style={{
+                  backgroundColor: 'var(--color-surface)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'var(--color-border)',
+                }}
+              >
+                <PhotoIcon className="w-6 h-6 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-primary)' }} />
+                <div className="flex-1">
+                  <h4 className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>
+                    {language === 'ar' ? '📚 استخدم مكتبة الأنماط' : '📚 Use Style Library'}
+                  </h4>
+                  <p className="text-sm mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                    {language === 'ar'
+                      ? 'يجب تحميل جميع الصور إلى مكتبة الأنماط أولاً. جميع الملفات في مكتبة الأنماط يتم تخزينها في Blob Storage.'
+                      : 'All images must be uploaded to the Style Library first. All files in the Style Library are stored in Blob Storage.'}
+                  </p>
+                  <a
+                    href="/admin/style-library"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      color: 'white',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                    }}
+                  >
+                    {language === 'ar' ? 'فتح مكتبة الأنماط' : 'Open Style Library'}
+                    <ChevronRightIcon className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Logo, Favicon, and OG Image */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Header Logo (Wide) */}
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-primary)' }}>
-                    {language === 'ar' ? 'شعار الموقع (Logo)' : 'Site Logo'}
+                    {language === 'ar' ? 'شعار الرأس (Header Logo)' : 'Header Logo (Wide)'}
                   </label>
                   <div 
                     className="rounded-lg p-4 text-center"
@@ -1015,8 +1064,8 @@ export default function AppSettingsPage() {
                       <div className="space-y-2">
                         <img
                           src={appSettings.site_logo_url}
-                          alt="Site Logo"
-                          className="mx-auto h-16 w-auto object-contain"
+                          alt="Header Logo"
+                          className="mx-auto h-12 w-auto object-contain"
                         />
                         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
                           {language === 'ar' ? 'الشعار الحالي' : 'Current logo'}
@@ -1049,14 +1098,77 @@ export default function AppSettingsPage() {
                       e.currentTarget.style.backgroundColor = 'var(--color-primary)';
                     }}
                   >
-                    {language === 'ar' ? 'اختيار شعار' : 'Select Logo'}
+                    {language === 'ar' ? 'اختيار شعار الرأس' : 'Select Header Logo'}
                   </button>
                   <p className="text-xs mt-2" style={{ color: 'var(--color-text-tertiary)' }}>
                     {language === 'ar'
-                      ? 'صورة بتنسيق PNG أو SVG مفضلة للحصول على أفضل جودة'
-                      : 'PNG or SVG format preferred for best quality'}
+                      ? 'صورة عريضة للرأس (PNG/SVG). قم بتحميل الصور إلى مكتبة الأنماط أولاً'
+                      : 'Wide image for header (PNG/SVG). Upload images to Style Library first'}
                   </p>
                 </div>
+
+                {/* Favicon (Square) */}
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-primary)' }}>
+                    {language === 'ar' ? 'أيقونة المتصفح (Favicon)' : 'Browser Tab Icon (Square)'}
+                  </label>
+                  <div 
+                    className="rounded-lg p-4 text-center"
+                    style={{
+                      backgroundColor: 'var(--color-background-secondary)',
+                      borderWidth: '2px',
+                      borderStyle: 'dashed',
+                      borderColor: 'var(--color-border)',
+                    }}
+                  >
+                    {appSettings.site_favicon_url ? (
+                      <div className="space-y-2">
+                        <img
+                          src={appSettings.site_favicon_url}
+                          alt="Favicon"
+                          className="mx-auto h-12 w-12 object-contain"
+                        />
+                        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+                          {language === 'ar' ? 'الأيقونة الحالية' : 'Current favicon'}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="py-4">
+                        <PhotoIcon className="w-12 h-12 mx-auto mb-2" style={{ color: 'var(--color-text-tertiary)' }} />
+                        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                          {language === 'ar' ? 'لا توجد أيقونة' : 'No favicon uploaded'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFilePickerTarget('favicon');
+                      setFilePickerOpen(true);
+                    }}
+                    className="mt-2 w-full px-4 py-2 rounded-lg font-medium transition-all"
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      color: 'white',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                    }}
+                  >
+                    {language === 'ar' ? 'اختيار أيقونة المتصفح' : 'Select Favicon'}
+                  </button>
+                  <p className="text-xs mt-2" style={{ color: 'var(--color-text-tertiary)' }}>
+                    {language === 'ar'
+                      ? 'صورة مربعة صغيرة (32x32 أو 64x64). قم بتحميل الصور إلى مكتبة الأنماط أولاً'
+                      : 'Small square image (32x32 or 64x64). Upload to Style Library first'}
+                  </p>
+                </div>
+
+                {/* OG Image */}
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-primary)' }}>
                     {language === 'ar' ? 'صورة المشاركة (OG Image)' : 'Open Graph Image'}
@@ -1075,7 +1187,7 @@ export default function AppSettingsPage() {
                         <img
                           src={appSettings.og_image_url}
                           alt="OG Image"
-                          className="mx-auto h-24 w-auto object-cover rounded"
+                          className="mx-auto h-20 w-auto object-cover rounded"
                         />
                         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
                           {language === 'ar' ? 'الصورة الحالية' : 'Current image'}
@@ -1112,8 +1224,8 @@ export default function AppSettingsPage() {
                   </button>
                   <p className="text-xs mt-2" style={{ color: 'var(--color-text-tertiary)' }}>
                     {language === 'ar'
-                      ? 'الحجم المثالي: 1200x630 بكسل للمشاركة على وسائل التواصل'
-                      : 'Ideal size: 1200x630px for social media sharing'}
+                      ? 'الحجم المثالي: 1200x630 بكسل. قم بتحميل الصور إلى مكتبة الأنماط أولاً'
+                      : 'Ideal size: 1200x630px. Upload images to Style Library first'}
                   </p>
                 </div>
               </div>
@@ -1135,23 +1247,28 @@ export default function AppSettingsPage() {
                 <ul className="text-sm space-y-1 list-disc list-inside" style={{ color: 'var(--color-primary-dark)' }}>
                   <li>
                     {language === 'ar'
-                      ? 'هذه الإعدادات تؤثر على العنوان والوصف في نتائج محركات البحث'
-                      : 'These settings affect the title and description in search engine results'}
+                      ? 'جميع الصور يجب تحميلها إلى مكتبة الأنماط أولاً (تخزين Blob)'
+                      : 'All images must be uploaded to Style Library first (Blob storage)'}
                   </li>
                   <li>
                     {language === 'ar'
-                      ? 'صورة OG تظهر عند مشاركة الموقع على وسائل التواصل الاجتماعي'
-                      : 'OG image appears when sharing the site on social media'}
+                      ? 'شعار الرأس: صورة عريضة تظهر في شريط التنقل'
+                      : 'Header Logo: Wide image displayed in the navigation bar'}
                   </li>
                   <li>
                     {language === 'ar'
-                      ? 'الشعار يظهر في شريط التنقل والرأس'
-                      : 'Logo appears in the navigation bar and header'}
+                      ? 'أيقونة المتصفح: صورة مربعة صغيرة تظهر في علامة تبويب المتصفح'
+                      : 'Favicon: Small square image shown in the browser tab'}
                   </li>
                   <li>
                     {language === 'ar'
-                      ? 'الكلمات المفتاحية تساعد في تحسين محركات البحث (SEO)'
-                      : 'Keywords help improve search engine optimization (SEO)'}
+                      ? 'صورة OG: تظهر عند مشاركة الموقع على وسائل التواصل الاجتماعي'
+                      : 'OG Image: Appears when sharing the site on social media'}
+                  </li>
+                  <li>
+                    {language === 'ar'
+                      ? 'الإعدادات تؤثر على العنوان والوصف في نتائج محركات البحث'
+                      : 'Settings affect the title and description in search engine results'}
                   </li>
                 </ul>
               </div>
@@ -1200,8 +1317,10 @@ export default function AppSettingsPage() {
         fileType="image"
         title={
           filePickerTarget === 'logo'
-            ? (language === 'ar' ? 'اختر شعار الموقع' : 'Select Site Logo')
-            : (language === 'ar' ? 'اختر صورة المشاركة' : 'Select OG Image')
+            ? (language === 'ar' ? 'اختر شعار الرأس من المكتبة' : 'Select Header Logo from Library')
+            : filePickerTarget === 'favicon'
+            ? (language === 'ar' ? 'اختر أيقونة المتصفح من المكتبة' : 'Select Favicon from Library')
+            : (language === 'ar' ? 'اختر صورة المشاركة من المكتبة' : 'Select OG Image from Library')
         }
       />
     </div>

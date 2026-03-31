@@ -9,6 +9,10 @@ interface AppSettings {
   theme: string;
   primary_color?: string | null;
   secondary_color?: string | null;
+  site_logo_url?: string | null;
+  site_favicon_url?: string | null;
+  site_title_en?: string | null;
+  site_title_ar?: string | null;
 }
 
 interface AppSettingsContextValue {

@@ -74,6 +74,10 @@ export default function StyleLibraryPage() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showFileDetailsModal, setShowFileDetailsModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
+  // Drag and drop for main area
+  const [mainAreaDragging, setMainAreaDragging] = useState(false);
+  const [draggedFiles, setDraggedFiles] = useState<FileList | null>(null);
 
   // Fetch folders
   const fetchFolders = useCallback(async () => {
@@ -146,6 +150,34 @@ export default function StyleLibraryPage() {
     } catch (error) {
       console.error('Error deleting files:', error);
       showError('Failed to delete some files');
+    }
+  };
+
+  // Main area drag and drop handlers
+  const handleMainAreaDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMainAreaDragging(true);
+  };
+
+  const handleMainAreaDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set to false if we're leaving the drop zone entirely
+    if (e.currentTarget === e.target) {
+      setMainAreaDragging(false);
+    }
+  };
+
+  const handleMainAreaDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMainAreaDragging(false);
+
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles && droppedFiles.length > 0) {
+      setDraggedFiles(droppedFiles);
+      setShowUploadModal(true);
     }
   };
 
@@ -231,48 +263,59 @@ export default function StyleLibraryPage() {
       const hasChildren = folder.children && folder.children.length > 0;
 
       return (
-        <div key={folder.id}>
+        <div key={folder.id} className="mb-0.5">
           <div
-            className={`flex items-center gap-2 py-2 px-3 cursor-pointer hover:bg-gray-100 rounded ${
-              isSelected ? 'bg-blue-50 border-l-4 border-blue-600' : ''
+            className={`flex items-center gap-2 py-2.5 px-3 cursor-pointer rounded-lg transition-all ${
+              isSelected 
+                ? 'bg-blue-50 text-blue-700 font-medium shadow-sm' 
+                : 'text-gray-700 hover:bg-gray-50'
             }`}
-            style={{ paddingLeft: `${level * 20 + 12}px` }}
+            style={{ paddingLeft: `${level * 16 + 12}px` }}
             onClick={() => setSelectedFolderId(folder.id)}
           >
-            {hasChildren && (
+            {hasChildren ? (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleFolder(folder.id);
                 }}
-                className="p-0.5"
+                className="p-0.5 hover:bg-gray-200 rounded transition-colors flex-shrink-0"
               >
                 {isExpanded ? (
-                  <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+                  <ChevronDownIcon className="w-4 h-4 text-gray-400" />
                 ) : (
-                  <ChevronRightIcon className="w-4 h-4 text-gray-500" />
+                  <ChevronRightIcon className="w-4 h-4 text-gray-400" />
                 )}
               </button>
-            )}
-            {!hasChildren && <span className="w-5" />}
-            
-            {isExpanded ? (
-              <FolderOpenIcon className="w-5 h-5 text-blue-600" />
             ) : (
-              <FolderIcon className="w-5 h-5 text-blue-600" />
+              <span className="w-5 flex-shrink-0" />
             )}
             
-            <span className="text-sm font-medium text-gray-900 flex-1">
+            {isExpanded && hasChildren ? (
+              <FolderOpenIcon className={`w-5 h-5 flex-shrink-0 ${
+                isSelected ? 'text-blue-600' : 'text-gray-400'
+              }`} />
+            ) : (
+              <FolderIcon className={`w-5 h-5 flex-shrink-0 ${
+                isSelected ? 'text-blue-600' : 'text-gray-400'
+              }`} />
+            )}
+            
+            <span className="text-sm flex-1 truncate">
               {folder.name}
             </span>
             
-            <span className="text-xs text-gray-500">
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${
+              isSelected 
+                ? 'bg-blue-100 text-blue-700' 
+                : 'bg-gray-100 text-gray-600'
+            }`}>
               {folder._count.files}
             </span>
           </div>
           
           {isExpanded && hasChildren && (
-            <div>{renderFolderTree(folder.children!, level + 1)}</div>
+            <div className="mt-0.5">{renderFolderTree(folder.children!, level + 1)}</div>
           )}
         </div>
       );
@@ -342,18 +385,26 @@ export default function StyleLibraryPage() {
       <div className="flex flex-col md:flex-row h-auto md:h-[calc(100vh-200px)] min-h-[600px]">
         {/* Sidebar - Folder Tree */}
         <div className="w-full md:w-80 bg-white border-b md:border-r md:border-b-0 overflow-y-auto max-h-64 md:max-h-full">
-          <div className="p-4 border-b">
-            <h2 className="text-sm font-semibold text-gray-900 mb-3">Folders</h2>
+          <div className="p-4 border-b border-gray-200">
+            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Folders</h2>
             
             <button
               onClick={() => setSelectedFolderId(null)}
-              className={`w-full flex items-center gap-2 py-2 px-3 rounded hover:bg-gray-100 ${
-                selectedFolderId === null ? 'bg-blue-50 border-l-4 border-blue-600' : ''
+              className={`w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all ${
+                selectedFolderId === null 
+                  ? 'bg-blue-50 text-blue-700 font-medium shadow-sm' 
+                  : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
-              <FolderIcon className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-medium">All Files</span>
-              <span className="ml-auto text-xs text-gray-500">{totalFileCount}</span>
+              <FolderIcon className={`w-5 h-5 flex-shrink-0 ${
+                selectedFolderId === null ? 'text-blue-600' : 'text-gray-400'
+              }`} />
+              <span className="text-sm flex-1 text-left">All Files</span>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                selectedFolderId === null 
+                  ? 'bg-blue-100 text-blue-700' 
+                  : 'bg-gray-100 text-gray-600'
+              }`}>{totalFileCount}</span>
             </button>
           </div>
           
@@ -363,7 +414,23 @@ export default function StyleLibraryPage() {
         </div>
 
         {/* Main Content - File List */}
-        <div className="flex-1 overflow-y-auto bg-gray-50">
+        <div 
+          className="flex-1 overflow-y-auto bg-gray-50 relative"
+          onDragOver={handleMainAreaDragOver}
+          onDragLeave={handleMainAreaDragLeave}
+          onDrop={handleMainAreaDrop}
+        >
+          {/* Drag Overlay */}
+          {mainAreaDragging && (
+            <div className="absolute inset-0 bg-blue-500 bg-opacity-10 backdrop-blur-sm z-40 flex items-center justify-center border-4 border-dashed border-blue-500">
+              <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+                <ArrowUpTrayIcon className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Drop files here</h3>
+                <p className="text-gray-600">Release to upload to {selectedFolderId ? 'this folder' : 'the library'}</p>
+              </div>
+            </div>
+          )}
+          
           <div className="p-4 md:p-6">
             {/* Search and View Controls */}
             <div className="mb-6 flex items-center gap-4">
@@ -595,11 +662,16 @@ export default function StyleLibraryPage() {
               <div className="text-center py-12">
                 <FolderIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No files found</h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-2">
                   {searchQuery
                     ? 'Try adjusting your search query'
                     : 'Upload files to get started'}
                 </p>
+                {!searchQuery && (
+                  <p className="text-sm text-gray-500 mb-6">
+                    💡 Drag and drop files here or click the button below
+                  </p>
+                )}
                 <button
                   onClick={() => setShowUploadModal(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -628,11 +700,16 @@ export default function StyleLibraryPage() {
       {showUploadModal && (
         <UploadFileModal
           folderId={selectedFolderId}
-          onClose={() => setShowUploadModal(false)}
+          onClose={() => {
+            setShowUploadModal(false);
+            setDraggedFiles(null);
+          }}
           onSuccess={() => {
             fetchFiles();
             setShowUploadModal(false);
+            setDraggedFiles(null);
           }}
+          initialFiles={draggedFiles}
         />
       )}
 
@@ -806,22 +883,54 @@ function UploadFileModal({
   folderId,
   onClose,
   onSuccess,
+  initialFiles = null,
 }: {
   folderId: string | null;
   onClose: () => void;
   onSuccess: () => void;
+  initialFiles?: FileList | null;
 }) {
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(initialFiles);
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [progress, setProgress] = useState(0);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [pendingReplaceFile, setPendingReplaceFile] = useState<{
     file: globalThis.File;
     existingFile: any;
   } | null>(null);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles && droppedFiles.length > 0) {
+      setSelectedFiles(droppedFiles);
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFiles(e.target.files);
+    }
+  };
 
   const uploadFile = async (fileToUpload: globalThis.File, replaceExisting = false): Promise<
     { isDuplicate: false } | { isDuplicate: true; existingFile: any; file: globalThis.File }
@@ -925,17 +1034,56 @@ function UploadFileModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Select Files *
             </label>
-            <input
-              type="file"
-              multiple
-              onChange={(e) => setSelectedFiles(e.target.files)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              accept="image/*,video/*,.pdf"
-            />
-            {selectedFiles && (
-              <p className="text-sm text-gray-600 mt-2">
-                {selectedFiles.length} file(s) selected
+            
+            {/* Drag and Drop Zone */}
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                isDragging
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 hover:border-gray-400 bg-gray-50'
+              }`}
+            >
+              <ArrowUpTrayIcon className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
+              <p className="text-sm font-medium text-gray-700 mb-2">
+                {isDragging ? 'Drop files here' : 'Drag and drop files here'}
               </p>
+              <p className="text-xs text-gray-500 mb-4">or</p>
+              <label className="inline-block">
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileInputChange}
+                  className="hidden"
+                  accept="image/*,video/*,.pdf"
+                />
+                <span className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer inline-block">
+                  Browse Files
+                </span>
+              </label>
+              <p className="text-xs text-gray-500 mt-4">
+                Supported: Images (PNG, JPG, GIF, WebP, SVG), Videos (MP4, WebM), PDFs
+              </p>
+            </div>
+            
+            {selectedFiles && selectedFiles.length > 0 && (
+              <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-medium text-green-800 mb-1">
+                  ✓ {selectedFiles.length} file(s) selected
+                </p>
+                <ul className="text-xs text-green-700 space-y-1">
+                  {Array.from(selectedFiles).slice(0, 5).map((file, idx) => (
+                    <li key={idx} className="truncate">
+                      {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                    </li>
+                  ))}
+                  {selectedFiles.length > 5 && (
+                    <li className="text-green-600">... and {selectedFiles.length - 5} more</li>
+                  )}
+                </ul>
+              </div>
             )}
           </div>
 
@@ -997,13 +1145,16 @@ function UploadFileModal({
                 <div>Uploaded: {new Date(pendingReplaceFile.existingFile.created_at).toLocaleString()}</div>
                 <div>Size: {pendingReplaceFile.existingFile.file_size ? Math.round(pendingReplaceFile.existingFile.file_size / 1024) + ' KB' : 'Unknown'}</div>
               </div>
+              <div className="text-xs text-blue-700 mb-3 bg-blue-50 p-2 rounded border border-blue-200">
+                <strong>💡 Note:</strong> Replacing will keep the same URL, so all references (like logos in App Settings) will automatically show the new image.
+              </div>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={handleConfirmReplace}
                   className="flex-1 px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm font-medium"
                 >
-                  Replace Existing File
+                  Replace & Keep URL
                 </button>
                 <button
                   type="button"
