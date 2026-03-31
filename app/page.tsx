@@ -1,4 +1,4 @@
-import { Show, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import HeroSlider from "@/lib/components/home/HeroSlider";
 import StatsSection from "@/lib/components/home/StatsSection";
 import NewsSection from "@/lib/components/home/NewsSection";
@@ -97,6 +97,10 @@ async function getHomeSectionConfig(sectionType: 'news' | 'photos' | 'videos' | 
 }
 
 export default async function Home() {
+  // Check authentication status
+  const { userId } = await auth();
+  const isSignedIn = !!userId;
+
   // Fetch all media content and their configurations in parallel
   const [newsConfig, photos, photosConfig, videos, videosConfig, partners, partnersConfig] = await Promise.all([
     getHomeSectionConfig('news'),
@@ -155,30 +159,13 @@ export default async function Home() {
         />
       )}
       
-      <Show when="signed-out">
-        <div className="flex min-h-[calc(100vh-500px)] items-center justify-center py-16">
-          <div className="text-center max-w-md px-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Next App
-            </h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Please sign in to access the dashboard and manage your content.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <SignInButton mode="modal"><button className="px-6 py-3 rounded-lg transition-colors min-h-[44px]" style={{ backgroundColor: 'var(--color-primary)', color: 'white' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary)'; }}>Sign In</button></SignInButton>
-              <SignUpButton mode="modal"><button className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px]">Sign Up</button></SignUpButton>
-            </div>
-          </div>
-        </div>
-      </Show>
-      
-      <Show when="signed-in">
-        {/* Stats Section */}
-        <StatsSection />
-        
-        {/* Quick Links Section with Animations */}
-        <QuickLinksSection />
-      </Show>
+      {/* Stats and Quick Links - Only for authenticated users */}
+      {isSignedIn && (
+        <>
+          <StatsSection />
+          <QuickLinksSection />
+        </>
+      )}
     </div>
   );
 }
