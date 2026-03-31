@@ -342,16 +342,16 @@ export default function StyleLibraryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-lg text-gray-600">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b flex-shrink-0">
         <div className="max-w-full mx-auto px-4 md:px-6 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
@@ -382,9 +382,9 @@ export default function StyleLibraryPage() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row h-auto md:h-[calc(100vh-200px)] min-h-[600px]">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Sidebar - Folder Tree */}
-        <div className="w-full md:w-80 bg-white border-b md:border-r md:border-b-0 overflow-y-auto max-h-64 md:max-h-full">
+        <div className="w-full md:w-80 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0">
           <div className="p-4 border-b border-gray-200">
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Folders</h2>
             
@@ -415,7 +415,7 @@ export default function StyleLibraryPage() {
 
         {/* Main Content - File List */}
         <div 
-          className="flex-1 overflow-y-auto bg-gray-50 relative"
+          className="flex-1 overflow-y-auto bg-white relative"
           onDragOver={handleMainAreaDragOver}
           onDragLeave={handleMainAreaDragLeave}
           onDrop={handleMainAreaDrop}
@@ -431,7 +431,7 @@ export default function StyleLibraryPage() {
             </div>
           )}
           
-          <div className="p-4 md:p-6">
+          <div className="p-4 md:p-6 h-full">
             {/* Search and View Controls */}
             <div className="mb-6 flex items-center gap-4">
               <div className="flex-1 relative">
