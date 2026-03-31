@@ -78,7 +78,8 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: settings?.site_title_en || 'Next App',
       title,
       description,
-      images: settings?.og_image_url ? [{ url: settings.og_image_url }] : undefined,
+      // Only set custom image if it exists, otherwise Next.js will use opengraph-image.tsx
+      ...(settings?.og_image_url && { images: [{ url: settings.og_image_url }] }),
     },
     
     // Twitter Card metadata
@@ -88,7 +89,8 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       creator: '@nextapp',
-      images: settings?.og_image_url ? [settings.og_image_url] : undefined,
+      // Only set custom image if it exists
+      ...(settings?.og_image_url && { images: [settings.og_image_url] }),
     },
     
     // Additional metadata
