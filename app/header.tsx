@@ -106,40 +106,12 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <Show when="signed-out">
           <div className="flex items-center gap-2">
-            <SignInButton mode="modal"><button 
-                className="px-3 py-2 md:px-4 text-sm md:text-base rounded transition-colors"
-                style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-primary)';
-                }}
-              >
-                {t('login.signInButton')}
-              </button></SignInButton>
-            <SignUpButton mode="modal"><button 
-                className="hidden md:block px-4 py-2 rounded transition-colors"
-                style={{
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--color-border)',
-                  color: 'var(--color-text-primary)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
-                  e.currentTarget.style.borderColor = 'var(--color-border-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'var(--color-border)';
-                }}
-              >
-                {t('login.signUpButton')}
-              </button></SignUpButton>
+            <SignInButton mode="modal">
+              <button className="px-3 py-2 md:px-4 text-sm md:text-base rounded transition-colors" style={{ backgroundColor: 'var(--color-primary)', color: 'white' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary)'; }}>{t('login.signInButton')}</button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button className="hidden md:block px-4 py-2 rounded transition-colors" style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)'; e.currentTarget.style.borderColor = 'var(--color-border-hover)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'var(--color-border)'; }}>{t('login.signUpButton')}</button>
+            </SignUpButton>
           </div>
         </Show>
         <LanguageSwitcher />
