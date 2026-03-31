@@ -112,7 +112,7 @@
       "users": "Users",
       "social": "Social Media",
       "styleLibrary": "Style Library",
-      "appSettings": "App Information"
+      "appSettings": "App Settings"
     },
     "stats": {
       "totalUsers": "Total Users",
@@ -136,7 +136,7 @@
       "description": "This admin panel provides complete management capabilities for users, slider content, and social media links. Use the links above to access each section."
     },
     "appSettings": {
-      "title": "Application Information",
+      "title": "Application Settings",
       "subtitle": "Configure fonts, themes, site information, and other application preferences",
       "settingsTabs": {
         "homeSections": "Home Sections",

@@ -381,7 +381,7 @@ export default function AppSettingsPage() {
               color: activeTab === 'site-settings' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
             }}
           >
-            {language === 'ar' ? 'إعدادات الموقع' : 'Site Settings'}
+            {language === 'ar' ? 'معلومات التطبيق' : 'App Information'}
           </button>
         </nav>
       </div>
@@ -845,7 +845,7 @@ export default function AppSettingsPage() {
           <div className="max-w-4xl space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-1">
-                {language === 'ar' ? 'إعدادات الموقع العامة' : 'General Site Settings'}
+                {language === 'ar' ? 'معلومات التطبيق العامة' : 'General App Information'}
               </h3>
               <p className="text-sm text-gray-600 dark:text-zinc-400">
                 {language === 'ar'
