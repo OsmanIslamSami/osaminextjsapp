@@ -106,8 +106,7 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <Show when="signed-out">
           <div className="flex items-center gap-2">
-            <SignInButton mode="modal">
-              <button 
+            <SignInButton mode="modal"><button 
                 className="px-3 py-2 md:px-4 text-sm md:text-base rounded transition-colors"
                 style={{
                   backgroundColor: 'var(--color-primary)',
@@ -121,10 +120,8 @@ export default function Header() {
                 }}
               >
                 {t('login.signInButton')}
-              </button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button 
+              </button></SignInButton>
+            <SignUpButton mode="modal"><button 
                 className="hidden md:block px-4 py-2 rounded transition-colors"
                 style={{
                   borderWidth: '1px',
@@ -142,8 +139,7 @@ export default function Header() {
                 }}
               >
                 {t('login.signUpButton')}
-              </button>
-            </SignUpButton>
+              </button></SignUpButton>
           </div>
         </Show>
         <LanguageSwitcher />

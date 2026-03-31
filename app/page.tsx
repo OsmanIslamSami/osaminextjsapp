@@ -165,8 +165,7 @@ export default async function Home() {
               Please sign in to access the dashboard and manage your content.
             </p>
             <div className="flex gap-4 justify-center">
-              <SignInButton mode="modal">
-                <button 
+              <SignInButton mode="modal"><button 
                   className="px-6 py-3 rounded-lg transition-colors min-h-[44px]"
                   style={{
                     backgroundColor: 'var(--color-primary)',
@@ -180,13 +179,10 @@ export default async function Home() {
                   }}
                 >
                   Sign In
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px]">
+                </button></SignInButton>
+              <SignUpButton mode="modal"><button className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px]">
                   Sign Up
-                </button>
-              </SignUpButton>
+                </button></SignUpButton>
             </div>
           </div>
         </div>
