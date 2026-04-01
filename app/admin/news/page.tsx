@@ -45,7 +45,7 @@ export default function AdminNewsPage() {
   });
 
   const { language, direction } = useLanguage();
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
 
