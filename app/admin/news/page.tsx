@@ -272,16 +272,41 @@ export default function AdminNewsPage() {
 
   return (
     <div className="space-y-6 p-4 md:p-6" dir={direction}>
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
-          {language === 'ar' ? 'إدارة الأخبار' : 'News Management'}
-        </h2>
-        <button
-          onClick={handleAdd}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors min-h-[44px]"
-        >
-          {language === 'ar' ? '+ إضافة خبر' : '+ Add News'}
-        </button>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
+            {language === 'ar' ? 'إدارة الأخبار' : 'News Management'}
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
+            {language === 'ar' 
+              ? `${pagination.total} خبر إجمالاً` 
+              : `${pagination.total} total news items`}
+            {selectedNews.size > 0 && (
+              <span className="mx-2 text-blue-600 dark:text-blue-400 font-semibold">
+                ({language === 'ar' 
+                  ? `${selectedNews.size} محدد` 
+                  : `${selectedNews.size} selected`})
+              </span>
+            )}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {selectedNews.size > 0 && (
+            <button
+              onClick={handleBulkDelete}
+              className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+            >
+              {language === 'ar' ? `حذف المحدد (${selectedNews.size})` : `Delete Selected (${selectedNews.size})`}
+            </button>
+          )}
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+          >
+            {language === 'ar' ? 'إضافة خبر' : 'Add News'}
+          </button>
+        </div>
       </div>
 
       {/* Search, Filter, and Export */}
