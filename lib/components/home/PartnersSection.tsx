@@ -129,16 +129,14 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
     <section className="py-16 px-4 bg-white dark:bg-zinc-900">
       <div className="container mx-auto max-w-7xl" ref={sectionRef}>
         {/* Header with title and button */}
-        <div className={`flex items-center justify-between mb-8 transition-all duration-700 ${
+        <div className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 transition-all duration-700 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
         }`}>
           <div>
             <h2 
-              className="text-4xl font-bold bg-clip-text text-transparent"
+              className="text-4xl font-bold"
               style={{
-                backgroundImage: 'linear-gradient(to right, var(--color-primary), var(--color-accent))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                color: 'var(--color-primary)',
               }}
             >
               {sectionTitle}
@@ -151,15 +149,15 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
           </div>
           <Link
             href="/partners"
-            className="inline-block text-white px-8 py-3 rounded-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap"
+            className="inline-block text-white px-8 py-3 rounded-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap w-fit"
             style={{
-              backgroundImage: 'linear-gradient(to right, var(--color-primary), var(--color-accent))',
+              backgroundColor: 'var(--color-primary)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundImage = 'linear-gradient(to right, var(--color-primary-hover), var(--color-accent))';
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundImage = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
             }}
           >
             {language === 'ar' ? 'جميع الشركاء' : 'All Partners'}

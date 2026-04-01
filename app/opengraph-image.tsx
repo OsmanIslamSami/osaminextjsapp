@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { prisma } from '@/lib/db';
 
-// Runtime configuration
-export const runtime = 'edge';
+// Runtime configuration - using nodejs to enable database queries
+export const runtime = 'nodejs';
 
 // Image metadata
 export const alt = 'Next App - Modern Business Management Platform for Client Services, News, and Analytics';
@@ -15,11 +16,24 @@ export const contentType = 'image/png';
 // Revalidate every 24 hours
 export const revalidate = 86400;
 
-// Image generation with fallback to avoid database timeout
+// Image generation using app settings
 export default async function Image() {
-  // Use default values to avoid database query timeout in Edge runtime
-  const title = 'Next App';
-  const description = 'Streamline client management, track analytics, publish news updates, and grow your business with our modern platform';
+  // Fetch app settings from database
+  let title = 'Next App';
+  let description = 'Streamline client management, track analytics, publish news updates, and grow your business with our modern platform';
+  
+  try {
+    const settings = await prisma.app_settings.findFirst();
+    
+    if (settings) {
+      // Use English settings for OG image (international standard)
+      title = settings.site_title_en || title;
+      description = settings.site_description_en || description;
+    }
+  } catch (error) {
+    console.error('Failed to fetch app settings for OG image:', error);
+    // Fall back to default values
+  }
   
   return new ImageResponse(
     (

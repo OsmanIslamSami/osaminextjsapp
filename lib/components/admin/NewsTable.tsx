@@ -26,6 +26,9 @@ interface NewsTableProps {
   onDelete: (id: string) => void;
   onRestore: (id: string) => void;
   onToggleVisibility: (id: string, currentVisibility: boolean) => void;
+  selectedNews?: Set<string>;
+  onSelectNews?: (id: string) => void;
+  onSelectAll?: () => void;
 }
 
 export default function NewsTable({
@@ -34,6 +37,9 @@ export default function NewsTable({
   onDelete,
   onRestore,
   onToggleVisibility,
+  selectedNews = new Set(),
+  onSelectNews,
+  onSelectAll,
 }: NewsTableProps) {
   const { language, direction } = useLanguage();
 
@@ -67,6 +73,16 @@ export default function NewsTable({
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
             <tr>
+              {onSelectAll && (
+                <th className="px-4 py-3 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedNews && selectedNews.size === news.length && news.length > 0}
+                    onChange={onSelectAll}
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </th>
+              )}
               <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
                 {language === 'ar' ? 'صورة' : 'Image'}
               </th>
@@ -90,6 +106,16 @@ export default function NewsTable({
           <tbody className="divide-y divide-gray-200 dark:divide-zinc-700">
             {news.map((item) => (
               <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800">
+                {onSelectNews && (
+                  <td className="px-4 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedNews?.has(item.id) || false}
+                      onChange={() => onSelectNews(item.id)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </td>
+                )}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="relative w-16 h-16">
                     <Image
@@ -196,6 +222,16 @@ export default function NewsTable({
             className="bg-white dark:bg-zinc-900 rounded-lg shadow p-4"
           >
             <div className="flex gap-4 mb-4">
+              {onSelectNews && (
+                <div className="flex items-start pt-1">
+                  <input
+                    type="checkbox"
+                    checked={selectedNews?.has(item.id) || false}
+                    onChange={() => onSelectNews(item.id)}
+                    className="w-5 h-5 cursor-pointer"
+                  />
+                </div>
+              )}
               <div className="relative w-20 h-20 flex-shrink-0">
                 <Image
                   src={getImageUrl(item)}

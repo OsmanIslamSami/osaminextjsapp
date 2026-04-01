@@ -18,7 +18,7 @@ async function main() {
         data: {
           arabic_font: 'Cairo',
           english_font: 'Inter',
-          theme: 'default',
+          theme: 'palette-1', // Dark & Teal palette as default
           site_title_en: 'Next App',
           site_title_ar: 'تطبيق نكست',
           site_description_en: 'A modern web application',

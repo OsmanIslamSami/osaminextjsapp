@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
 import { useAppSettings } from '@/lib/contexts/AppSettingsContext';
-import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { getTheme } from '@/lib/themes/themeConfig';
+import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon, ChevronRightIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
 
 interface HomeSection {
@@ -83,22 +82,38 @@ const ENGLISH_FONTS = [
   'Mulish',
   'DM Sans'
 ];
-const THEMES = [
-  { id: 'default', name: 'Default', nameAr: 'افتراضي' },
-  { id: 'modern', name: 'Modern', nameAr: 'عصري' },
-  { id: 'elegant', name: 'Elegant', nameAr: 'أنيق' },
-  { id: 'minimal', name: 'Minimal', nameAr: 'بسيط' },
-  { id: 'vibrant', name: 'Vibrant', nameAr: 'نابض' },
-  { id: 'nature', name: 'Nature', nameAr: 'طبيعة' },
-  { id: 'sunset', name: 'Sunset', nameAr: 'غروب' },
-  { id: 'ocean', name: 'Ocean', nameAr: 'محيط' },
-  { id: 'royal', name: 'Royal', nameAr: 'ملكي' },
-  { id: 'warm', name: 'Warm', nameAr: 'دافئ' },
-  { id: 'professional', name: 'Professional', nameAr: 'احترافي' },
-  { id: 'bold', name: 'Bold', nameAr: 'جريء' },
-  { id: 'fresh', name: 'Fresh', nameAr: 'منعش' },
-  { id: 'cosmic', name: 'Cosmic', nameAr: 'كوني' },
-  { id: 'classic', name: 'Classic', nameAr: 'كلاسيكي' },
+// Popular Color Palettes from ColorHunt.co
+const COLOR_PALETTES = [
+  { id: 'palette-1', name: 'Dark & Teal', nameAr: 'داكن وأزرق مخضر', colors: ['#222831', '#393E46', '#00ADB5', '#EEEEEE'] },
+  { id: 'palette-2', name: 'Ocean Breeze', nameAr: 'نسيم المحيط', colors: ['#CBF1F5', '#A6E3E9', '#71C9CE', '#0AA1DD'] },
+  { id: 'palette-3', name: 'Navy & Violet', nameAr: 'أزرق غامق وبنفسجي', colors: ['#E8E2E2', '#C2BBF0', '#8FB8ED', '#62CDFF'] },
+  { id: 'palette-4', name: 'Warm Sunset', nameAr: 'غروب دافئ', colors: ['#FFEAA7', '#FDCB6E', '#FD79A8', '#6C5CE7'] },
+  { id: 'palette-5', name: 'Mint Fresh', nameAr: 'نعناع منعش', colors: ['#F8EDE3', '#DFD3C3', '#D0B8A8', '#8D7B68'] },
+  { id: 'palette-6', name: 'Purple Dream', nameAr: 'حلم بنفسجي', colors: ['#D8B5FF', '#EFC3E6', '#F0C1E1', '#FDDBBB'] },
+  { id: 'palette-7', name: 'Forest Green', nameAr: 'أخضر الغابة', colors: ['#222831', '#31363F', '#76ABAE', '#EEEEEE'] },
+  { id: 'palette-8', name: 'Coral Reef', nameAr: 'شعاب المرجان', colors: ['#FFE6E6', '#F9D5D3', '#E68369', '#FFFFFF'] },
+  { id: 'palette-9', name: 'Royal Blue', nameAr: 'أزرق ملكي', colors: ['#04364A', '#176B87', '#64CCC5', '#DAFFFB'] },
+  { id: 'palette-10', name: 'Sunny Day', nameAr: 'يوم مشمس', colors: ['#FFFBF5', '#F7EFE5', '#C3ACD0', '#7743DB'] },
+  { id: 'palette-11', name: 'Cotton Candy', nameAr: 'حلوى قطنية', colors: ['#FFE6F7', '#F5C6EC', '#C8A1E0', '#674188'] },
+  { id: 'palette-12', name: 'Vintage Rose', nameAr: 'وردة عتيقة', colors: ['#FFF8E8', '#FFD1E3', '#FF90BC', '#C63D2F'] },
+  { id: 'palette-13', name: 'Peachy Keen', nameAr: 'دراقي لطيف', colors: ['#FFF6E9', '#FFE6C7', '#F7DCB9', '#D5B895'] },
+  { id: 'palette-14', name: 'Sky Blue', nameAr: 'أزرق سماوي', colors: ['#BBDEFA', '#96C7F2', '#6FA3EC', '#4A7BB7'] },
+  { id: 'palette-15', name: 'Lavender Fields', nameAr: 'حقول خزامى', colors: ['#EEE4E1', '#E7D4E8', '#D4B2D8', '#AF9BB6'] },
+  { id: 'palette-16', name: 'Minty Green', nameAr: 'أخضر نعناعي', colors: ['#F2D8D8', '#BFD8D5', '#A7C4BC', '#87A8A4'] },
+  { id: 'palette-17', name: 'Sunset Glow', nameAr: 'توهج الغروب', colors: ['#FFF2F2', '#FFE5F1', '#E8A0BF', '#BA90C6'] },
+  { id: 'palette-18', name: 'Deep Ocean', nameAr: 'محيط عميق', colors: ['#0B2447', '#19376D', '#576CBC', '#A5D7E8'] },
+  { id: 'palette-19', name: 'Earthy Tones', nameAr: 'ألوان ترابية', colors: ['#EAD196', '#C4A77D', '#70483C', '#454545'] },
+  { id: 'palette-20', name: 'Blush Pink', nameAr: 'وردي خجول', colors: ['#FFF9F9', '#FFE6E6', '#FFAAAA', '#EE6F6F'] },
+  { id: 'palette-21', name: 'Clean Blue', nameAr: 'أزرق نظيف', colors: ['#1E3A5F', '#4A90E2', '#E4E9F2', '#FFFFFF'] },
+  { id: 'palette-22', name: 'Fresh Green', nameAr: 'أخضر منعش', colors: ['#1B5E20', '#28A745', '#D4EDDA', '#FFFFFF'] },
+  { id: 'palette-23', name: 'Soft Purple', nameAr: 'بنفسجي ناعم', colors: ['#4C1D95', '#7C3AED', '#E9E4F7', '#FFFFFF'] },
+  { id: 'palette-24', name: 'Warm Orange', nameAr: 'برتقالي دافئ', colors: ['#B54708', '#FF8C42', '#FFE8CC', '#FFFFFF'] },
+  { id: 'palette-25', name: 'Cool Gray', nameAr: 'رمادي بارد', colors: ['#343A40', '#6C757D', '#E9ECEF', '#FFFFFF'] },
+  { id: 'palette-26', name: 'Bright Cyan', nameAr: 'سيان ساطع', colors: ['#006064', '#00BCD4', '#CCFBFF', '#FFFFFF'] },
+  { id: 'palette-27', name: 'Lime Fresh', nameAr: 'ليموني منعش', colors: ['#3F6212', '#84CC16', '#E8FFB7', '#FFFFFF'] },
+  { id: 'palette-28', name: 'Rose Quartz', nameAr: 'كوارتز وردي', colors: ['#880E4F', '#E91E63', '#FFD6E0', '#FFFFFF'] },
+  { id: 'palette-29', name: 'Indigo Wave', nameAr: 'موجة نيلية', colors: ['#1A237E', '#3F51B5', '#E0E3F5', '#FFFFFF'] },
+  { id: 'palette-30', name: 'Amber Glow', nameAr: 'توهج كهرماني', colors: ['#B45309', '#FFC107', '#FFF3CD', '#FFFFFF'] },
 ];
 
 export default function AppSettingsPage() {
@@ -349,11 +364,11 @@ export default function AppSettingsPage() {
       </div>
 
       {/* Tabs Navigation */}
-      <div style={{ borderBottom: '1px solid var(--color-border)' }}>
-        <nav className="flex gap-4" dir={direction}>
+      <div style={{ borderBottom: '1px solid var(--color-border)' }} className="overflow-x-auto">
+        <nav className="flex gap-2 sm:gap-4 min-w-max sm:min-w-0" dir={direction}>
           <button
             onClick={() => setActiveTab('home-sections')}
-            className="px-4 py-3 font-medium transition-colors whitespace-nowrap"
+            className="px-3 sm:px-4 py-3 font-medium transition-colors whitespace-nowrap text-sm sm:text-base"
             style={{
               borderBottom: activeTab === 'home-sections' ? '2px solid var(--color-primary)' : '2px solid transparent',
               color: activeTab === 'home-sections' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
@@ -363,7 +378,7 @@ export default function AppSettingsPage() {
           </button>
           <button
             onClick={() => setActiveTab('fonts')}
-            className="px-4 py-3 font-medium transition-colors whitespace-nowrap"
+            className="px-3 sm:px-4 py-3 font-medium transition-colors whitespace-nowrap text-sm sm:text-base"
             style={{
               borderBottom: activeTab === 'fonts' ? '2px solid var(--color-primary)' : '2px solid transparent',
               color: activeTab === 'fonts' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
@@ -373,7 +388,7 @@ export default function AppSettingsPage() {
           </button>
           <button
             onClick={() => setActiveTab('themes')}
-            className="px-4 py-3 font-medium transition-colors whitespace-nowrap"
+            className="px-3 sm:px-4 py-3 font-medium transition-colors whitespace-nowrap text-sm sm:text-base"
             style={{
               borderBottom: activeTab === 'themes' ? '2px solid var(--color-primary)' : '2px solid transparent',
               color: activeTab === 'themes' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
@@ -383,7 +398,7 @@ export default function AppSettingsPage() {
           </button>
           <button
             onClick={() => setActiveTab('site-settings')}
-            className="px-4 py-3 font-medium transition-colors whitespace-nowrap"
+            className="px-3 sm:px-4 py-3 font-medium transition-colors whitespace-nowrap text-sm sm:text-base"
             style={{
               borderBottom: activeTab === 'site-settings' ? '2px solid var(--color-primary)' : '2px solid transparent',
               color: activeTab === 'site-settings' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
@@ -729,91 +744,184 @@ export default function AppSettingsPage() {
           </div>
         )}
 
-        {/* Themes Tab */}
+        {/* Themes Tab - Color Palettes */}
         {activeTab === 'themes' && appSettings && (
-          <div className="max-w-4xl space-y-6">
+          <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-1">
-                {t('admin.appSettings.themes.title')}
+                {language === 'ar' ? 'لوحات الألوان الشائعة' : 'Popular Color Palettes'}
               </h3>
               <p className="text-sm text-gray-600 dark:text-zinc-400">
-                {t('admin.appSettings.themes.description')}
+                {language === 'ar'
+                  ? 'انقر على الجانب الأيسر لاختيار اللوحة - استخدم الجانب الأيمن لنسخ الألوان'
+                  : 'Click left side to select palette - Use right side to copy colors'}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {THEMES.map((theme) => {
-                const themeConfig = getTheme(theme.id);
-                const colors = themeConfig.light;
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {COLOR_PALETTES.map((palette) => {
+                const isSelected = appSettings.theme === palette.id;
                 
                 return (
-                  <button
-                    key={theme.id}
-                    onClick={() => handleUpdateAppSettings({ theme: theme.id })}
-                    disabled={saving === 'app-settings'}
-                    className="p-6 rounded-lg transition-all text-left"
+                  <div
+                    key={palette.id}
+                    className="bg-white dark:bg-zinc-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
                     style={{
-                      borderWidth: '2px',
+                      borderWidth: '3px',
                       borderStyle: 'solid',
-                      borderColor: appSettings.theme === theme.id ? 'var(--color-primary)' : 'var(--color-border)',
-                      backgroundColor: appSettings.theme === theme.id ? 'var(--color-primary-light)' : 'transparent',
-                      opacity: saving === 'app-settings' ? 0.5 : 1,
-                      cursor: saving === 'app-settings' ? 'not-allowed' : 'pointer',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (saving !== 'app-settings' && appSettings.theme !== theme.id) {
-                        e.currentTarget.style.borderColor = 'var(--color-primary)';
-                        e.currentTarget.style.opacity = '0.85';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (saving !== 'app-settings' && appSettings.theme !== theme.id) {
-                        e.currentTarget.style.borderColor = 'var(--color-border)';
-                        e.currentTarget.style.opacity = '1';
-                      }
+                      borderColor: isSelected ? '#16a34a' : '#e5e7eb',
                     }}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-                        {language === 'ar' ? theme.nameAr : theme.name}
+                    <div className="flex">
+                      {/* LEFT SIDE - Selection Area */}
+                      <button
+                        onClick={() => handleUpdateAppSettings({ theme: palette.id })}
+                        disabled={saving === 'app-settings'}
+                        className="flex-1 relative group/select"
+                        style={{
+                          opacity: saving === 'app-settings' ? 0.5 : 1,
+                          cursor: saving === 'app-settings' ? 'not-allowed' : 'pointer',
+                        }}
+                        title={language === 'ar' ? 'انقر لاختيار هذه اللوحة' : 'Click to select this palette'}
+                      >
+                        {/* Color Bars Stacked Vertically */}
+                        <div className="flex flex-col h-48">
+                          {palette.colors.map((color, index) => (
+                            <div
+                              key={index}
+                              className="flex-1 transition-all group-hover/select:scale-x-105"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                        </div>
+                        
+                        {/* Selected Checkmark Overlay */}
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                            <div className="bg-white dark:bg-zinc-900 rounded-full p-3 shadow-xl">
+                              <CheckIcon className="w-8 h-8 text-green-600" />
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Hover Hint */}
+                        {!isSelected && (
+                          <div className="absolute inset-0 bg-black/0 group-hover/select:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/select:opacity-100">
+                            <div className="bg-white/90 dark:bg-zinc-900/90 px-3 py-2 rounded-lg text-sm font-medium text-gray-900 dark:text-zinc-100">
+                              {language === 'ar' ? 'انقر للاختيار' : 'Click to Select'}
+                            </div>
+                          </div>
+                        )}
+                      </button>
+                      
+                      {/* RIGHT SIDE - Copy Area */}
+                      <div className="w-44 bg-gray-50 dark:bg-zinc-800 p-3 flex flex-col justify-center space-y-2 border-l border-gray-200 dark:border-zinc-700">
+                        {palette.colors.map((color, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <div
+                              className="w-6 h-6 rounded border border-gray-300 dark:border-zinc-600 flex-shrink-0 shadow-sm"
+                              style={{ backgroundColor: color }}
+                            />
+                            <span className="font-mono text-xs text-gray-700 dark:text-zinc-300 flex-1">
+                              {color}
+                            </span>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(color);
+                                showSuccess(
+                                  language === 'ar'
+                                    ? `تم نسخ ${color}`
+                                    : `Copied ${color}`
+                                );
+                              }}
+                              className="p-1 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded transition-colors"
+                              title={language === 'ar' ? 'نسخ' : 'Copy'}
+                            >
+                              <ClipboardDocumentIcon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Palette Name */}
+                    <div className="px-3 py-2 border-t border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                      <h4 className="text-sm font-semibold text-gray-900 dark:text-zinc-100 text-center truncate">
+                        {language === 'ar' ? palette.nameAr : palette.name}
                       </h4>
-                      {appSettings.theme === theme.id && (
-                        <CheckIcon className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--color-primary)' }} />
+                      {isSelected && (
+                        <p className="text-xs text-green-600 dark:text-green-500 text-center mt-1 font-medium">
+                          {language === 'ar' ? '✓ نشطة' : '✓ Active'}
+                        </p>
                       )}
                     </div>
-                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                      {t(`admin.appSettings.themes.descriptions.${theme.id}`)}
-                    </p>
-                    
-                    {/* Color Preview Swatches */}
-                    <div className="mt-4 flex gap-2">
-                      <div
-                        className="w-8 h-8 rounded-full border border-gray-200 dark:border-zinc-700"
-                        style={{ backgroundColor: colors.primary }}
-                        title="Primary"
-                      />
-                      <div
-                        className="w-8 h-8 rounded-full border border-gray-200 dark:border-zinc-700"
-                        style={{ backgroundColor: colors.secondary }}
-                        title="Secondary"
-                      />
-                      <div
-                        className="w-8 h-8 rounded-full border border-gray-200 dark:border-zinc-700"
-                        style={{ backgroundColor: colors.accent }}
-                        title="Accent"
-                      />
-                      <div
-                        className="w-8 h-8 rounded-full border border-gray-200 dark:border-zinc-700"
-                        style={{ backgroundColor: colors.success }}
-                        title="Success"
-                      />
-                    </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
 
-            {/* Theme Info Notice */}
+            {/* Active Palette Preview */}
+            {appSettings.theme && (
+              <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-6" style={{
+                borderWidth: '3px',
+                borderStyle: 'solid',
+                borderColor: '#16a34a',
+              }}>
+                <h4 className="font-semibold text-gray-900 dark:text-zinc-100 mb-4 flex items-center gap-2">
+                  <CheckIcon className="w-5 h-5 text-green-600" />
+                  {language === 'ar' ? 'اللوحة النشطة حالياً' : 'Currently Active Palette'}
+                </h4>
+                {(() => {
+                  const activePalette = COLOR_PALETTES.find(p => p.id === appSettings.theme);
+                  if (!activePalette) return null;
+                  
+                  return (
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                      {/* Palette Preview */}
+                      <div className="flex rounded-lg overflow-hidden h-16 w-full sm:w-64 shadow-md">
+                        {activePalette.colors.map((color, index) => (
+                          <div
+                            key={index}
+                            className="flex-1"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </div>
+                      
+                      {/* Palette Info */}
+                      <div className="flex-1">
+                        <h5 className="font-semibold text-gray-900 dark:text-zinc-100">
+                          {language === 'ar' ? activePalette.nameAr : activePalette.name}
+                        </h5>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {activePalette.colors.map((color, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                navigator.clipboard.writeText(color);
+                                showSuccess(
+                                  language === 'ar'
+                                    ? `تم نسخ ${color}`
+                                    : `Copied ${color}`
+                                );
+                              }}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-100 dark:bg-zinc-800 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                            >
+                              <span className="font-mono text-xs text-gray-700 dark:text-zinc-300">
+                                {color}
+                              </span>
+                              <ClipboardDocumentIcon className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* Info Notice */}
             <div 
               className="rounded-lg p-4"
               style={{
@@ -825,23 +933,28 @@ export default function AppSettingsPage() {
               }}
             >
               <h4 className="font-semibold mb-2" style={{ color: 'var(--color-primary-dark)' }}>
-                {language === 'ar' ? '✨ القوالب نشطة' : '✨ Themes Active'}
+                {language === 'ar' ? '🎨 لوحات ألوان من ColorHunt' : '🎨 Color Palettes from ColorHunt'}
               </h4>
               <ul className="text-sm space-y-1 list-disc list-inside" style={{ color: 'var(--color-primary-dark)' }}>
                 <li>
                   {language === 'ar'
-                    ? 'القوالب تُطبق فوراً على جميع صفحات التطبيق'
-                    : 'Themes are applied instantly across all pages'}
+                    ? 'هذه اللوحات مستوحاة من أشهر الألوان على ColorHunt.co'
+                    : 'These palettes are inspired by the most popular colors on ColorHunt.co'}
                 </li>
                 <li>
                   {language === 'ar'
-                    ? 'القوالب تتكيف تلقائياً مع الوضع الفاتح والداكن'
-                    : 'Themes automatically adapt to light and dark modes'}
+                    ? 'انقر على الجانب الأيسر (الألوان الملونة) لاختيار اللوحة للتطبيق'
+                    : 'Click left side (colored bars) to select palette for the app'}
                 </li>
                 <li>
                   {language === 'ar'
-                    ? 'كل قالب يحتوي على ألوان مخصصة للأزرار، الخلفيات، والنصوص'
-                    : 'Each theme has custom colors for buttons, backgrounds, and text'}
+                    ? 'استخدم الجانب الأيمن (رموز الألوان) لنسخ الألوان الفردية'
+                    : 'Use right side (hex codes) to copy individual colors'}
+                </li>
+                <li>
+                  {language === 'ar'
+                    ? 'اللوحة المختارة ستظهر بإطار أخضر مع علامة صح ✓'
+                    : 'Selected palette will show green border with checkmark ✓'}
                 </li>
               </ul>
             </div>

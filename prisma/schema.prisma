@@ -348,7 +348,7 @@ model app_settings {
   english_font       String    @default("Inter")      // Inter, Roboto, Open Sans, Lato, Poppins
   
   // Theme Settings
-  theme              String    @default("default")    // default, modern, elegant, minimal, vibrant
+  theme              String    @default("palette-1")    // Color palette ID from ColorHunt
   
   // Color overrides (optional, for future expansion)
   primary_color      String?   // Hex color

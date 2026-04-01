@@ -826,6 +826,140 @@ export const themes: Record<string, Theme> = {
   },
 };
 
+// Color Palettes from ColorHunt.co
+const COLOR_PALETTES: Record<string, { colors: string[]; name: string; nameAr: string }> = {
+  'palette-1': { colors: ['#222831', '#393E46', '#00ADB5', '#EEEEEE'], name: 'Dark & Teal', nameAr: 'داكن وأزرق مخضر' },
+  'palette-2': { colors: ['#CBF1F5', '#A6E3E9', '#71C9CE', '#0AA1DD'], name: 'Ocean Breeze', nameAr: 'نسيم المحيط' },
+  'palette-3': { colors: ['#E8E2E2', '#C2BBF0', '#8FB8ED', '#62CDFF'], name: 'Navy & Violet', nameAr: 'أزرق غامق وبنفسجي' },
+  'palette-4': { colors: ['#FFEAA7', '#FDCB6E', '#FD79A8', '#6C5CE7'], name: 'Warm Sunset', nameAr: 'غروب دافئ' },
+  'palette-5': { colors: ['#F8EDE3', '#DFD3C3', '#D0B8A8', '#8D7B68'], name: 'Mint Fresh', nameAr: 'نعناع منعش' },
+  'palette-6': { colors: ['#D8B5FF', '#EFC3E6', '#F0C1E1', '#FDDBBB'], name: 'Purple Dream', nameAr: 'حلم بنفسجي' },
+  'palette-7': { colors: ['#222831', '#31363F', '#76ABAE', '#EEEEEE'], name: 'Forest Green', nameAr: 'أخضر الغابة' },
+  'palette-8': { colors: ['#FFE6E6', '#F9D5D3', '#E68369', '#FFFFFF'], name: 'Coral Reef', nameAr: 'شعاب المرجان' },
+  'palette-9': { colors: ['#04364A', '#176B87', '#64CCC5', '#DAFFFB'], name: 'Royal Blue', nameAr: 'أزرق ملكي' },
+  'palette-10': { colors: ['#FFFBF5', '#F7EFE5', '#C3ACD0', '#7743DB'], name: 'Sunny Day', nameAr: 'يوم مشمس' },
+  'palette-11': { colors: ['#FFE6F7', '#F5C6EC', '#C8A1E0', '#674188'], name: 'Cotton Candy', nameAr: 'حلوى قطنية' },
+  'palette-12': { colors: ['#FFF8E8', '#FFD1E3', '#FF90BC', '#C63D2F'], name: 'Vintage Rose', nameAr: 'وردة عتيقة' },
+  'palette-13': { colors: ['#FFF6E9', '#FFE6C7', '#F7DCB9', '#D5B895'], name: 'Peachy Keen', nameAr: 'دراقي لطيف' },
+  'palette-14': { colors: ['#BBDEFA', '#96C7F2', '#6FA3EC', '#4A7BB7'], name: 'Sky Blue', nameAr: 'أزرق سماوي' },
+  'palette-15': { colors: ['#EEE4E1', '#E7D4E8', '#D4B2D8', '#AF9BB6'], name: 'Lavender Fields', nameAr: 'حقول خزامى' },
+  'palette-16': { colors: ['#F2D8D8', '#BFD8D5', '#A7C4BC', '#87A8A4'], name: 'Minty Green', nameAr: 'أخضر نعناعي' },
+  'palette-17': { colors: ['#FFF2F2', '#FFE5F1', '#E8A0BF', '#BA90C6'], name: 'Sunset Glow', nameAr: 'توهج الغروب' },
+  'palette-18': { colors: ['#0B2447', '#19376D', '#576CBC', '#A5D7E8'], name: 'Deep Ocean', nameAr: 'محيط عميق' },
+  'palette-19': { colors: ['#EAD196', '#C4A77D', '#70483C', '#454545'], name: 'Earthy Tones', nameAr: 'ألوان ترابية' },
+  'palette-20': { colors: ['#FFF9F9', '#FFE6E6', '#FFAAAA', '#EE6F6F'], name: 'Blush Pink', nameAr: 'وردي خجول' },
+  'palette-21': { colors: ['#1E3A5F', '#4A90E2', '#E4E9F2', '#FFFFFF'], name: 'Clean Blue', nameAr: 'أزرق نظيف' },
+  'palette-22': { colors: ['#1B5E20', '#28A745', '#D4EDDA', '#FFFFFF'], name: 'Fresh Green', nameAr: 'أخضر منعش' },
+  'palette-23': { colors: ['#4C1D95', '#7C3AED', '#E9E4F7', '#FFFFFF'], name: 'Soft Purple', nameAr: 'بنفسجي ناعم' },
+  'palette-24': { colors: ['#B54708', '#FF8C42', '#FFE8CC', '#FFFFFF'], name: 'Warm Orange', nameAr: 'برتقالي دافئ' },
+  'palette-25': { colors: ['#343A40', '#6C757D', '#E9ECEF', '#FFFFFF'], name: 'Cool Gray', nameAr: 'رمادي بارد' },
+  'palette-26': { colors: ['#006064', '#00BCD4', '#CCFBFF', '#FFFFFF'], name: 'Bright Cyan', nameAr: 'سيان ساطع' },
+  'palette-27': { colors: ['#3F6212', '#84CC16', '#E8FFB7', '#FFFFFF'], name: 'Lime Fresh', nameAr: 'ليموني منعش' },
+  'palette-28': { colors: ['#880E4F', '#E91E63', '#FFD6E0', '#FFFFFF'], name: 'Rose Quartz', nameAr: 'كوارتز وردي' },
+  'palette-29': { colors: ['#1A237E', '#3F51B5', '#E0E3F5', '#FFFFFF'], name: 'Indigo Wave', nameAr: 'موجة نيلية' },
+  'palette-30': { colors: ['#B45309', '#FFC107', '#FFF3CD', '#FFFFFF'], name: 'Amber Glow', nameAr: 'توهج كهرماني' },
+};
+
+// Helper function to determine if a color is light or dark
+function isLightColor(hex: string): boolean {
+  const rgb = parseInt(hex.replace('#', ''), 16);
+  const r = (rgb >> 16) & 0xff;
+  const g = (rgb >>  8) & 0xff;
+  const b = (rgb >>  0) & 0xff;
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luma > 128;
+}
+
+// Helper function to darken a color
+function darkenColor(hex: string, percent: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) - amt;
+  const G = (num >> 8 & 0x00FF) - amt;
+  const B = (num & 0x0000FF) - amt;
+  return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+    (B < 255 ? B < 1 ? 0 : B : 255))
+    .toString(16).slice(1).toUpperCase();
+}
+
+// Helper function to lighten a color
+function lightenColor(hex: string, percent: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) + amt;
+  const G = (num >> 8 & 0x00FF) + amt;
+  const B = (num & 0x0000FF) + amt;
+  return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+    (B < 255 ? B < 1 ? 0 : B : 255))
+    .toString(16).slice(1).toUpperCase();
+}
+
+// Convert a 4-color palette to a full theme
+function paletteToTheme(paletteId: string, palette: { colors: string[]; name: string; nameAr: string }): Theme {
+  const [color1, color2, color3, color4] = palette.colors;
+  // color1 = dark (text), color2 = bright accent (buttons), color3 = light tint, color4 = white background
+  
+  return {
+    id: paletteId,
+    name: palette.name,
+    nameAr: palette.nameAr,
+    light: {
+      primary: color2,                    // Bright accent for buttons
+      primaryHover: darkenColor(color2, 10),
+      primaryLight: lightenColor(color2, 40),
+      primaryDark: darkenColor(color2, 20),
+      secondary: color1,                  // Dark color for secondary elements
+      secondaryHover: darkenColor(color1, 10),
+      background: color4,                 // White background
+      backgroundSecondary: color3,        // Light tint for subtle backgrounds
+      surface: '#ffffff',
+      surfaceHover: color3,
+      textPrimary: color1,                // Dark text
+      textSecondary: lightenColor(color1, 20),
+      textTertiary: lightenColor(color1, 40),
+      border: color3,
+      borderHover: darkenColor(color3, 10),
+      success: '#16a34a',
+      warning: '#ea580c',
+      error: '#dc2626',
+      info: color2,
+      accent: color2,                     // Bright accent
+      accentLight: lightenColor(color2, 40),
+    },
+    dark: {
+      primary: color2,                    // Bright accent for buttons
+      primaryHover: lightenColor(color2, 15),
+      primaryLight: darkenColor(color2, 30),
+      primaryDark: color2,
+      secondary: lightenColor(color1, 20),
+      secondaryHover: lightenColor(color1, 30),
+      background: color1,                 // Dark background
+      backgroundSecondary: lightenColor(color1, 5),
+      surface: lightenColor(color1, 8),
+      surfaceHover: lightenColor(color1, 12),
+      textPrimary: color4,                // White text on dark
+      textSecondary: lightenColor(color4, -20),
+      textTertiary: lightenColor(color3, -20),
+      border: lightenColor(color1, 15),
+      borderHover: lightenColor(color1, 20),
+      success: '#22c55e',
+      warning: '#f97316',
+      error: '#ef4444',
+      info: lightenColor(color2, 15),
+      accent: color2,                     // Bright accent
+      accentLight: darkenColor(color2, 20),
+    },
+  };
+}
+
 export function getTheme(themeId: string): Theme {
+  // Check if it's a color palette
+  if (themeId.startsWith('palette-') && COLOR_PALETTES[themeId]) {
+    return paletteToTheme(themeId, COLOR_PALETTES[themeId]);
+  }
+  
+  // Fall back to built-in themes or default
   return themes[themeId] || themes.default;
 }

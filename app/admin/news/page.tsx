@@ -35,6 +35,8 @@ export default function AdminNewsPage() {
   const [editingNews, setEditingNews] = useState<News | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingNewsId, setDeletingNewsId] = useState<string | null>(null);
+  const [selectedNews, setSelectedNews] = useState<Set<string>>(new Set());
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -113,6 +115,61 @@ export default function AdminNewsPage() {
     } finally {
       setShowDeleteConfirm(false);
       setDeletingNewsId(null);
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectedNews.size === news.length) {
+      setSelectedNews(new Set());
+    } else {
+      setSelectedNews(new Set(news.map(item => item.id)));
+    }
+  };
+
+  const handleSelectNews = (id: string) => {
+    const newSelected = new Set(selectedNews);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedNews(newSelected);
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedNews.size === 0) return;
+    setShowBulkDeleteConfirm(true);
+  };
+
+  const confirmBulkDelete = async () => {
+    try {
+      const deletePromises = Array.from(selectedNews).map(id =>
+        fetch(`/api/news/${id}`, { method: 'DELETE' })
+      );
+
+      const results = await Promise.all(deletePromises);
+      const failedCount = results.filter(r => !r.ok).length;
+
+      if (failedCount > 0) {
+        showError(
+          language === 'ar' 
+            ? `فشل حذف ${failedCount} من ${selectedNews.size} خبر` 
+            : `Failed to delete ${failedCount} of ${selectedNews.size} news items`
+        );
+      } else {
+        showSuccess(
+          language === 'ar' 
+            ? `تم حذف ${selectedNews.size} خبر بنجاح` 
+            : `Successfully deleted ${selectedNews.size} news items`
+        );
+      }
+
+      setSelectedNews(new Set());
+      fetchNews();
+    } catch (err) {
+      showError(language === 'ar' ? 'فشل الحذف الجماعي' : 'Failed to bulk delete');
+    } finally {
+      setShowBulkDeleteConfirm(false);
     }
   };
 
@@ -278,6 +335,9 @@ export default function AdminNewsPage() {
             onDelete={handleDelete}
             onRestore={handleRestore}
             onToggleVisibility={handleToggleVisibility}
+            selectedNews={selectedNews}
+            onSelectNews={handleSelectNews}
+            onSelectAll={handleSelectAll}
           />
 
           {/* Pagination Controls */}
@@ -375,7 +435,20 @@ export default function AdminNewsPage() {
                   >
                     {language === 'ar' ? 'الأخيرة' : 'Last'}
                   </button>
-                </div>
+        
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        title={language === 'ar' ? 'تأكيد الحذف الجماعي' : 'Confirm Bulk Delete'}
+        message={language === 'ar' 
+          ? `هل أنت متأكد من حذف ${selectedNews.size} خبر؟ يمكن استعادتها لاحقاً.` 
+          : `Are you sure you want to delete ${selectedNews.size} news items? They can be restored later.`}
+        confirmText={language === 'ar' ? 'حذف الكل' : 'Delete All'}
+        cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
+        onConfirm={confirmBulkDelete}
+        onCancel={() => setShowBulkDeleteConfirm(false)}
+      />        </div>
               </div>
             </div>
           )}
