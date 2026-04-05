@@ -7,6 +7,8 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { HomeIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
@@ -88,7 +90,24 @@ export default function PhotosGalleryPage() {
   return (
     <main className="min-h-screen py-16" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{title}</h1>
+        {/* Header Section */}
+        <div className="flex flex-col items-center justify-center gap-4 mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-zinc-100">{title}</h1>
+          {pagination.total > 0 && (
+            <div className="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-full font-semibold">
+              {language === 'ar' 
+                ? `${pagination.total} صورة` 
+                : `${pagination.total} Photo${pagination.total !== 1 ? 's' : ''}`}
+            </div>
+          )}
+          <Link 
+            href="/"
+            className="flex items-center gap-2 px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
+          >
+            <HomeIcon className="w-4 h-4" />
+            <span>{language === 'ar' ? 'الرئيسية' : 'Home'}</span>
+          </Link>
+        </div>
 
         {photos.length === 0 ? (
           <div className="text-center py-16">
@@ -133,7 +152,7 @@ export default function PhotosGalleryPage() {
                 <button
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page === 1}
-                  className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-1.5 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {language === 'ar' ? 'السابق' : 'Previous'}
                 </button>
@@ -143,10 +162,10 @@ export default function PhotosGalleryPage() {
                     <button
                       key={page}
                       onClick={() => handlePageChange(page)}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
+                      className={`px-3 py-1.5 rounded-full transition-all font-medium text-sm ${
                         page === pagination.page
-                          ? 'bg-blue-600 text-white'
-                          : 'border border-gray-300 hover:bg-gray-50'
+                          ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                          : 'border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent'
                       }`}
                     >
                       {page}
@@ -157,7 +176,7 @@ export default function PhotosGalleryPage() {
                 <button
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page === pagination.totalPages}
-                  className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-1.5 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {language === 'ar' ? 'التالي' : 'Next'}
                 </button>

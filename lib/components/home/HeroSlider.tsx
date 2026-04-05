@@ -260,7 +260,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                   {currentSlide.show_button && buttonText && currentSlide.button_url && (
                     <a
                       href={currentSlide.button_url}
-                      className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 md:px-10 md:py-4 rounded-lg transition-colors min-h-[44px] flex items-center justify-center"
+                      className="inline-block bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-2.5 md:px-8 md:py-3 rounded-full transition-all min-h-[44px] flex items-center justify-center text-sm md:text-base"
                     >
                       {buttonText}
                     </a>

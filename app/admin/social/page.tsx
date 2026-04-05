@@ -238,9 +238,9 @@ export default function AdminSocialPage() {
         </div>
         <button
           onClick={handleOpenAddForm}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors min-h-[44px]"
+          className="flex items-center justify-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm min-h-[44px]"
         >
-          <PlusIcon className="w-5 h-5" />
+          <PlusIcon className="w-4 h-4" />
           Add New Link
         </button>
       </div>
@@ -396,14 +396,14 @@ export default function AdminSocialPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors"
+                className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm disabled:opacity-50"
               >
                 {uploadingFile ? 'Uploading Icon...' : submitting ? 'Saving...' : editingId ? 'Update Link' : 'Add Link'}
               </button>
               <button
                 type="button"
                 onClick={handleCloseForm}
-                className="px-4 py-2 border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
               >
                 Cancel
               </button>
@@ -501,9 +501,9 @@ export default function AdminSocialPage() {
           <p className="text-gray-500 dark:text-zinc-400 mb-4">No social media links found</p>
           <button
             onClick={handleOpenAddForm}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm"
           >
-            <PlusIcon className="w-5 h-5" />
+            <PlusIcon className="w-4 h-4" />
             Add Your First Link
           </button>
         </div>

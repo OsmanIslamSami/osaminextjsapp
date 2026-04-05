@@ -350,9 +350,12 @@ model app_settings {
   // Theme Settings
   theme              String    @default("palette-1")    // Color palette ID from ColorHunt
   
-  // Color overrides (optional, for future expansion)
-  primary_color      String?   // Hex color
-  secondary_color    String?   // Hex color
+  // Custom Color overrides (5 customizable colors)
+  custom_color_1     String?   // Hex color - typically primary
+  custom_color_2     String?   // Hex color - typically secondary
+  custom_color_3     String?   // Hex color - typically accent
+  custom_color_4     String?   // Hex color - typically background
+  custom_color_5     String?   // Hex color - typically text
   
   // Site Settings
   site_title_en      String    @default("Next App")

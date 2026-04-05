@@ -222,7 +222,7 @@ export default function FilePicker({
                   href="/admin/style-library"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm"
                 >
                   Open Style Library
                   <ChevronRightIcon className="w-4 h-4" />

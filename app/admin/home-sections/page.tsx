@@ -269,7 +269,7 @@ export default function AdminHomeSectionsPage() {
                       min="1"
                       value={partnersMaxCount}
                       onChange={(e) => setPartnersMaxCount(parseInt(e.target.value) || 1)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100"
+                      className="w-full px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
                     />
                   </div>
                 )}
@@ -277,7 +277,7 @@ export default function AdminHomeSectionsPage() {
                 <button
                   onClick={() => handleUpdatePartners(partnersDisplayMode, partnersMaxCount)}
                   disabled={saving === 'partners'}
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving === 'partners'
                     ? language === 'ar'

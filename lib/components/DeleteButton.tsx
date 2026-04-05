@@ -48,10 +48,10 @@ export default function DeleteButton({ clientId, clientName, onDelete, isAdmin =
       <button
         onClick={() => setShowDialog(true)}
         disabled={loading}
-        className="text-red-600 hover:text-red-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors text-sm"
+        className="px-3 py-1.5 border-2 border-red-200 dark:border-red-900/30 hover:border-red-400 dark:hover:border-red-500 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 rounded-full transition-all text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         title="Delete client"
       >
-        🗑️ Delete
+        Delete
       </button>
 
       <ConfirmDialog

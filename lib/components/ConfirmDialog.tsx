@@ -98,17 +98,17 @@ export default function ConfirmDialog({
           </div>
           
           {/* Action buttons - responsive layout */}
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
             <button
               onClick={onCancel}
-              className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-2 
-                border border-gray-300 dark:border-zinc-700 
-                rounded-lg sm:rounded-md
-                hover:bg-gray-100 dark:hover:bg-zinc-800 
-                active:bg-gray-200 dark:active:bg-zinc-700
+              className="w-full sm:w-auto px-5 py-2 
+                border-2 border-gray-300 dark:border-zinc-600 
+                rounded-full
+                hover:border-gray-400 dark:hover:border-zinc-500
+                bg-transparent
                 transition-all duration-200
-                text-gray-900 dark:text-zinc-50
-                font-medium text-sm sm:text-base
+                text-gray-700 dark:text-zinc-300
+                font-medium text-sm
                 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-600 focus:ring-offset-2 dark:focus:ring-offset-zinc-900"
               type="button"
             >
@@ -116,12 +116,11 @@ export default function ConfirmDialog({
             </button>
             <button
               onClick={onConfirm}
-              className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-2 
-                text-white rounded-lg sm:rounded-md
-                font-medium text-sm sm:text-base
+              className={`w-full sm:w-auto px-5 py-2 
+                text-white rounded-full
+                font-medium text-sm
                 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-zinc-900
-                active:scale-95
                 ${confirmButtonClass}`}
               type="button"
             >

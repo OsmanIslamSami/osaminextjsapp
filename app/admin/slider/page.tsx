@@ -284,7 +284,7 @@ export default function AdminSliderPage() {
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 min-h-[44px]"
+          className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm min-h-[44px]"
         >
           {showAddForm ? 'Cancel' : 'Add New Slide'}
         </button>
@@ -451,14 +451,14 @@ export default function AdminSliderPage() {
               <button
                 type="submit"
                 disabled={uploading || !formData.media_url}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 min-h-[44px]"
+                className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm disabled:opacity-50 min-h-[44px]"
               >
                 {editingSlide ? 'Update Slide' : 'Create Slide'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="border border-gray-300 px-6 py-2 rounded-lg hover:bg-gray-100 min-h-[44px]"
+                className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm min-h-[44px]"
               >
                 Cancel
               </button>

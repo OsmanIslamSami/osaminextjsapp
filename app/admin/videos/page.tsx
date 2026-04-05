@@ -226,15 +226,15 @@ export default function AdminVideosPage() {
           {selectedVideos.size > 0 && (
             <button
               onClick={handleBulkDelete}
-              className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-all text-sm shadow-sm"
             >
-              <TrashIcon className="w-5 h-5" />
+              <TrashIcon className="w-4 h-4" />
               {language === 'ar' ? `حذف المحدد (${selectedVideos.size})` : `Delete Selected (${selectedVideos.size})`}
             </button>
           )}
           <button
             onClick={handleAdd}
-            className="flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm shadow-sm"
             style={{
               backgroundColor: 'var(--color-primary)',
             }}

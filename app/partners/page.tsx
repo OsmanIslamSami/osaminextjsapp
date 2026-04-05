@@ -16,7 +16,8 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ArrowTopRightOnSquareIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { ArrowTopRightOnSquareIcon, BuildingOfficeIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
@@ -27,6 +28,13 @@ interface PartnerItem {
   title_ar: string;
   url?: string | null;
   image_url: string;
+}
+
+interface PaginationInfo {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 /**
@@ -43,22 +51,35 @@ export default function PartnersDirectoryPage() {
   // Component state
   const [partners, setPartners] = useState<PartnerItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    total: 0,
+    page: 1,
+    limit: 12,
+    totalPages: 0,
+  });
 
   // Page title in current language
   const title = language === 'ar' ? 'شركاؤنا' : 'Our Partners';
 
   /**
-   * Fetch all visible partners from API
+   * Fetch partners with pagination from API
    */
   useEffect(() => {
     async function fetchPartners() {
       setLoading(true);
       try {
-        const response = await fetch('/api/partners?context=gallery');
+        const response = await fetch(
+          `/api/partners?context=gallery&page=${pagination.page}&limit=${pagination.limit}`
+        );
         const data = await response.json();
         
         if (data.success) {
           setPartners(data.data);
+          setPagination((prev) => ({
+            ...prev,
+            total: data.pagination?.total || data.data.length,
+            totalPages: data.pagination?.totalPages || Math.ceil(data.data.length / prev.limit),
+          }));
         }
       } catch (error) {
         console.error('Failed to fetch partners:', error);
@@ -68,7 +89,16 @@ export default function PartnersDirectoryPage() {
     }
 
     fetchPartners();
-  }, []);
+  }, [pagination.page, pagination.limit]);
+
+  /**
+   * Handle page change
+   * Scrolls to top for better UX
+   */
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Loading state
   if (loading) {
@@ -87,8 +117,24 @@ export default function PartnersDirectoryPage() {
   return (
     <main className="min-h-screen py-16" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4">
-        {/* Page Title */}
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{title}</h1>
+        {/* Header Section */}
+        <div className="flex flex-col items-center justify-center gap-4 mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-zinc-100">{title}</h1>
+          {pagination.total > 0 && (
+            <div className="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-full font-semibold">
+              {language === 'ar' 
+                ? `${pagination.total} شريك` 
+                : `${pagination.total} Partner${pagination.total !== 1 ? 's' : ''}`}
+            </div>
+          )}
+          <Link 
+            href="/"
+            className="flex items-center gap-2 px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
+          >
+            <HomeIcon className="w-4 h-4" />
+            <span>{language === 'ar' ? 'الرئيسية' : 'Home'}</span>
+          </Link>
+        </div>
 
         {/* Empty State */}
         {partners.length === 0 ? (
@@ -174,14 +220,82 @@ export default function PartnersDirectoryPage() {
               })}
             </div>
 
-            {/* Total Count */}
-            <div className="mt-12 text-center text-gray-600">
-              <p>
-                {language === 'ar' 
-                  ? `إجمالي الشركاء: ${partners.length}` 
-                  : `Total Partners: ${partners.length}`}
-              </p>
-            </div>
+            {/* Pagination Controls */}
+            {pagination.totalPages > 1 && (
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-12">
+                {/* First Page Button */}
+                <button
+                  onClick={() => handlePageChange(1)}
+                  disabled={pagination.page === 1}
+                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                >
+                  {language === 'ar' ? 'الأولى' : 'First'}
+                </button>
+
+                {/* Previous Button */}
+                <button
+                  onClick={() => handlePageChange(pagination.page - 1)}
+                  disabled={pagination.page === 1}
+                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                >
+                  {language === 'ar' ? 'السابق' : 'Previous'}
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex gap-2">
+                  {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show first page, last page, current page, and pages around current
+                      return (
+                        page === 1 ||
+                        page === pagination.totalPages ||
+                        Math.abs(page - pagination.page) <= 1
+                      );
+                    })
+                    .map((page, index, array) => {
+                      // Add ellipsis if there's a gap
+                      const prevPage = index > 0 ? array[index - 1] : 0;
+                      const showEllipsis = page - prevPage > 1;
+
+                      return (
+                        <div key={page} className="flex gap-2">
+                          {showEllipsis && (
+                            <span className="px-3 py-2 text-gray-500">...</span>
+                          )}
+                          <button
+                            onClick={() => handlePageChange(page)}
+                            className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
+                              pagination.page === page
+                                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                                : 'border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => handlePageChange(pagination.page + 1)}
+                  disabled={pagination.page === pagination.totalPages}
+                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                >
+                  {language === 'ar' ? 'التالي' : 'Next'}
+                </button>
+
+                {/* Last Page Button */}
+                <button
+                  onClick={() => handlePageChange(pagination.totalPages)}
+                  disabled={pagination.page === pagination.totalPages}
+                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                >
+                  {language === 'ar' ? 'الأخيرة' : 'Last'}
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

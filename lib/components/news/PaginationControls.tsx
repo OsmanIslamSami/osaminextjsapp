@@ -57,7 +57,7 @@ export default function PaginationControls({
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
-        className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors min-h-[44px]"
+        className="px-4 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
       >
         {language === 'ar' ? 'الأولى' : 'First'}
       </button>
@@ -66,7 +66,7 @@ export default function PaginationControls({
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors min-h-[44px]"
+        className="px-4 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
       >
         {language === 'ar' ? 'السابق' : 'Previous'}
       </button>
@@ -77,7 +77,7 @@ export default function PaginationControls({
           return (
             <span
               key={`ellipsis-${index}`}
-              className="px-4 py-2 text-gray-500 dark:text-zinc-400"
+              className="px-3 py-1.5 text-gray-500 dark:text-zinc-400 text-sm"
             >
               ...
             </span>
@@ -91,10 +91,10 @@ export default function PaginationControls({
           <button
             key={pageNum}
             onClick={() => onPageChange(pageNum)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all min-h-[44px] min-w-[44px] ${
+            className={`px-3 py-1.5 rounded-full font-medium transition-all text-sm min-w-[36px] ${
               isActive
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'border border-gray-300 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-300'
+                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                : 'border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent'
             }`}
           >
             {pageNum}
@@ -106,7 +106,7 @@ export default function PaginationControls({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors min-h-[44px]"
+        className="px-4 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
       >
         {language === 'ar' ? 'التالي' : 'Next'}
       </button>
@@ -115,7 +115,7 @@ export default function PaginationControls({
       <button
         onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors min-h-[44px]"
+        className="px-4 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
       >
         {language === 'ar' ? 'الأخيرة' : 'Last'}
       </button>

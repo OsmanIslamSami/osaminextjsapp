@@ -140,17 +140,7 @@ export default function ClientsList() {
           <ExportButton searchQuery={search} />
           <Link 
             href="/clients/add" 
-            className="px-4 sm:px-6 py-2 rounded-lg transition-colors text-center text-sm sm:text-base"
-            style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'white',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
-            }}
+            className="px-5 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-all font-medium text-sm text-center"
           >
             {t('clients.addClient')}
           </Link>
@@ -164,7 +154,7 @@ export default function ClientsList() {
           <p className="text-red-800 dark:text-red-200 mb-2">{error}</p>
           <button
             onClick={handleRetry}
-            className="text-sm text-red-600 dark:text-red-400 hover:underline"
+            className="px-3 py-1.5 rounded-full text-sm font-medium border-2 border-red-200 dark:border-red-900/30 hover:border-red-400 dark:hover:border-red-500 text-red-600 dark:text-red-400 bg-transparent transition-all"
           >
             Retry
           </button>

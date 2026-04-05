@@ -53,7 +53,7 @@ export default function ExportButton({ searchQuery = '' }: ExportButtonProps) {
       <button
         onClick={handleExport}
         disabled={loading}
-        className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm sm:text-base w-full sm:w-auto"
+        className="flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all border-2 border-green-200 dark:border-green-900/30 hover:border-green-400 dark:hover:border-green-500 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 bg-transparent disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
       >
         {loading ? (
           <>
@@ -62,7 +62,6 @@ export default function ExportButton({ searchQuery = '' }: ExportButtonProps) {
           </>
         ) : (
           <>
-            <span>📥</span>
             <span>Export to Excel</span>
           </>
         )}

@@ -80,11 +80,27 @@ export async function PUT(
       }
     }
 
-    if (icon_path && (!icon_path.startsWith('/icons/') || !icon_path.endsWith('.svg'))) {
-      return NextResponse.json(
-        { error: 'Icon path must start with /icons/ and end with .svg' },
-        { status: 400 }
-      );
+    if (icon_path) {
+      const validExtensions = ['.svg', '.png', '.jpg', '.jpeg', '.webp'];
+      const hasValidExtension = validExtensions.some(ext => icon_path.toLowerCase().endsWith(ext));
+      const isLocalPath = icon_path.startsWith('/icons/');
+      const isVercelBlob = icon_path.includes('vercel-storage.com');
+      const isValidUrl = icon_path.startsWith('http://') || icon_path.startsWith('https://');
+      
+      // Accept: local /icons/ paths with valid extensions, OR Vercel Blob URLs, OR other valid image URLs
+      if (!hasValidExtension) {
+        return NextResponse.json(
+          { error: 'Icon must be a valid image file (.svg, .png, .jpg, .jpeg, .webp)' },
+          { status: 400 }
+        );
+      }
+      
+      if (!isLocalPath && !isVercelBlob && !isValidUrl) {
+        return NextResponse.json(
+          { error: 'Icon path must be a local path (/icons/...) or a valid URL' },
+          { status: 400 }
+        );
+      }
     }
 
     const updatedLink = await prisma.socialMediaLink.update({

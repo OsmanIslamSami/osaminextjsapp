@@ -7,8 +7,11 @@ interface AppSettings {
   arabic_font: string;
   english_font: string;
   theme: string;
-  primary_color?: string | null;
-  secondary_color?: string | null;
+  custom_color_1?: string | null;
+  custom_color_2?: string | null;
+  custom_color_3?: string | null;
+  custom_color_4?: string | null;
+  custom_color_5?: string | null;
   site_logo_url?: string | null;
   site_favicon_url?: string | null;
   site_title_en?: string | null;

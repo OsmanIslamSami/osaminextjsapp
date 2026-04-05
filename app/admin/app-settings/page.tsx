@@ -20,8 +20,11 @@ interface AppSettings {
   arabic_font: string;
   english_font: string;
   theme: string;
-  primary_color?: string | null;
-  secondary_color?: string | null;
+  custom_color_1?: string | null;
+  custom_color_2?: string | null;
+  custom_color_3?: string | null;
+  custom_color_4?: string | null;
+  custom_color_5?: string | null;
   site_title_en: string;
   site_title_ar: string;
   site_description_en: string;
@@ -82,38 +85,38 @@ const ENGLISH_FONTS = [
   'Mulish',
   'DM Sans'
 ];
-// Popular Color Palettes from ColorHunt.co
+// Popular Color Palettes - Modern 5-Color Schemes
 const COLOR_PALETTES = [
-  { id: 'palette-1', name: 'Dark & Teal', nameAr: 'داكن وأزرق مخضر', colors: ['#222831', '#393E46', '#00ADB5', '#EEEEEE'] },
-  { id: 'palette-2', name: 'Ocean Breeze', nameAr: 'نسيم المحيط', colors: ['#CBF1F5', '#A6E3E9', '#71C9CE', '#0AA1DD'] },
-  { id: 'palette-3', name: 'Navy & Violet', nameAr: 'أزرق غامق وبنفسجي', colors: ['#E8E2E2', '#C2BBF0', '#8FB8ED', '#62CDFF'] },
-  { id: 'palette-4', name: 'Warm Sunset', nameAr: 'غروب دافئ', colors: ['#FFEAA7', '#FDCB6E', '#FD79A8', '#6C5CE7'] },
-  { id: 'palette-5', name: 'Mint Fresh', nameAr: 'نعناع منعش', colors: ['#F8EDE3', '#DFD3C3', '#D0B8A8', '#8D7B68'] },
-  { id: 'palette-6', name: 'Purple Dream', nameAr: 'حلم بنفسجي', colors: ['#D8B5FF', '#EFC3E6', '#F0C1E1', '#FDDBBB'] },
-  { id: 'palette-7', name: 'Forest Green', nameAr: 'أخضر الغابة', colors: ['#222831', '#31363F', '#76ABAE', '#EEEEEE'] },
-  { id: 'palette-8', name: 'Coral Reef', nameAr: 'شعاب المرجان', colors: ['#FFE6E6', '#F9D5D3', '#E68369', '#FFFFFF'] },
-  { id: 'palette-9', name: 'Royal Blue', nameAr: 'أزرق ملكي', colors: ['#04364A', '#176B87', '#64CCC5', '#DAFFFB'] },
-  { id: 'palette-10', name: 'Sunny Day', nameAr: 'يوم مشمس', colors: ['#FFFBF5', '#F7EFE5', '#C3ACD0', '#7743DB'] },
-  { id: 'palette-11', name: 'Cotton Candy', nameAr: 'حلوى قطنية', colors: ['#FFE6F7', '#F5C6EC', '#C8A1E0', '#674188'] },
-  { id: 'palette-12', name: 'Vintage Rose', nameAr: 'وردة عتيقة', colors: ['#FFF8E8', '#FFD1E3', '#FF90BC', '#C63D2F'] },
-  { id: 'palette-13', name: 'Peachy Keen', nameAr: 'دراقي لطيف', colors: ['#FFF6E9', '#FFE6C7', '#F7DCB9', '#D5B895'] },
-  { id: 'palette-14', name: 'Sky Blue', nameAr: 'أزرق سماوي', colors: ['#BBDEFA', '#96C7F2', '#6FA3EC', '#4A7BB7'] },
-  { id: 'palette-15', name: 'Lavender Fields', nameAr: 'حقول خزامى', colors: ['#EEE4E1', '#E7D4E8', '#D4B2D8', '#AF9BB6'] },
-  { id: 'palette-16', name: 'Minty Green', nameAr: 'أخضر نعناعي', colors: ['#F2D8D8', '#BFD8D5', '#A7C4BC', '#87A8A4'] },
-  { id: 'palette-17', name: 'Sunset Glow', nameAr: 'توهج الغروب', colors: ['#FFF2F2', '#FFE5F1', '#E8A0BF', '#BA90C6'] },
-  { id: 'palette-18', name: 'Deep Ocean', nameAr: 'محيط عميق', colors: ['#0B2447', '#19376D', '#576CBC', '#A5D7E8'] },
-  { id: 'palette-19', name: 'Earthy Tones', nameAr: 'ألوان ترابية', colors: ['#EAD196', '#C4A77D', '#70483C', '#454545'] },
-  { id: 'palette-20', name: 'Blush Pink', nameAr: 'وردي خجول', colors: ['#FFF9F9', '#FFE6E6', '#FFAAAA', '#EE6F6F'] },
-  { id: 'palette-21', name: 'Clean Blue', nameAr: 'أزرق نظيف', colors: ['#1E3A5F', '#4A90E2', '#E4E9F2', '#FFFFFF'] },
-  { id: 'palette-22', name: 'Fresh Green', nameAr: 'أخضر منعش', colors: ['#1B5E20', '#28A745', '#D4EDDA', '#FFFFFF'] },
-  { id: 'palette-23', name: 'Soft Purple', nameAr: 'بنفسجي ناعم', colors: ['#4C1D95', '#7C3AED', '#E9E4F7', '#FFFFFF'] },
-  { id: 'palette-24', name: 'Warm Orange', nameAr: 'برتقالي دافئ', colors: ['#B54708', '#FF8C42', '#FFE8CC', '#FFFFFF'] },
-  { id: 'palette-25', name: 'Cool Gray', nameAr: 'رمادي بارد', colors: ['#343A40', '#6C757D', '#E9ECEF', '#FFFFFF'] },
-  { id: 'palette-26', name: 'Bright Cyan', nameAr: 'سيان ساطع', colors: ['#006064', '#00BCD4', '#CCFBFF', '#FFFFFF'] },
-  { id: 'palette-27', name: 'Lime Fresh', nameAr: 'ليموني منعش', colors: ['#3F6212', '#84CC16', '#E8FFB7', '#FFFFFF'] },
-  { id: 'palette-28', name: 'Rose Quartz', nameAr: 'كوارتز وردي', colors: ['#880E4F', '#E91E63', '#FFD6E0', '#FFFFFF'] },
-  { id: 'palette-29', name: 'Indigo Wave', nameAr: 'موجة نيلية', colors: ['#1A237E', '#3F51B5', '#E0E3F5', '#FFFFFF'] },
-  { id: 'palette-30', name: 'Amber Glow', nameAr: 'توهج كهرماني', colors: ['#B45309', '#FFC107', '#FFF3CD', '#FFFFFF'] },
+  { id: 'palette-1', name: 'Dark & Teal', nameAr: 'داكن وأزرق مخضر', colors: ['#222831', '#393E46', '#00ADB5', '#00FFF5', '#EEEEEE'] },
+  { id: 'palette-2', name: 'Ocean Breeze', nameAr: 'نسيم المحيط', colors: ['#0AA1DD', '#71C9CE', '#A6E3E9', '#CBF1F5', '#FFFFFF'] },
+  { id: 'palette-3', name: 'Navy & Violet', nameAr: 'أزرق غامق وبنفسجي', colors: ['#62CDFF', '#8FB8ED', '#C2BBF0', '#E8E2E2', '#FFFFFF'] },
+  { id: 'palette-4', name: 'Warm Sunset', nameAr: 'غروب دافئ', colors: ['#6C5CE7', '#FD79A8', '#FDCB6E', '#FFEAA7', '#FFFFFF'] },
+  { id: 'palette-5', name: 'Mint Fresh', nameAr: 'نعناع منعش', colors: ['#8D7B68', '#D0B8A8', '#DFD3C3', '#F8EDE3', '#FFFFFF'] },
+  { id: 'palette-6', name: 'Purple Dream', nameAr: 'حلم بنفسجي', colors: ['#674188', '#C8A1E0', '#EFC3E6', '#F0C1E1', '#FDDBBB'] },
+  { id: 'palette-7', name: 'Forest Green', nameAr: 'أخضر الغابة', colors: ['#222831', '#31363F', '#76ABAE', '#B2C8BA', '#EEEEEE'] },
+  { id: 'palette-8', name: 'Coral Reef', nameAr: 'شعاب المرجان', colors: ['#E68369', '#FF9999', '#F9D5D3', '#FFE6E6', '#FFFFFF'] },
+  { id: 'palette-9', name: 'Royal Blue', nameAr: 'أزرق ملكي', colors: ['#04364A', '#176B87', '#64CCC5', '#DAFFFB', '#FFFFFF'] },
+  { id: 'palette-10', name: 'Sunny Day', nameAr: 'يوم مشمس', colors: ['#7743DB', '#C3ACD0', '#F7EFE5', '#FFFBF5', '#FFFFFF'] },
+  { id: 'palette-11', name: 'Cotton Candy', nameAr: 'حلوى قطنية', colors: ['#674188', '#C8A1E0', '#F5C6EC', '#FFE6F7', '#FFFFFF'] },
+  { id: 'palette-12', name: 'Vintage Rose', nameAr: 'وردة عتيقة', colors: ['#C63D2F', '#FF90BC', '#FFD1E3', '#FFF8E8', '#FFFFFF'] },
+  { id: 'palette-13', name: 'Peachy Keen', nameAr: 'دراقي لطيف', colors: ['#D5B895', '#F7DCB9', '#FFE6C7', '#FFF6E9', '#FFFFFF'] },
+  { id: 'palette-14', name: 'Sky Blue', nameAr: 'أزرق سماوي', colors: ['#4A7BB7', '#6FA3EC', '#96C7F2', '#BBDEFA', '#FFFFFF'] },
+  { id: 'palette-15', name: 'Lavender Fields', nameAr: 'حقول خزامى', colors: ['#AF9BB6', '#D4B2D8', '#E7D4E8', '#EEE4E1', '#FFFFFF'] },
+  { id: 'palette-16', name: 'Minty Green', nameAr: 'أخضر نعناعي', colors: ['#87A8A4', '#A7C4BC', '#BFD8D5', '#F2D8D8', '#FFFFFF'] },
+  { id: 'palette-17', name: 'Sunset Glow', nameAr: 'توهج الغروب', colors: ['#BA90C6', '#E8A0BF', '#FFE5F1', '#FFF2F2', '#FFFFFF'] },
+  { id: 'palette-18', name: 'Deep Ocean', nameAr: 'محيط عميق', colors: ['#0B2447', '#19376D', '#576CBC', '#A5D7E8', '#FFFFFF'] },
+  { id: 'palette-19', name: 'Earthy Tones', nameAr: 'ألوان ترابية', colors: ['#454545', '#70483C', '#C4A77D', '#EAD196', '#FFFFFF'] },
+  { id: 'palette-20', name: 'Blush Pink', nameAr: 'وردي خجول', colors: ['#EE6F6F', '#FFAAAA', '#FFE6E6', '#FFF9F9', '#FFFFFF'] },
+  { id: 'palette-21', name: 'Clean Blue', nameAr: 'أزرق نظيف', colors: ['#1E3A5F', '#4A90E2', '#99C4F0', '#E4E9F2', '#FFFFFF'] },
+  { id: 'palette-22', name: 'Fresh Green', nameAr: 'أخضر منعش', colors: ['#1B5E20', '#28A745', '#81C784', '#D4EDDA', '#FFFFFF'] },
+  { id: 'palette-23', name: 'Soft Purple', nameAr: 'بنفسجي ناعم', colors: ['#4C1D95', '#7C3AED', '#A78BFA', '#E9E4F7', '#FFFFFF'] },
+  { id: 'palette-24', name: 'Warm Orange', nameAr: 'برتقالي دافئ', colors: ['#B54708', '#FF8C42', '#FFB347', '#FFE8CC', '#FFFFFF'] },
+  { id: 'palette-25', name: 'Cool Gray', nameAr: 'رمادي بارد', colors: ['#343A40', '#6C757D', '#ADB5BD', '#E9ECEF', '#FFFFFF'] },
+  { id: 'palette-26', name: 'Bright Cyan', nameAr: 'سيان ساطع', colors: ['#006064', '#00BCD4', '#4DD0E1', '#CCFBFF', '#FFFFFF'] },
+  { id: 'palette-27', name: 'Lime Fresh', nameAr: 'ليموني منعش', colors: ['#3F6212', '#84CC16', '#BEF264', '#E8FFB7', '#FFFFFF'] },
+  { id: 'palette-28', name: 'Rose Quartz', nameAr: 'كوارتز وردي', colors: ['#880E4F', '#E91E63', '#F48FB1', '#FFD6E0', '#FFFFFF'] },
+  { id: 'palette-29', name: 'Indigo Wave', nameAr: 'موجة نيلية', colors: ['#1A237E', '#3F51B5', '#7986CB', '#E0E3F5', '#FFFFFF'] },
+  { id: 'palette-30', name: 'Amber Glow', nameAr: 'توهج كهرماني', colors: ['#B45309', '#FFC107', '#FFD54F', '#FFF3CD', '#FFFFFF'] },
 ];
 
 export default function AppSettingsPage() {
@@ -132,6 +135,15 @@ export default function AppSettingsPage() {
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
+  
+  // Local state for custom colors (before applying)
+  const [customColors, setCustomColors] = useState({
+    color1: '',
+    color2: '',
+    color3: '',
+    color4: '',
+    color5: '',
+  });
 
   const { language, direction, t } = useLanguage();
   const { showError, showSuccess } = useToast();
@@ -165,6 +177,14 @@ export default function AppSettingsPage() {
             site_description_ar: data.data.site_description_ar || '',
             site_keywords_en: data.data.site_keywords_en || '',
             site_keywords_ar: data.data.site_keywords_ar || '',
+          });
+          // Initialize custom colors state with current values
+          setCustomColors({
+            color1: data.data.custom_color_1 || '',
+            color2: data.data.custom_color_2 || '',
+            color3: data.data.custom_color_3 || '',
+            color4: data.data.custom_color_4 || '',
+            color5: data.data.custom_color_5 || '',
           });
         }
       }
@@ -244,6 +264,38 @@ export default function AppSettingsPage() {
     } finally {
       setSaving(null);
     }
+  };
+
+  // Generate random hex color
+  const generateRandomColor = (): string => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
+  // Handle random colors generation
+  const handleRandomColors = () => {
+    setCustomColors({
+      color1: generateRandomColor(),
+      color2: generateRandomColor(),
+      color3: generateRandomColor(),
+      color4: generateRandomColor(),
+      color5: generateRandomColor(),
+    });
+  };
+
+  // Handle applying custom colors
+  const handleApplyCustomColors = async () => {
+    await handleUpdateAppSettings({
+      custom_color_1: customColors.color1 || null,
+      custom_color_2: customColors.color2 || null,
+      custom_color_3: customColors.color3 || null,
+      custom_color_4: customColors.color4 || null,
+      custom_color_5: customColors.color5 || null,
+    });
   };
 
   const handleFileSelect = async (file: any) => {
@@ -541,7 +593,7 @@ export default function AppSettingsPage() {
                             min="1"
                             value={partnersMaxCount}
                             onChange={(e) => setPartnersMaxCount(parseInt(e.target.value) || 1)}
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100"
+                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
                           />
                         </div>
                       )}
@@ -747,86 +799,303 @@ export default function AppSettingsPage() {
         {/* Themes Tab - Color Palettes */}
         {activeTab === 'themes' && appSettings && (
           <div className="space-y-6">
+            {/* Custom Colors Section */}
+            <div 
+              className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 rounded-xl shadow-lg p-6"
+              style={{
+                borderWidth: '3px',
+                borderStyle: 'solid',
+                borderColor: (appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5) 
+                  ? '#16a34a' 
+                  : 'rgb(191 219 254)', // blue-200
+              }}
+            >
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-zinc-100 mb-2 flex items-center gap-2">
+                  {(appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5) && (
+                    <CheckIcon className="w-6 h-6 text-green-600" />
+                  )}
+                  {!(appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5) && (
+                    <Cog6ToothIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  )}
+                  {language === 'ar' ? 'الألوان المخصصة' : 'Custom Colors'}
+                  {(appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5) && (
+                    <span className="text-xs font-medium text-green-600 dark:text-green-500">
+                      {language === 'ar' ? '(نشطة)' : '(Active)'}
+                    </span>
+                  )}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-zinc-400">
+                  {language === 'ar'
+                    ? 'اختر 5 ألوان مخصصة ثم انقر على "تطبيق الألوان المخصصة" لحفظها على الموقع بالكامل.'
+                    : 'Choose 5 custom colors then click "Apply Custom Colors" to save them site-wide.'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {/* Color 1 - Primary */}
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                    {language === 'ar' ? 'اللون الأساسي' : 'Primary Color'}
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={customColors.color1 || '#2563eb'}
+                      onChange={(e) => setCustomColors({ ...customColors, color1: e.target.value })}
+                      className="w-full h-12 rounded cursor-pointer border-2 border-gray-300 dark:border-zinc-600"
+                    />
+                    <input
+                      type="text"
+                      value={customColors.color1}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                          setCustomColors({ ...customColors, color1: value });
+                        }
+                      }}
+                      placeholder="#2563eb"
+                      className="w-full px-3 py-2 text-sm font-mono border border-gray-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Color 2 - Secondary */}
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                    {language === 'ar' ? 'اللون الثانوي' : 'Secondary Color'}
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={customColors.color2 || '#64748b'}
+                      onChange={(e) => setCustomColors({ ...customColors, color2: e.target.value })}
+                      className="w-full h-12 rounded cursor-pointer border-2 border-gray-300 dark:border-zinc-600"
+                    />
+                    <input
+                      type="text"
+                      value={customColors.color2}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                          setCustomColors({ ...customColors, color2: value });
+                        }
+                      }}
+                      placeholder="#64748b"
+                      className="w-full px-3 py-2 text-sm font-mono border border-gray-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Color 3 - Accent */}
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                    {language === 'ar' ? 'لون التمييز' : 'Accent Color'}
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={customColors.color3 || '#7c3aed'}
+                      onChange={(e) => setCustomColors({ ...customColors, color3: e.target.value })}
+                      className="w-full h-12 rounded cursor-pointer border-2 border-gray-300 dark:border-zinc-600"
+                    />
+                    <input
+                      type="text"
+                      value={customColors.color3}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                          setCustomColors({ ...customColors, color3: value });
+                        }
+                      }}
+                      placeholder="#7c3aed"
+                      className="w-full px-3 py-2 text-sm font-mono border border-gray-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Color 4 - Background */}
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                    {language === 'ar' ? 'لون الخلفية' : 'Background Color'}
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={customColors.color4 || '#ffffff'}
+                      onChange={(e) => setCustomColors({ ...customColors, color4: e.target.value })}
+                      className="w-full h-12 rounded cursor-pointer border-2 border-gray-300 dark:border-zinc-600"
+                    />
+                    <input
+                      type="text"
+                      value={customColors.color4}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                          setCustomColors({ ...customColors, color4: value });
+                        }
+                      }}
+                      placeholder="#ffffff"
+                      className="w-full px-3 py-2 text-sm font-mono border border-gray-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Color 5 - Text */}
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                    {language === 'ar' ? 'لون النص' : 'Text Color'}
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={customColors.color5 || '#0f172a'}
+                      onChange={(e) => setCustomColors({ ...customColors, color5: e.target.value })}
+                      className="w-full h-12 rounded cursor-pointer border-2 border-gray-300 dark:border-zinc-600"
+                    />
+                    <input
+                      type="text"
+                      value={customColors.color5}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                          setCustomColors({ ...customColors, color5: value });
+                        }
+                      }}
+                      placeholder="#0f172a"
+                      className="w-full px-3 py-2 text-sm font-mono border border-gray-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Preview */}
+              {(customColors.color1 || customColors.color2 || customColors.color3 || customColors.color4 || customColors.color5) && (
+                <div className="mt-6 bg-white dark:bg-zinc-800 rounded-lg p-4 border border-gray-200 dark:border-zinc-700">
+                  <h4 className="text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-3">
+                    {language === 'ar' ? 'معاينة مباشرة' : 'Live Preview'}
+                  </h4>
+                  <div className="flex gap-2 h-16 rounded-lg overflow-hidden shadow-md">
+                    {customColors.color1 && (
+                      <div className="flex-1" style={{ backgroundColor: customColors.color1 }} title={customColors.color1} />
+                    )}
+                    {customColors.color2 && (
+                      <div className="flex-1" style={{ backgroundColor: customColors.color2 }} title={customColors.color2} />
+                    )}
+                    {customColors.color3 && (
+                      <div className="flex-1" style={{ backgroundColor: customColors.color3 }} title={customColors.color3} />
+                    )}
+                    {customColors.color4 && (
+                      <div className="flex-1" style={{ backgroundColor: customColors.color4 }} title={customColors.color4} />
+                    )}
+                    {customColors.color5 && (
+                      <div className="flex-1" style={{ backgroundColor: customColors.color5 }} title={customColors.color5} />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex flex-wrap gap-2">
+                <button
+                  onClick={handleApplyCustomColors}
+                  disabled={saving === 'app-settings'}
+                  className="flex-1 min-w-[160px] px-5 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 rounded-full text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving === 'app-settings' 
+                    ? (language === 'ar' ? 'جاري الحفظ...' : 'Saving...') 
+                    : (language === 'ar' ? 'تطبيق الألوان' : 'Apply Colors')}
+                </button>
+                
+                <button
+                  onClick={handleRandomColors}
+                  disabled={saving === 'app-settings'}
+                  className="flex-1 min-w-[160px] px-5 py-2.5 border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 bg-transparent text-gray-700 dark:text-zinc-300 rounded-full text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {language === 'ar' ? 'ألوان عشوائية' : 'Random Colors'}
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setCustomColors({ color1: '', color2: '', color3: '', color4: '', color5: '' });
+                    handleUpdateAppSettings({
+                      custom_color_1: null,
+                      custom_color_2: null,
+                      custom_color_3: null,
+                      custom_color_4: null,
+                      custom_color_5: null,
+                    });
+                  }}
+                  disabled={saving === 'app-settings'}
+                  className="px-5 py-2.5 border-2 border-gray-300 dark:border-zinc-600 hover:border-red-400 dark:hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 bg-transparent text-gray-700 dark:text-zinc-300 rounded-full text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {language === 'ar' ? 'مسح الكل' : 'Clear All'}
+                </button>
+              </div>
+            </div>
+
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-1">
                 {language === 'ar' ? 'لوحات الألوان الشائعة' : 'Popular Color Palettes'}
               </h3>
               <p className="text-sm text-gray-600 dark:text-zinc-400">
                 {language === 'ar'
-                  ? 'انقر على الجانب الأيسر لاختيار اللوحة - استخدم الجانب الأيمن لنسخ الألوان'
-                  : 'Click left side to select palette - Use right side to copy colors'}
+                  ? 'كل بطاقة تعرض 5 ألوان مع رموزها السداسية. انقر على البطاقة لاختيار اللوحة أو استخدم زر النسخ 📋 لنسخ اللون.'
+                  : 'Each card shows 5 colors with hex codes. Click the card to select the palette or use the copy button 📋 to copy individual colors.'}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {COLOR_PALETTES.map((palette) => {
-                const isSelected = appSettings.theme === palette.id;
+                const hasCustomColors = !!(appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5);
+                const isSelected = appSettings.theme === palette.id && !hasCustomColors;
                 
                 return (
                   <div
                     key={palette.id}
-                    className="bg-white dark:bg-zinc-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    className="bg-white dark:bg-zinc-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
                     style={{
                       borderWidth: '3px',
                       borderStyle: 'solid',
                       borderColor: isSelected ? '#16a34a' : '#e5e7eb',
                     }}
                   >
-                    <div className="flex">
-                      {/* LEFT SIDE - Selection Area */}
-                      <button
-                        onClick={() => handleUpdateAppSettings({ theme: palette.id })}
-                        disabled={saving === 'app-settings'}
-                        className="flex-1 relative group/select"
-                        style={{
-                          opacity: saving === 'app-settings' ? 0.5 : 1,
-                          cursor: saving === 'app-settings' ? 'not-allowed' : 'pointer',
-                        }}
-                        title={language === 'ar' ? 'انقر لاختيار هذه اللوحة' : 'Click to select this palette'}
-                      >
-                        {/* Color Bars Stacked Vertically */}
-                        <div className="flex flex-col h-48">
-                          {palette.colors.map((color, index) => (
-                            <div
-                              key={index}
-                              className="flex-1 transition-all group-hover/select:scale-x-105"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                        
-                        {/* Selected Checkmark Overlay */}
+                    {/* Palette Content */}
+                    <div className="p-4 flex-1">
+                      {/* Palette Name at Top */}
+                      <div className="mb-3 text-center">
+                        <h4 className="text-base font-bold text-gray-900 dark:text-zinc-100">
+                          {language === 'ar' ? palette.nameAr : palette.name}
+                        </h4>
                         {isSelected && (
-                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                            <div className="bg-white dark:bg-zinc-900 rounded-full p-3 shadow-xl">
-                              <CheckIcon className="w-8 h-8 text-green-600" />
-                            </div>
-                          </div>
+                          <p className="text-xs text-green-600 dark:text-green-500 mt-1 font-semibold">
+                            {language === 'ar' ? '✓ نشطة' : '✓ Active'}
+                          </p>
                         )}
-                        
-                        {/* Hover Hint */}
-                        {!isSelected && (
-                          <div className="absolute inset-0 bg-black/0 group-hover/select:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/select:opacity-100">
-                            <div className="bg-white/90 dark:bg-zinc-900/90 px-3 py-2 rounded-lg text-sm font-medium text-gray-900 dark:text-zinc-100">
-                              {language === 'ar' ? 'انقر للاختيار' : 'Click to Select'}
-                            </div>
-                          </div>
-                        )}
-                      </button>
-                      
-                      {/* RIGHT SIDE - Copy Area */}
-                      <div className="w-44 bg-gray-50 dark:bg-zinc-800 p-3 flex flex-col justify-center space-y-2 border-l border-gray-200 dark:border-zinc-700">
+                      </div>
+
+                      {/* Colors List - Each color beside its hex code */}
+                      <div className="space-y-2">
                         {palette.colors.map((color, index) => (
-                          <div key={index} className="flex items-center gap-2">
+                          <div 
+                            key={index} 
+                            className="flex items-center gap-2 bg-gray-50 dark:bg-zinc-800 rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+                          >
+                            {/* Color Swatch - 50% width */}
                             <div
-                              className="w-6 h-6 rounded border border-gray-300 dark:border-zinc-600 flex-shrink-0 shadow-sm"
+                              className="flex-1 h-10 rounded-md border-2 border-gray-300 dark:border-zinc-600 shadow-sm"
                               style={{ backgroundColor: color }}
                             />
-                            <span className="font-mono text-xs text-gray-700 dark:text-zinc-300 flex-1">
+                            
+                            {/* Hex Code - 50% width */}
+                            <span className="flex-1 font-mono text-sm font-semibold text-gray-800 dark:text-zinc-200 text-center">
                               {color}
                             </span>
+                            
+                            {/* Copy Button */}
                             <button
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 navigator.clipboard.writeText(color);
                                 showSuccess(
                                   language === 'ar'
@@ -834,34 +1103,51 @@ export default function AppSettingsPage() {
                                     : `Copied ${color}`
                                 );
                               }}
-                              className="p-1 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded transition-colors"
+                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-600 rounded-full transition-colors flex-shrink-0"
                               title={language === 'ar' ? 'نسخ' : 'Copy'}
                             >
-                              <ClipboardDocumentIcon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                              <ClipboardDocumentIcon className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
                             </button>
                           </div>
                         ))}
                       </div>
                     </div>
-                    
-                    {/* Palette Name */}
-                    <div className="px-3 py-2 border-t border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-zinc-100 text-center truncate">
-                        {language === 'ar' ? palette.nameAr : palette.name}
-                      </h4>
-                      {isSelected && (
-                        <p className="text-xs text-green-600 dark:text-green-500 text-center mt-1 font-medium">
-                          {language === 'ar' ? '✓ نشطة' : '✓ Active'}
-                        </p>
-                      )}
+
+                    {/* Select Button at Bottom */}
+                    <div className="border-t border-gray-200 dark:border-zinc-700 p-3">
+                      <button
+                        onClick={() => {
+                          // Clear custom colors and set the palette theme
+                          setCustomColors({ color1: '', color2: '', color3: '', color4: '', color5: '' });
+                          handleUpdateAppSettings({ 
+                            theme: palette.id,
+                            custom_color_1: null,
+                            custom_color_2: null,
+                            custom_color_3: null,
+                            custom_color_4: null,
+                            custom_color_5: null,
+                          });
+                        }}
+                        disabled={saving === 'app-settings' || isSelected}
+                        className={`w-full py-2 px-4 rounded-full font-medium text-sm transition-all ${
+                          isSelected
+                            ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-2 border-green-600 dark:border-green-500 cursor-default'
+                            : 'bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900'
+                        } ${saving === 'app-settings' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isSelected 
+                          ? (language === 'ar' ? '✓ مُفعّلة' : '✓ Active')
+                          : (language === 'ar' ? 'اختيار' : 'Select Palette')
+                        }
+                      </button>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Active Palette Preview */}
-            {appSettings.theme && (
+            {/* Active Palette Preview - Only show when custom colors are NOT active */}
+            {appSettings.theme && !(appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5) && (
               <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-6" style={{
                 borderWidth: '3px',
                 borderStyle: 'solid',
@@ -921,6 +1207,75 @@ export default function AppSettingsPage() {
               </div>
             )}
 
+            {/* Active Custom Colors Preview - Only show when custom colors ARE active */}
+            {(appSettings.custom_color_1 || appSettings.custom_color_2 || appSettings.custom_color_3 || appSettings.custom_color_4 || appSettings.custom_color_5) && (
+              <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-6" style={{
+                borderWidth: '3px',
+                borderStyle: 'solid',
+                borderColor: '#16a34a',
+              }}>
+                <h4 className="font-semibold text-gray-900 dark:text-zinc-100 mb-4 flex items-center gap-2">
+                  <CheckIcon className="w-5 h-5 text-green-600" />
+                  {language === 'ar' ? 'الألوان المخصصة النشطة حالياً' : 'Currently Active Custom Colors'}
+                </h4>
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                  {/* Custom Colors Preview */}
+                  <div className="flex rounded-lg overflow-hidden h-16 w-full sm:w-64 shadow-md">
+                    {appSettings.custom_color_1 && (
+                      <div className="flex-1" style={{ backgroundColor: appSettings.custom_color_1 }} title={appSettings.custom_color_1} />
+                    )}
+                    {appSettings.custom_color_2 && (
+                      <div className="flex-1" style={{ backgroundColor: appSettings.custom_color_2 }} title={appSettings.custom_color_2} />
+                    )}
+                    {appSettings.custom_color_3 && (
+                      <div className="flex-1" style={{ backgroundColor: appSettings.custom_color_3 }} title={appSettings.custom_color_3} />
+                    )}
+                    {appSettings.custom_color_4 && (
+                      <div className="flex-1" style={{ backgroundColor: appSettings.custom_color_4 }} title={appSettings.custom_color_4} />
+                    )}
+                    {appSettings.custom_color_5 && (
+                      <div className="flex-1" style={{ backgroundColor: appSettings.custom_color_5 }} title={appSettings.custom_color_5} />
+                    )}
+                  </div>
+                  
+                  {/* Custom Colors Info */}
+                  <div className="flex-1">
+                    <h5 className="font-semibold text-gray-900 dark:text-zinc-100">
+                      {language === 'ar' ? 'الألوان المخصصة' : 'Custom Colors'}
+                    </h5>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {[
+                        { color: appSettings.custom_color_1, label: language === 'ar' ? 'أساسي' : 'Primary' },
+                        { color: appSettings.custom_color_2, label: language === 'ar' ? 'ثانوي' : 'Secondary' },
+                        { color: appSettings.custom_color_3, label: language === 'ar' ? 'تمييز' : 'Accent' },
+                        { color: appSettings.custom_color_4, label: language === 'ar' ? 'خلفية' : 'Background' },
+                        { color: appSettings.custom_color_5, label: language === 'ar' ? 'نص' : 'Text' },
+                      ].filter(item => item.color).map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            navigator.clipboard.writeText(item.color!);
+                            showSuccess(
+                              language === 'ar'
+                                ? `تم نسخ ${item.color}`
+                                : `Copied ${item.color}`
+                            );
+                          }}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-100 dark:bg-zinc-800 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                        >
+                          <span className="text-xs text-gray-500 dark:text-zinc-400">{item.label}:</span>
+                          <span className="font-mono text-xs text-gray-700 dark:text-zinc-300">
+                            {item.color}
+                          </span>
+                          <ClipboardDocumentIcon className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Info Notice */}
             <div 
               className="rounded-lg p-4"
@@ -933,28 +1288,33 @@ export default function AppSettingsPage() {
               }}
             >
               <h4 className="font-semibold mb-2" style={{ color: 'var(--color-primary-dark)' }}>
-                {language === 'ar' ? '🎨 لوحات ألوان من ColorHunt' : '🎨 Color Palettes from ColorHunt'}
+                {language === 'ar' ? '🎨 كيفية استخدام الألوان' : '🎨 How to Use Colors'}
               </h4>
               <ul className="text-sm space-y-1 list-disc list-inside" style={{ color: 'var(--color-primary-dark)' }}>
                 <li>
                   {language === 'ar'
-                    ? 'هذه اللوحات مستوحاة من أشهر الألوان على ColorHunt.co'
-                    : 'These palettes are inspired by the most popular colors on ColorHunt.co'}
+                    ? 'الألوان المخصصة (في الأعلى) تتفوق على لوحات الألوان عند تفعيلها'
+                    : 'Custom colors (at top) override color palettes when activated'}
                 </li>
                 <li>
                   {language === 'ar'
-                    ? 'انقر على الجانب الأيسر (الألوان الملونة) لاختيار اللوحة للتطبيق'
-                    : 'Click left side (colored bars) to select palette for the app'}
+                    ? 'كل بطاقة لوحة ألوان تعرض 5 ألوان مع رموزها السداسية'
+                    : 'Each palette card shows 5 colors with their hex codes'}
                 </li>
                 <li>
                   {language === 'ar'
-                    ? 'استخدم الجانب الأيمن (رموز الألوان) لنسخ الألوان الفردية'
-                    : 'Use right side (hex codes) to copy individual colors'}
+                    ? 'انقر على أي بطاقة لتفعيل اللوحة - مر فوقها لرؤية خيار الاختيار'
+                    : 'Click any card to activate the palette - hover to see selection option'}
                 </li>
                 <li>
                   {language === 'ar'
-                    ? 'اللوحة المختارة ستظهر بإطار أخضر مع علامة صح ✓'
-                    : 'Selected palette will show green border with checkmark ✓'}
+                    ? 'استخدم زر النسخ 📋 بجوار كل لون لنسخ رمزه السداسي'
+                    : 'Use the copy button 📋 next to each color to copy its hex code'}
+                </li>
+                <li>
+                  {language === 'ar'
+                    ? 'الإطار الأخضر مع علامة ✓ يشير إلى الألوان النشطة حالياً'
+                    : 'Green border with ✓ indicates currently active colors'}
                 </li>
               </ul>
             </div>

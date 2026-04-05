@@ -261,7 +261,7 @@ export default function PhotoForm({ photo, onClose }: PhotoFormProps) {
                 <button
                   type="button"
                   onClick={() => setShowFilePicker(true)}
-                  className="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+                  className="flex-1 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-medium transition-all text-sm"
                 >
                   {language === 'ar' ? 'اختر من المكتبة' : 'Choose from Library'}
                 </button>
@@ -403,14 +403,14 @@ export default function PhotoForm({ photo, onClose }: PhotoFormProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-300 font-semibold transition-colors"
+                className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
                 disabled={loading}
               >
                 {language === 'ar' ? 'إلغاء' : 'Cancel'}
               </button>
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm disabled:opacity-50"
                 disabled={loading}
               >
                 {loading

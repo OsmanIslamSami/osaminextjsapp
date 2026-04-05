@@ -372,9 +372,9 @@ export default function StyleLibraryPage() {
               
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors min-h-[44px]"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm min-h-[44px]"
               >
-                <ArrowUpTrayIcon className="w-5 h-5" />
+                <ArrowUpTrayIcon className="w-4 h-4" />
                 <span className="hidden sm:inline">Upload Files</span>
               </button>
             </div>
@@ -453,9 +453,9 @@ export default function StyleLibraryPage() {
                   </span>
                   <button
                     onClick={handleBulkDelete}
-                    className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                    className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm font-medium"
                   >
-                    <TrashIcon className="w-4 h-4" />
+                    <TrashIcon className="w-3 h-3" />
                     Delete
                   </button>
                   <button
@@ -674,9 +674,9 @@ export default function StyleLibraryPage() {
                 )}
                 <button
                   onClick={() => setShowUploadModal(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm"
                 >
-                  <ArrowUpTrayIcon className="w-5 h-5" />
+                  <ArrowUpTrayIcon className="w-4 h-4" />
                   Upload Files
                 </button>
               </div>
@@ -755,13 +755,13 @@ export default function StyleLibraryPage() {
                   setShowDeleteConfirm(false);
                   setFilesToDelete([]);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                className="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 font-medium transition-all text-sm"
               >
                 Delete
               </button>
@@ -860,14 +860,14 @@ function NewFolderModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm disabled:opacity-50"
             >
               {loading ? 'Creating...' : 'Create Folder'}
             </button>
@@ -1059,7 +1059,7 @@ function UploadFileModal({
                   className="hidden"
                   accept="image/*,video/*,.pdf"
                 />
-                <span className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer inline-block">
+                <span className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm cursor-pointer inline-block">
                   Browse Files
                 </span>
               </label>
@@ -1172,14 +1172,14 @@ function UploadFileModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm disabled:opacity-50"
             >
               {loading ? 'Uploading...' : 'Upload'}
             </button>
@@ -1286,7 +1286,7 @@ function FileDetailsModal({
               />
               <button
                 onClick={() => copyToClipboard(file.file_url)}
-                className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm"
               >
                 Copy
               </button>
@@ -1362,13 +1362,13 @@ function FileDetailsModal({
           <button
             onClick={handleDelete}
             disabled={loading}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+            className="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 font-medium transition-all text-sm disabled:opacity-50"
           >
             {loading ? 'Deleting...' : 'Delete File'}
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
           >
             Close
           </button>

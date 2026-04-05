@@ -133,7 +133,7 @@ export default function NewsGridClient({ news }: NewsGridClientProps) {
         </div>
         <Link
           href="/news"
-          className="inline-block text-white px-8 py-3 rounded-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap w-fit"
+          className="inline-block text-white px-6 py-2.5 rounded-full font-medium transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap w-fit text-sm"
           style={{
             backgroundColor: 'var(--color-primary)',
           }}

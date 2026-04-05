@@ -225,17 +225,17 @@ export default function AdminPhotosPage() {
           {selectedPhotos.size > 0 && (
             <button
               onClick={handleBulkDelete}
-              className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-all text-sm shadow-sm"
             >
-              <TrashIcon className="w-5 h-5" />
+              <TrashIcon className="w-4 h-4" />
               {language === 'ar' ? `حذف المحدد (${selectedPhotos.size})` : `Delete Selected (${selectedPhotos.size})`}
             </button>
           )}
           <button
             onClick={handleAdd}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm shadow-sm"
           >
-            <PlusIcon className="w-5 h-5" />
+            <PlusIcon className="w-4 h-4" />
             {language === 'ar' ? 'إضافة صورة' : 'Add Photo'}
           </button>
         </div>

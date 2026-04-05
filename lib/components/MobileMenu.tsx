@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChartBarIcon, UsersIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { UserButton } from '@clerk/nextjs';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
@@ -60,10 +60,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-colors"
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all hover:scale-105"
             aria-label="Close menu"
           >
-            <XMarkIcon className="w-6 h-6 text-gray-700 dark:text-zinc-300" />
+            <XMarkIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
           </button>
         </div>
 
@@ -73,38 +73,41 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             <li>
               <Link
                 href="/dashboard"
-                className={`block px-4 py-3 rounded-lg transition-colors ${
+                className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all font-medium text-sm ${
                   pathname === '/dashboard'
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'
-                    : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900'
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
+                    : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900 hover:scale-105'
                 }`}
               >
-                {t('nav.dashboard')}
+                <ChartBarIcon className="w-4 h-4" />
+                <span>{t('nav.dashboard')}</span>
               </Link>
             </li>
             <li>
               <Link
                 href="/clients"
-                className={`block px-4 py-3 rounded-lg transition-colors ${
+                className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all font-medium text-sm ${
                   pathname === '/clients'
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'
-                    : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900'
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
+                    : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900 hover:scale-105'
                 }`}
               >
-                {t('nav.clients')}
+                <UsersIcon className="w-4 h-4" />
+                <span>{t('nav.clients')}</span>
               </Link>
             </li>
             {isAdmin && (
               <li>
                 <Link
                   href="/admin"
-                  className={`block px-4 py-3 rounded-lg transition-colors ${
+                  className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all font-medium text-sm ${
                     pathname.startsWith('/admin')
-                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'
-                      : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900'
+                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
+                      : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900 hover:scale-105'
                   }`}
                 >
-                  {t('nav.admin')}
+                  <Cog6ToothIcon className="w-4 h-4" />
+                  <span>{t('nav.admin')}</span>
                 </Link>
               </li>
             )}

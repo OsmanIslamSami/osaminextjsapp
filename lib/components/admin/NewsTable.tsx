@@ -284,13 +284,13 @@ export default function NewsTable({
                 <>
                   <button
                     onClick={() => onEdit(item)}
-                    className="flex-1 min-w-[100px] px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700"
+                    className="flex-1 min-w-[100px] px-4 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all"
                   >
                     {language === 'ar' ? 'تعديل' : 'Edit'}
                   </button>
                   <button
                     onClick={() => onToggleVisibility(item.id, item.is_visible)}
-                    className="flex-1 min-w-[100px] px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700"
+                    className="flex-1 min-w-[100px] px-4 py-1.5 bg-purple-600 text-white rounded-full text-sm font-medium hover:bg-purple-700 transition-all"
                   >
                     {item.is_visible
                       ? language === 'ar'

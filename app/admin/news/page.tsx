@@ -295,14 +295,14 @@ export default function AdminNewsPage() {
           {selectedNews.size > 0 && (
             <button
               onClick={handleBulkDelete}
-              className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-all text-sm shadow-sm"
             >
               {language === 'ar' ? `حذف المحدد (${selectedNews.size})` : `Delete Selected (${selectedNews.size})`}
             </button>
           )}
           <button
             onClick={handleAdd}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm shadow-sm"
           >
             {language === 'ar' ? 'إضافة خبر' : 'Add News'}
           </button>

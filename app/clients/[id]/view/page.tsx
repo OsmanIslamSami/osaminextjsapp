@@ -167,7 +167,7 @@ export default function ViewClient() {
           <h2 className="text-2xl font-bold">Order History</h2>
           <button
             onClick={() => setShowAddOrder(!showAddOrder)}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
           >
             {showAddOrder ? 'Cancel' : 'Add Order'}
           </button>
@@ -186,7 +186,7 @@ export default function ViewClient() {
                 onChange={(e) => setOrderForm({ ...orderForm, description: e.target.value })}
                 required
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all resize-none"
               />
             </div>
 
@@ -200,7 +200,7 @@ export default function ViewClient() {
                 onChange={(e) => setOrderForm({ ...orderForm, address: e.target.value })}
                 required
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all resize-none"
               />
             </div>
 
@@ -214,14 +214,14 @@ export default function ViewClient() {
                 value={orderForm.mobile}
                 onChange={(e) => setOrderForm({ ...orderForm, mobile: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={submittingOrder}
-              className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-5 py-2 rounded-full bg-green-600 hover:bg-green-700 text-white transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submittingOrder ? 'Creating...' : 'Create Order'}
             </button>

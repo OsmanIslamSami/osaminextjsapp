@@ -27,8 +27,8 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
           placeholder={
             language === 'ar' ? 'ابحث عن الأخبار...' : 'Search news...'
           }
-          className={`w-full py-3 border border-gray-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 ${
-            language === 'ar' ? 'pr-12 pl-4' : 'pl-4 pr-12'
+          className={`w-full py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all ${
+            language === 'ar' ? 'pr-12 pl-5' : 'pl-5 pr-12'
           }`}
           dir={language === 'ar' ? 'rtl' : 'ltr'}
         />
@@ -50,7 +50,7 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
       </div>
       <button
         type="submit"
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 min-h-[44px]"
+        className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 min-h-[44px]"
       >
         {language === 'ar' ? 'بحث' : 'Search'}
       </button>
