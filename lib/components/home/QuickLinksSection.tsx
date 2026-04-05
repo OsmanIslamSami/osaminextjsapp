@@ -29,20 +29,20 @@ export default function QuickLinksSection() {
   return (
     <div 
       ref={sectionRef}
-      className={`container mx-auto py-16 px-4 transition-all duration-700 ${
+      className={`container mx-auto max-w-7xl py-16 px-4 transition-all duration-700 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
-      <div className="mb-12 text-center">
-        <h1 className="text-4xl font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
           {t('home.welcomeTitle')}
         </h1>
-        <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>
+        <p className="mt-2" style={{ color: 'var(--color-text-secondary)' }}>
           {t('home.welcomeSubtitle')}
         </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div 
           className={`transition-all duration-700 h-full ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'

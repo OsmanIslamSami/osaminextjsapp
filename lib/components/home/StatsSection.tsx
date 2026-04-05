@@ -137,10 +137,10 @@ export default function StatsSection() {
   if (loading) {
     return (
       <div className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <div className="h-10 w-64 bg-gray-200 rounded-lg mx-auto mb-3 animate-pulse" />
-            <div className="h-6 w-96 bg-gray-200 rounded mx-auto animate-pulse" />
+        <div className="container mx-auto max-w-7xl">
+          <div className="mb-8">
+            <div className="h-10 w-64 bg-gray-200 rounded-lg mb-3 animate-pulse" />
+            <div className="h-6 w-96 bg-gray-200 rounded animate-pulse" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
@@ -206,13 +206,13 @@ export default function StatsSection() {
       ref={sectionRef}
       className="py-16 px-4 bg-gradient-to-b from-white to-gray-50"
     >
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+        <div className="mb-8">
+          <h2 className="text-4xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
             {t('home.quickOverview')}
           </h2>
-          <p className="text-gray-600">
+          <p className="mt-2" style={{ color: 'var(--color-text-secondary)' }}>
             {t('home.statsSubtitle')}
           </p>
         </div>

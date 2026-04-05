@@ -364,7 +364,7 @@ export default function AdminPhotosPage() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     {photo.is_featured && (
-                      <StarIcon className="w-5 h-5 text-yellow-500 inline fill-current" />
+                      <StarIcon className="w-5 h-5 inline fill-current" style={{ color: 'var(--color-accent)' }} />
                     )}
                   </td>
                   <td className="px-4 py-3 text-center">

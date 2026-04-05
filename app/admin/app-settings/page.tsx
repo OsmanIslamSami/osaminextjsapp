@@ -835,9 +835,12 @@ export default function AppSettingsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 {/* Color 1 - Primary */}
                 <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-1">
                     {language === 'ar' ? 'اللون الأساسي' : 'Primary Color'}
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 mb-2">
+                    {language === 'ar' ? 'للأزرار والروابط' : 'For buttons & links'}
+                  </p>
                   <div className="flex flex-col gap-2">
                     <input
                       type="color"
@@ -862,9 +865,12 @@ export default function AppSettingsPage() {
 
                 {/* Color 2 - Secondary */}
                 <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-1">
                     {language === 'ar' ? 'اللون الثانوي' : 'Secondary Color'}
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 mb-2">
+                    {language === 'ar' ? 'للعناصر الثانوية' : 'For secondary elements'}
+                  </p>
                   <div className="flex flex-col gap-2">
                     <input
                       type="color"
@@ -888,10 +894,13 @@ export default function AppSettingsPage() {
                 </div>
 
                 {/* Color 3 - Accent */}
-                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border-2" style={{ borderColor: 'var(--color-accent)' }}>
+                  <label className="block text-sm font-semibold mb-1" style={{ color: 'var(--color-accent)' }}>
                     {language === 'ar' ? 'لون التمييز' : 'Accent Color'}
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 mb-2">
+                    {language === 'ar' ? 'للبادجات والعناصر المميزة' : 'For badges & highlights'}
+                  </p>
                   <div className="flex flex-col gap-2">
                     <input
                       type="color"
@@ -916,9 +925,12 @@ export default function AppSettingsPage() {
 
                 {/* Color 4 - Background */}
                 <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-1">
                     {language === 'ar' ? 'لون الخلفية' : 'Background Color'}
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 mb-2">
+                    {language === 'ar' ? 'للصفحات والبطاقات' : 'For pages & cards'}
+                  </p>
                   <div className="flex flex-col gap-2">
                     <input
                       type="color"
@@ -943,9 +955,12 @@ export default function AppSettingsPage() {
 
                 {/* Color 5 - Text */}
                 <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-zinc-700">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-1">
                     {language === 'ar' ? 'لون النص' : 'Text Color'}
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 mb-2">
+                    {language === 'ar' ? 'للنصوص الرئيسية' : 'For main text content'}
+                  </p>
                   <div className="flex flex-col gap-2">
                     <input
                       type="color"

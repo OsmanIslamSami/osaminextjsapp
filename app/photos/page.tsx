@@ -144,6 +144,12 @@ export default function PhotosGalleryPage() {
                         className="object-cover transition-transform duration-300 group-hover:scale-110"
                         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       />
+                      {/* Featured badge */}
+                      {photo.is_featured && (
+                        <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg z-20" style={{ backgroundColor: 'var(--color-accent)' }}>
+                          {language === 'ar' ? 'مميز' : 'Featured'}
+                        </div>
+                      )}
                       {/* Gradient overlay - always visible */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                       

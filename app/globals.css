@@ -218,6 +218,28 @@ body {
   color: var(--color-info);
 }
 
+/* Accent color utilities */
+.text-themed-accent {
+  color: var(--color-accent);
+}
+
+.bg-themed-accent {
+  background-color: var(--color-accent);
+}
+
+.border-themed-accent {
+  border-color: var(--color-accent);
+}
+
+.btn-themed-accent {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.btn-themed-accent:hover {
+  background-color: var(--color-accent-light);
+}
+
 /* ===========================================
    ANIMATION INFRASTRUCTURE (Phase 8)
    =========================================== */

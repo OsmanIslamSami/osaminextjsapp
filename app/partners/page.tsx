@@ -166,6 +166,12 @@ export default function PartnersDirectoryPage() {
                   <>
                     {/* Partner Logo */}
                     <div className="relative aspect-square overflow-hidden rounded-lg bg-white p-6 shadow-md group-hover:shadow-xl transition-shadow duration-300">
+                      {/* Featured badge */}
+                      {partner.is_featured && (
+                        <div className="absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-bold text-white shadow-lg z-10" style={{ backgroundColor: 'var(--color-accent)' }}>
+                          {language === 'ar' ? 'مميز' : 'Featured'}
+                        </div>
+                      )}
                       <Image
                         src={partner.image_url}
                         alt={partnerName}
