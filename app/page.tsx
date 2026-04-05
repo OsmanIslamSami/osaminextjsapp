@@ -129,7 +129,7 @@ export default async function Home() {
       {/* Photos Section - 5 items in slider */}
       {showPhotos && (
         <PhotosSection 
-          photos={photos} 
+          photos={photos.map(p => ({ ...p, published_date: p.published_date.toISOString() }))} 
           title={{
             en: photosConfig?.title_en || 'Photos',
             ar: photosConfig?.title_ar || 'الصور',
@@ -140,7 +140,7 @@ export default async function Home() {
       {/* Videos Section - 6 items in 2x3 grid */}
       {showVideos && (
         <VideosSection 
-          videos={videos} 
+          videos={videos.map(v => ({ ...v, published_date: v.published_date.toISOString() }))} 
           title={{
             en: videosConfig?.title_en || 'Videos',
             ar: videosConfig?.title_ar || 'الفيديوهات',
