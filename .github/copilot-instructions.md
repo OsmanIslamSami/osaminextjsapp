@@ -69,36 +69,116 @@
 ### Pagination UI Standards
 
 **All pagination components MUST include:**
+- **Page Size Selector** (dropdown with options: 10, 20, 50, 100, 500)
 - **First Page** button (jump to page 1)
 - **Previous** button (go to previous page)
 - **Page numbers** (show current page and neighboring pages)
 - **Next** button (go to next page)
 - **Last Page** button (jump to final page)
+- **"Showing X-Y of Z" text** (displays current range and total count)
 
 **Requirements:**
+- **Always display pagination** (remove conditional rendering - show even when totalPages === 1)
+- Use **modern pill-shaped design** (`rounded-full` buttons)
+- **Element order** (both mobile and desktop):
+  1. Navigation buttons (First, Previous, Page numbers, Next, Last) at the beginning
+  2. "Showing X-Y of Z" text at the end
+  3. Page size selector at the end
+- **Responsive layout**:
+  - Mobile: All elements stack vertically (each row centered)
+  - Desktop (md+): All elements in one horizontal row (centered)
+  - Use `md:contents` on inner wrapper divs to flatten structure on desktop
+- **Styling consistency**:
+  - Buttons: `px-4 py-2`, `border-2`, `rounded-full`, `font-medium text-sm`
+  - Current page: `bg-gray-900 dark:bg-white text-white dark:text-gray-900`
+  - Inactive pages: `border-2 border-gray-300 dark:border-zinc-600`
+  - Disabled state: `disabled:opacity-50 disabled:cursor-not-allowed`
 - Disable First/Previous when on first page
 - Disable Next/Last when on last page
-- Highlight current page number
 - Show ellipsis (...) for large page ranges
-- Display total count when available (e.g., "Showing 1-10 of 100")
+- Reset to page 1 when changing page size
 
-**Example:**
+**Standard Implementation Pattern:**
 ```typescript
-<div className="flex items-center justify-center gap-2">
-  <button disabled={currentPage === 1}>First</button>
-  <button disabled={currentPage === 1}>Previous</button>
-  
-  {pageNumbers.map(page => (
-    <button 
-      key={page}
-      className={page === currentPage ? 'bg-primary text-white' : ''}
-    >
-      {page}
-    </button>
-  ))}
-  
-  <button disabled={currentPage === totalPages}>Next</button>
-  <button disabled={currentPage === totalPages}>Last</button>
+<div className="flex flex-col gap-4">
+  {/* All pagination elements */}
+  <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-2">
+    {/* First and Previous */}
+    <div className="flex items-center justify-center gap-2 md:contents">
+      <button 
+        disabled={currentPage === 1}
+        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+      >
+        First
+      </button>
+      <button 
+        disabled={currentPage === 1}
+        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+      >
+        Previous
+      </button>
+    </div>
+
+    {/* Page Numbers */}
+    <div className="flex flex-wrap items-center justify-center gap-1 md:contents">
+      {pageNumbers.map(page => (
+        <button 
+          key={page}
+          className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
+            page === currentPage
+              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+              : 'border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300'
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+    </div>
+
+    {/* Next and Last */}
+    <div className="flex items-center justify-center gap-2 md:contents">
+      <button 
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+      >
+        Next
+      </button>
+      <button 
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+      >
+        Last
+      </button>
+    </div>
+
+    {/* Showing count info (at the end) */}
+    <div className="flex items-center justify-center md:contents">
+      <span className="text-sm text-gray-600 dark:text-zinc-400">
+        {language === 'ar'
+          ? `عرض ${start} - ${end} من ${total}`
+          : `Showing ${start} - ${end} of ${total}`
+        }
+      </span>
+    </div>
+
+    {/* Page Size Selector (at the end) */}
+    <div className="flex items-center justify-center gap-2 md:contents">
+      <label className="text-sm text-gray-600 dark:text-zinc-400">
+        {language === 'ar' ? 'عرض:' : 'Show:'}
+      </label>
+      <select
+        value={pagination.limit}
+        onChange={(e) => handleLimitChange(Number(e.target.value))}
+        className="px-3 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all cursor-pointer"
+      >
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="500">500</option>
+      </select>
+    </div>
+  </div>
 </div>
 ```
 

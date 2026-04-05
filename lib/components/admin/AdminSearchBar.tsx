@@ -26,7 +26,7 @@ export default function AdminSearchBar({ initialValue, onSearch }: AdminSearchBa
         placeholder={
           language === 'ar' ? 'ابحث في الأخبار...' : 'Search news...'
         }
-        className={`flex-1 px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px] ${
+        className={`flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all ${
           direction === 'rtl' ? 'text-right' : 'text-left'
         }`}
         dir={direction}

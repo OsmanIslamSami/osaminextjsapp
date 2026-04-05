@@ -116,10 +116,10 @@ export default function ViewClient() {
       <div className="mb-6 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Client Details</h1>
         <div className="flex gap-2">
-          <Link href="/clients" className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+          <Link href="/clients" className="px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent font-medium text-sm transition-all">
             Back to List
           </Link>
-          <Link href={`/clients/${id}/edit`} className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+          <Link href={`/clients/${id}/edit`} className="px-5 py-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 font-medium text-sm transition-all shadow-sm">
             Edit
           </Link>
         </div>

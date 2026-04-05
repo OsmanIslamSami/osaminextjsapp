@@ -18,6 +18,7 @@ export interface MediaItem {
   title_ar: string;
   description_en?: string | null;
   description_ar?: string | null;
+  published_date: string;
 }
 
 interface MediaPopupProps {

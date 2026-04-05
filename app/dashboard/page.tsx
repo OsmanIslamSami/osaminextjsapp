@@ -77,7 +77,7 @@ export default function DashboardPage() {
           <p className="text-red-800">{error}</p>
           <button
             onClick={fetchMetrics}
-            className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="mt-4 px-5 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white font-medium text-sm transition-all shadow-sm"
           >
             Retry
           </button>

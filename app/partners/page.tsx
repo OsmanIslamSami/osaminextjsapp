@@ -100,6 +100,11 @@ export default function PartnersDirectoryPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleLimitChange = (newLimit: number) => {
+    setPagination((prev) => ({ ...prev, limit: newLimit, page: 1 }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -221,28 +226,30 @@ export default function PartnersDirectoryPage() {
             </div>
 
             {/* Pagination Controls */}
-            {pagination.totalPages > 1 && (
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-12">
-                {/* First Page Button */}
-                <button
-                  onClick={() => handlePageChange(1)}
-                  disabled={pagination.page === 1}
-                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
-                >
-                  {language === 'ar' ? 'الأولى' : 'First'}
-                </button>
+            <div className="flex flex-col gap-4 mt-12">
+                {/* Pagination Buttons */}
+                <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-2">
+                  {/* First Row: First and Previous */}
+                  <div className="flex items-center justify-center gap-2 md:contents">
+                    <button
+                      onClick={() => handlePageChange(1)}
+                      disabled={pagination.page === 1}
+                      className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'الأولى' : 'First'}
+                    </button>
 
-                {/* Previous Button */}
-                <button
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  disabled={pagination.page === 1}
-                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
-                >
-                  {language === 'ar' ? 'السابق' : 'Previous'}
-                </button>
+                    <button
+                      onClick={() => handlePageChange(pagination.page - 1)}
+                      disabled={pagination.page === 1}
+                      className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'السابق' : 'Previous'}
+                    </button>
+                  </div>
 
-                {/* Page Numbers */}
-                <div className="flex gap-2">
+                  {/* Second Row: Page Numbers */}
+                  <div className="flex flex-wrap items-center justify-center gap-1 md:contents">
                   {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
                     .filter((page) => {
                       // Show first page, last page, current page, and pages around current
@@ -275,27 +282,57 @@ export default function PartnersDirectoryPage() {
                         </div>
                       );
                     })}
+                  </div>
+
+                  {/* Third Row: Next and Last */}
+                  <div className="flex items-center justify-center gap-2 md:contents">
+                    {/* Next Button */}
+                    <button
+                      onClick={() => handlePageChange(pagination.page + 1)}
+                      disabled={pagination.page === pagination.totalPages}
+                      className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'التالي' : 'Next'}
+                    </button>
+
+                    {/* Last Page Button */}
+                    <button
+                      onClick={() => handlePageChange(pagination.totalPages)}
+                      disabled={pagination.page === pagination.totalPages}
+                      className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'الأخيرة' : 'Last'}
+                    </button>
+                  </div>
+
+                  {/* Showing count info */}
+                  <div className="flex items-center justify-center md:contents">
+                    <span className="text-sm text-gray-600 dark:text-zinc-400">
+                      {language === 'ar'
+                        ? `عرض ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} من ${pagination.total}`
+                        : `Showing ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total}`
+                      }
+                    </span>
+                  </div>
+
+                  {/* Page Size Selector */}
+                  <div className="flex items-center justify-center gap-2 md:contents">
+                    <label className="text-sm text-gray-600 dark:text-zinc-400">
+                      {language === 'ar' ? 'عرض:' : 'Show:'}
+                    </label>
+                    <select
+                      value={pagination.limit}
+                      onChange={(e) => setPagination({ ...pagination, limit: Number(e.target.value), page: 1 })}
+                      className="px-3 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all cursor-pointer"
+                    >
+                      <option value="10">10</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="500">500</option>
+                    </select>
+                  </div>
                 </div>
-
-                {/* Next Button */}
-                <button
-                  onClick={() => handlePageChange(pagination.page + 1)}
-                  disabled={pagination.page === pagination.totalPages}
-                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
-                >
-                  {language === 'ar' ? 'التالي' : 'Next'}
-                </button>
-
-                {/* Last Page Button */}
-                <button
-                  onClick={() => handlePageChange(pagination.totalPages)}
-                  disabled={pagination.page === pagination.totalPages}
-                  className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
-                >
-                  {language === 'ar' ? 'الأخيرة' : 'Last'}
-                </button>
-              </div>
-            )}
+            </div>
           </>
         )}
       </div>

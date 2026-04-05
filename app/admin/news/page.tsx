@@ -247,6 +247,13 @@ export default function AdminNewsPage() {
     router.push(`/admin/news?${params.toString()}`);
   };
 
+  const handleLimitChange = (limit: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', limit);
+    params.set('page', '1');
+    router.push(`/admin/news?${params.toString()}`);
+  };
+
   const handleExport = async () => {
     try {
       const params = new URLSearchParams(searchParams.toString());
@@ -329,7 +336,7 @@ export default function AdminNewsPage() {
             <select
               value={searchParams.get('filter') || 'all'}
               onChange={(e) => handleFilterChange(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-h-[44px]"
+              className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all cursor-pointer"
             >
               <option value="all">{language === 'ar' ? 'الكل' : 'All'}</option>
               <option value="visible">{language === 'ar' ? 'مرئي' : 'Visible'}</option>
@@ -366,45 +373,39 @@ export default function AdminNewsPage() {
           />
 
           {/* Pagination Controls */}
-          {pagination.totalPages > 1 && (
-            <div className="bg-white dark:bg-zinc-900 rounded-lg shadow p-4">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                {/* Page Info */}
-                <div className="text-sm text-gray-600 dark:text-zinc-400">
-                  {language === 'ar' 
-                    ? `عرض ${((pagination.page - 1) * pagination.limit) + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} من ${pagination.total}`
-                    : `Showing ${((pagination.page - 1) * pagination.limit) + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total}`
-                  }
-                </div>
+          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow p-4">
+              <div className="flex flex-col gap-4">
+                {/* All pagination elements */}
+                <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-2">
+                  {/* First Row: First and Previous */}
+                  <div className="flex items-center justify-center gap-2 md:contents">
+                    <button
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.set('page', '1');
+                        router.push(`/admin/news?${params.toString()}`);
+                      }}
+                      disabled={pagination.page === 1}
+                      className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-400 dark:hover:border-zinc-500 transition-all min-h-[40px] text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'الأولى' : 'First'}
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.set('page', String(pagination.page - 1));
+                        router.push(`/admin/news?${params.toString()}`);
+                      }}
+                      disabled={pagination.page === 1}
+                      className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-400 dark:hover:border-zinc-500 transition-all min-h-[40px] text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'السابق' : 'Previous'}
+                    </button>
+                  </div>
 
-                {/* Pagination Buttons */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams.toString());
-                      params.set('page', '1');
-                      router.push(`/admin/news?${params.toString()}`);
-                    }}
-                    disabled={pagination.page === 1}
-                    className="px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors min-h-[40px]"
-                  >
-                    {language === 'ar' ? 'الأولى' : 'First'}
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams.toString());
-                      params.set('page', String(pagination.page - 1));
-                      router.push(`/admin/news?${params.toString()}`);
-                    }}
-                    disabled={pagination.page === 1}
-                    className="px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors min-h-[40px]"
-                  >
-                    {language === 'ar' ? 'السابق' : 'Previous'}
-                  </button>
-
-                  {/* Page Numbers */}
-                  <div className="flex items-center gap-1">
+                  {/* Second Row: Page Numbers */}
+                  <div className="flex flex-wrap items-center justify-center gap-1 md:contents">
                     {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
                       let pageNum;
                       if (pagination.totalPages <= 5) {
@@ -425,10 +426,10 @@ export default function AdminNewsPage() {
                             params.set('page', String(pageNum));
                             router.push(`/admin/news?${params.toString()}`);
                           }}
-                          className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors min-h-[40px] min-w-[40px] ${
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all min-h-[40px] min-w-[40px] ${
                             pagination.page === pageNum
-                              ? 'bg-blue-600 text-white'
-                              : 'border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800'
+                              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                              : 'border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300'
                           }`}
                         >
                           {pageNum}
@@ -437,30 +438,65 @@ export default function AdminNewsPage() {
                     })}
                   </div>
 
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams.toString());
-                      params.set('page', String(pagination.page + 1));
-                      router.push(`/admin/news?${params.toString()}`);
-                    }}
-                    disabled={pagination.page === pagination.totalPages}
-                    className="px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors min-h-[40px]"
-                  >
-                    {language === 'ar' ? 'التالي' : 'Next'}
-                  </button>
+                  {/* Third Row: Next and Last */}
+                  <div className="flex items-center justify-center gap-2 md:contents">
+                    <button
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.set('page', String(pagination.page + 1));
+                        router.push(`/admin/news?${params.toString()}`);
+                      }}
+                      disabled={pagination.page === pagination.totalPages}
+                      className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-400 dark:hover:border-zinc-500 transition-all min-h-[40px] text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'التالي' : 'Next'}
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams.toString());
-                      params.set('page', String(pagination.totalPages));
-                      router.push(`/admin/news?${params.toString()}`);
-                    }}
-                    disabled={pagination.page === pagination.totalPages}
-                    className="px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors min-h-[40px]"
-                  >
-                    {language === 'ar' ? 'الأخيرة' : 'Last'}
-                  </button>
-        
+                    <button
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.set('page', String(pagination.totalPages));
+                        router.push(`/admin/news?${params.toString()}`);
+                      }}
+                      disabled={pagination.page === pagination.totalPages}
+                      className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-400 dark:hover:border-zinc-500 transition-all min-h-[40px] text-gray-700 dark:text-zinc-300"
+                    >
+                      {language === 'ar' ? 'الأخيرة' : 'Last'}
+                    </button>
+                  </div>
+
+                  {/* Page Info */}
+                  <div className="flex items-center justify-center md:contents">
+                    <span className="text-sm text-gray-600 dark:text-zinc-400">
+                      {language === 'ar' 
+                        ? `عرض ${((pagination.page - 1) * pagination.limit) + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} من ${pagination.total}`
+                        : `Showing ${((pagination.page - 1) * pagination.limit) + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total}`
+                      }
+                    </span>
+                  </div>
+                    
+                  {/* Page Size Selector */}
+                  <div className="flex items-center justify-center gap-2 md:contents">
+                    <label className="text-sm text-gray-600 dark:text-zinc-400">
+                      {language === 'ar' ? 'عرض:' : 'Show:'}
+                    </label>
+                    <select
+                      value={pagination.limit}
+                      onChange={(e) => handleLimitChange(e.target.value)}
+                      className="px-3 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all cursor-pointer"
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="500">500</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </>
+      )}
 
       {/* Bulk Delete Confirmation Dialog */}
       <ConfirmDialog
@@ -473,12 +509,7 @@ export default function AdminNewsPage() {
         cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
         onConfirm={confirmBulkDelete}
         onCancel={() => setShowBulkDeleteConfirm(false)}
-      />        </div>
-              </div>
-            </div>
-          )}
-        </>
-      )}
+      />
 
       {/* Form Modal */}
       {showForm && (

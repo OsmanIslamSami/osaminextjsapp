@@ -18,7 +18,7 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
       <div className="flex-1 relative">
         <input
           type="text"
@@ -50,7 +50,7 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
       </div>
       <button
         type="submit"
-        className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 min-h-[44px]"
+        className="w-full sm:w-auto px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 min-h-[44px]"
       >
         {language === 'ar' ? 'بحث' : 'Search'}
       </button>

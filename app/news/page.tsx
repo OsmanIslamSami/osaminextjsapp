@@ -98,6 +98,13 @@ function AllNewsContent() {
     router.push(`/news?${params.toString()}`);
   };
 
+  const handleLimitChange = (newLimit: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', newLimit.toString());
+    params.set('page', '1'); // Reset to first page
+    router.push(`/news?${params.toString()}`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 py-16 px-4">
@@ -164,8 +171,8 @@ function AllNewsContent() {
         </div>
 
         {/* Search and Filter Section */}
-        <div className="mb-8 bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-8 bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-4 sm:p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <SearchBar
               initialValue={searchParams.get('search') || ''}
               onSearch={handleSearch}
@@ -205,13 +212,14 @@ function AllNewsContent() {
             </div>
 
             {/* Pagination */}
-            {pagination.totalPages > 1 && (
-              <PaginationControls
-                currentPage={pagination.page}
-                totalPages={pagination.totalPages}
-                onPageChange={handlePageChange}
-              />
-            )}
+            <PaginationControls
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              total={pagination.total}
+              limit={pagination.limit}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+            />
           </>
         )}
       </div>

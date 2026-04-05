@@ -404,43 +404,74 @@ export default function AdminPartnersPage() {
       )}
 
       {/* Pagination */}
-      {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => setPagination({ ...pagination, page: 1 })}
-            disabled={pagination.page === 1}
-            className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors"
-          >
-            {language === 'ar' ? 'الأولى' : 'First'}
-          </button>
-          <button
-            onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-            disabled={pagination.page === 1}
-            className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors"
-          >
-            {language === 'ar' ? 'السابق' : 'Previous'}
-          </button>
-          <span className="px-4 py-2 text-gray-700 dark:text-zinc-300">
-            {language === 'ar' 
-              ? `صفحة ${pagination.page} من ${pagination.totalPages}` 
-              : `Page ${pagination.page} of ${pagination.totalPages}`}
-          </span>
-          <button
-            onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-            disabled={pagination.page === pagination.totalPages}
-            className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors"
-          >
-            {language === 'ar' ? 'التالي' : 'Next'}
-          </button>
-          <button
-            onClick={() => setPagination({ ...pagination, page: pagination.totalPages })}
-            disabled={pagination.page === pagination.totalPages}
-            className="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-colors"
-          >
-            {language === 'ar' ? 'الأخيرة' : 'Last'}
-          </button>
-        </div>
-      )}
+      <div className="flex flex-col gap-4">
+          {/* All pagination elements */}
+          <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-2">
+            {/* First Row: First and Previous */}
+            <div className="flex items-center justify-center gap-2 md:contents">
+              <button
+                onClick={() => setPagination({ ...pagination, page: 1 })}
+                disabled={pagination.page === 1}
+                className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm"
+              >
+                {language === 'ar' ? 'الأولى' : 'First'}
+              </button>
+              <button
+                onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
+                disabled={pagination.page === 1}
+                className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm"
+              >
+                {language === 'ar' ? 'السابق' : 'Previous'}
+              </button>
+            </div>
+
+            {/* Third Row: Next and Last */}
+            <div className="flex items-center justify-center gap-2 md:contents">
+              <button
+                onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
+                disabled={pagination.page === pagination.totalPages}
+                className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm"
+              >
+                {language === 'ar' ? 'التالي' : 'Next'}
+              </button>
+              <button
+                onClick={() => setPagination({ ...pagination, page: pagination.totalPages })}
+                disabled={pagination.page === pagination.totalPages}
+                className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm"
+              >
+                {language === 'ar' ? 'الأخيرة' : 'Last'}
+              </button>
+            </div>
+
+            {/* Showing count info */}
+            <div className="flex items-center justify-center md:contents">
+              <span className="text-sm text-gray-600 dark:text-zinc-400">
+                {language === 'ar'
+                  ? `عرض ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} من ${pagination.total}`
+                  : `Showing ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total}`
+                }
+              </span>
+            </div>
+
+            {/* Page Size Selector */}
+            <div className="flex items-center justify-center gap-2 md:contents">
+              <label className="text-sm text-gray-600 dark:text-zinc-400">
+                {language === 'ar' ? 'عرض:' : 'Show:'}
+              </label>
+              <select
+                value={pagination.limit}
+                onChange={(e) => setPagination({ ...pagination, limit: Number(e.target.value), page: 1 })}
+                className="px-3 py-1.5 border-2 border-gray-300 dark:border-zinc-600 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all cursor-pointer"
+              >
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="500">500</option>
+              </select>
+            </div>
+          </div>
+      </div>
 
       {/* Partner Form Modal */}
       {showForm && <PartnerForm partner={editingPartner} onClose={handleFormClose} />}

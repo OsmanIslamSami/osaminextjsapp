@@ -538,7 +538,7 @@ export default function AdminSliderPage() {
               <div className="flex md:flex-col gap-2 items-center">
                 <button
                   onClick={() => handleToggleVisible(slide.id)}
-                  className="p-2 rounded hover:bg-gray-100 min-h-[44px] min-w-[44px]"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 min-h-[44px] min-w-[44px] transition-all"
                   title={slide.is_visible ? 'Hide from homepage' : 'Show on homepage'}
                 >
                   {slide.is_visible ? (
@@ -550,7 +550,7 @@ export default function AdminSliderPage() {
                 <button
                   onClick={() => handleReorder(index, 'up')}
                   disabled={index === 0}
-                  className="p-2 rounded hover:bg-gray-100 disabled:opacity-30 min-h-[44px] min-w-[44px]"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-30 min-h-[44px] min-w-[44px] transition-all"
                   title="Move up"
                 >
                   <ArrowUpIcon className="w-5 h-5" />
@@ -558,21 +558,21 @@ export default function AdminSliderPage() {
                 <button
                   onClick={() => handleReorder(index, 'down')}
                   disabled={index === slides.length - 1}
-                  className="p-2 rounded hover:bg-gray-100 disabled:opacity-30 min-h-[44px] min-w-[44px]"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-30 min-h-[44px] min-w-[44px] transition-all"
                   title="Move down"
                 >
                   <ArrowDownIcon className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => handleEdit(slide)}
-                  className="p-2 rounded hover:bg-gray-100 min-h-[44px] min-w-[44px]"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 min-h-[44px] min-w-[44px] transition-all"
                   title="Edit"
                 >
                   <PencilIcon className="w-5 h-5 text-blue-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(slide.id)}
-                  className="p-2 rounded hover:bg-gray-100 min-h-[44px] min-w-[44px]"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 min-h-[44px] min-w-[44px] transition-all"
                   title="Delete"
                 >
                   <TrashIcon className="w-5 h-5 text-red-600" />

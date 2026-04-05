@@ -313,11 +313,11 @@ export default function VideoForm({ video, onClose }: VideoFormProps) {
                 <button
                   type="button"
                   onClick={() => setShowFilePicker(true)}
-                  className="flex-1 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-medium transition-all text-sm"
+                  className="flex-1 px-5 py-2.5 border-2 border-purple-300 dark:border-purple-600 text-purple-600 dark:text-purple-400 rounded-full font-medium hover:border-purple-400 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all text-sm"
                 >
-                  {language === 'ar' ? 'اختر من المكتبة' : 'Choose from Library'}
+                  {language === 'ar' ? 'اختر من المكتبة' : 'Select from Media Library'}
                 </button>
-                <label className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors cursor-pointer text-center">
+                <label className="flex-1 px-4 py-3 border-2 border-green-300 dark:border-green-600 text-green-600 dark:text-green-400 rounded-full font-medium hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all cursor-pointer text-center text-sm">
                   {language === 'ar' ? 'رفع ملف جديد' : 'Upload New File'}
                   <input
                     type="file"

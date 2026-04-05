@@ -284,13 +284,13 @@ export default function NewsTable({
                 <>
                   <button
                     onClick={() => onEdit(item)}
-                    className="flex-1 min-w-[100px] px-4 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all"
+                    className="flex-1 min-w-[100px] px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all shadow-sm"
                   >
                     {language === 'ar' ? 'تعديل' : 'Edit'}
                   </button>
                   <button
                     onClick={() => onToggleVisibility(item.id, item.is_visible)}
-                    className="flex-1 min-w-[100px] px-4 py-1.5 bg-purple-600 text-white rounded-full text-sm font-medium hover:bg-purple-700 transition-all"
+                    className="flex-1 min-w-[100px] px-4 py-2 border-2 border-purple-300 dark:border-purple-600 text-purple-600 dark:text-purple-400 rounded-full text-sm font-medium hover:border-purple-400 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all"
                   >
                     {item.is_visible
                       ? language === 'ar'
@@ -302,7 +302,7 @@ export default function NewsTable({
                   </button>
                   <button
                     onClick={() => onDelete(item.id)}
-                    className="flex-1 min-w-[100px] px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700"
+                    className="flex-1 min-w-[100px] px-4 py-2 border-2 border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 rounded-full text-sm font-medium hover:border-red-400 dark:hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                   >
                     {language === 'ar' ? 'حذف' : 'Delete'}
                   </button>
@@ -311,7 +311,7 @@ export default function NewsTable({
               {item.is_deleted && (
                 <button
                   onClick={() => onRestore(item.id)}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700"
+                  className="w-full px-4 py-2 border-2 border-green-300 dark:border-green-600 text-green-600 dark:text-green-400 rounded-full text-sm font-medium hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all"
                 >
                   {language === 'ar' ? 'استعادة' : 'Restore'}
                 </button>
