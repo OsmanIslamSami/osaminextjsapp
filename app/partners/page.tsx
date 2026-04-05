@@ -28,6 +28,7 @@ interface PartnerItem {
   title_ar: string;
   url?: string | null;
   image_url: string;
+  is_featured: boolean;
 }
 
 interface PaginationInfo {
