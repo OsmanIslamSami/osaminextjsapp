@@ -49,6 +49,30 @@
 <div className="p-4 md:p-6 lg:p-8">
 ```
 
+**Desktop (Windows) vs Mobile Layout Patterns:**
+
+**Search/Filter Sections:**
+- **Mobile**: Stack all elements vertically for easy thumb access
+- **Desktop**: Single horizontal row with proper spacing and alignment
+- **Pattern**: Use `flex-col` → `lg:flex-row` for major layout shifts
+- **Alignment**: Use `lg:items-start` for top alignment, `lg:items-center` when appropriate
+
+**Form Layouts:**
+- **Mobile**: Full-width inputs and buttons (`w-full`)
+- **Desktop**: Constrained width inputs (`lg:max-w-md`) with auto-width buttons (`sm:w-auto`)
+- **Spacing**: `gap-2` on mobile, increase to `gap-4` on desktop (`lg:gap-4`)
+
+**Card Grids:**
+- **Mobile**: 1 column (`grid-cols-1`)
+- **Tablet**: 2 columns (`sm:grid-cols-2`)
+- **Desktop**: 3-4 columns (`lg:grid-cols-3` or `lg:grid-cols-4`)
+- **Gap**: Consistent `gap-6` or `gap-8` across breakpoints
+
+**Navigation and Pagination:**
+- **Mobile**: Centered, stacked elements with proper touch targets (min 44×44px)
+- **Desktop**: Horizontal row with `md:contents` to flatten wrapper divs
+- **Centering**: Use `md:items-center md:justify-center` for desktop alignment
+
 ### TypeScript Standards
 
 - Use **explicit types** for function parameters and return values
@@ -182,6 +206,122 @@
 </div>
 ```
 
+### Search and Filter UI Standards
+
+**All search/filter sections MUST be responsive:**
+
+**Requirements:**
+- **Container**: `bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-4 sm:p-6`
+- **Layout**: Vertical stack on mobile → Horizontal row on desktop
+- **Input height**: Consistent `min-h-[48px]` for all inputs and buttons
+- **Modern styling**: `rounded-full` inputs and buttons, `border-2` borders
+
+**Desktop Layout Pattern (lg+):**
+```typescript
+<div className="flex flex-col lg:flex-row lg:items-start gap-4">
+  {/* Search section - constrained width */}
+  <div className="flex-1 lg:max-w-md">
+    <SearchBar />
+  </div>
+  
+  {/* Filter section - takes remaining space */}
+  <div className="flex-1">
+    <DateRangeFilter />
+  </div>
+</div>
+```
+
+**SearchBar Component Pattern:**
+- Mobile: Input stacks above button (`flex-col`)
+- Tablet+: Input and button side-by-side (`sm:flex-row`)
+- Button: `w-full sm:w-auto` with `whitespace-nowrap`
+- Input: `min-h-[48px]` with icon positioned inside
+- Search icon: `absolute` positioned right/left based on RTL
+
+**DateRangeFilter Component Pattern:**
+- Mobile: All elements stack vertically
+- Tablet+: Dates + Buttons in single row
+- Date inputs: `flex-1` to share space equally
+- Buttons: `whitespace-nowrap` to prevent text wrapping
+- Clear button: Only show when dates are set
+
+### Media Card UI Standards (Photos/Videos)
+
+**All media cards MUST display published date:**
+
+**Requirements:**
+- **Always-visible gradient overlay**: `bg-gradient-to-t from-black/80 via-black/40 to-transparent`
+- **Content at bottom**: Title and date always visible (not just on hover)
+- **Calendar icon**: SVG icon with date text
+- **Localized date format**: `toLocaleDateString()` with proper locale
+- **RTL support**: Flex direction reverses for Arabic
+
+**Standard Media Card Pattern:**
+```typescript
+<div className="relative aspect-square overflow-hidden rounded-lg">
+  <Image src={url} alt={title} fill className="object-cover" />
+  
+  {/* Always-visible gradient */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+  
+  {/* Enhanced hover gradient */}
+  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+  {/* Content overlay at bottom */}
+  <div className="absolute inset-x-0 bottom-0 p-4 text-white z-10">
+    <h3 className="font-semibold line-clamp-2 mb-2 drop-shadow-lg">{title}</h3>
+    
+    <div className={`flex items-center gap-2 text-sm text-white/90 ${
+      language === 'ar' ? 'flex-row-reverse justify-end' : ''
+    }`}>
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span className="drop-shadow-md">{publishedDate}</span>
+    </div>
+  </div>
+</div>
+```
+
+**Date Formatting:**
+```typescript
+const publishedDate = new Date(item.published_date).toLocaleDateString(
+  language === 'ar' ? 'ar-SA' : 'en-US',
+  { year: 'numeric', month: 'long', day: 'numeric' }
+);
+```
+
+**Type Conversion:**
+- **API routes**: Dates auto-serialize through `NextResponse.json()` ✅
+- **Server components**: Manually convert Prisma `Date` objects to ISO strings:
+  ```typescript
+  photos={photos.map(p => ({ ...p, published_date: p.published_date.toISOString() }))}
+  ```
+- **Interface**: `MediaItem.published_date: string` (not `Date`)
+
+### Button and Input Design Standards
+
+**All buttons and inputs MUST use modern design:**
+
+**Button Styles:**
+- **Primary**: `bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full px-6 py-3`
+- **Secondary**: `border-2 border-gray-300 dark:border-zinc-600 rounded-full px-6 py-3`
+- **Danger**: `border-2 border-red-300 text-red-600 rounded-full px-6 py-3` (bordered, not solid)
+- **Size**: `min-h-[44px]` minimum for touch targets, `min-h-[48px]` for form inputs
+- **Padding**: `px-4 py-2` for compact, `px-6 py-3` for standard, `px-8 py-3` for prominent
+
+**Input Styles:**
+- **Text inputs**: `rounded-full px-4 py-3 border-2 border-gray-200 dark:border-zinc-700`
+- **File inputs**: `rounded-2xl` (slightly less rounded for better file display)
+- **Select dropdowns**: `rounded-full` with `cursor-pointer`
+- **Height**: Consistent `py-3` creates `min-h-[48px]` naturally
+
+**Responsive Button Width:**
+- Mobile: `w-full` for easy tapping
+- Tablet+: `sm:w-auto` to fit content
+- Add `whitespace-nowrap` to prevent text wrapping
+
 ## Build and Test
 
 ```bash
@@ -284,7 +424,7 @@ return NextResponse.json({ error: "Message" }, { status: 400 });
 |-------|-------|-----|
 | Soft-deleted items appear | Missing `is_deleted: false` filter | Add to all queries |
 | File uploads disappear on Vercel | Using local storage | Switch to Vercel Blob |
-| Wrong base URL in production | Hard-coded localhost | Use `getBaseUrl()` from [lib/utils/url.ts](../lib/utils/url.ts) |
+| Wrong base URL in production | Hard-coded localhost | Use environment variables and process.env |
 | OG images fail in Teams | Dynamic API routes | Use file-based [app/opengraph-image.tsx](../app/opengraph-image.tsx) |
 | News section empty on Vercel | HTTP fetch in server component | Query DB directly with Prisma |
 

@@ -30,42 +30,45 @@ export default function DateRangeFilter({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      {/* Date inputs - stack on mobile, side by side on tablet+ */}
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      {/* Date inputs and buttons - responsive layout */}
       <div className="flex flex-col sm:flex-row gap-2">
-        <input
-          type="date"
-          value={dateFrom}
-          onChange={(e) => setDateFrom(e.target.value)}
-          className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[44px]"
-          placeholder={language === 'ar' ? 'من تاريخ' : 'From Date'}
-        />
-        <input
-          type="date"
-          value={dateTo}
-          onChange={(e) => setDateTo(e.target.value)}
-          className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[44px]"
-          placeholder={language === 'ar' ? 'إلى تاريخ' : 'To Date'}
-        />
-      </div>
-      
-      {/* Action buttons - stack on mobile, side by side on tablet+ */}
-      <div className="flex flex-col sm:flex-row gap-2">
-        <button
-          type="submit"
-          className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-medium transition-all focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 min-h-[44px] text-sm"
-        >
-          {language === 'ar' ? 'تصفية' : 'Filter'}
-        </button>
-        {(dateFrom || dateTo) && (
+        {/* Date inputs */}
+        <div className="flex flex-col sm:flex-row gap-2 flex-1">
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px]"
+            placeholder={language === 'ar' ? 'من تاريخ' : 'From Date'}
+          />
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px]"
+            placeholder={language === 'ar' ? 'إلى تاريخ' : 'To Date'}
+          />
+        </div>
+        
+        {/* Action buttons */}
+        <div className="flex gap-2 sm:w-auto">
           <button
-            type="button"
-            onClick={handleClear}
-            className="flex-1 px-6 py-3 border-2 border-gray-300 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 rounded-full font-medium transition-all min-h-[44px] bg-transparent text-sm"
+            type="submit"
+            className="flex-1 sm:flex-initial px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-medium transition-all focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 min-h-[48px] text-sm whitespace-nowrap"
           >
-            {language === 'ar' ? 'مسح' : 'Clear'}
+            {language === 'ar' ? 'تصفية' : 'Filter'}
           </button>
-        )}
+          {(dateFrom || dateTo) && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="flex-1 sm:flex-initial px-6 py-3 border-2 border-gray-300 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 rounded-full font-medium transition-all min-h-[48px] bg-transparent text-sm whitespace-nowrap"
+            >
+              {language === 'ar' ? 'مسح' : 'Clear'}
+            </button>
+          )}
+        </div>
       </div>
     </form>
   );

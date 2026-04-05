@@ -172,16 +172,24 @@ function AllNewsContent() {
 
         {/* Search and Filter Section */}
         <div className="mb-8 bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-4 sm:p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <SearchBar
-              initialValue={searchParams.get('search') || ''}
-              onSearch={handleSearch}
-            />
-            <DateRangeFilter
-              initialDateFrom={searchParams.get('dateFrom') || ''}
-              initialDateTo={searchParams.get('dateTo') || ''}
-              onFilter={handleDateRange}
-            />
+          {/* For desktop: all in one row */}
+          <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+            {/* Search Bar - takes more space on desktop */}
+            <div className="flex-1 lg:max-w-md">
+              <SearchBar
+                initialValue={searchParams.get('search') || ''}
+                onSearch={handleSearch}
+              />
+            </div>
+            
+            {/* Date Filter - compact on desktop */}
+            <div className="flex-1">
+              <DateRangeFilter
+                initialDateFrom={searchParams.get('dateFrom') || ''}
+                initialDateTo={searchParams.get('dateTo') || ''}
+                onFilter={handleDateRange}
+              />
+            </div>
           </div>
         </div>
 
