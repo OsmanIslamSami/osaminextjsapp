@@ -407,9 +407,9 @@ export default function AppSettingsPage() {
     <div className="space-y-6" dir={direction}>
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
           {t('admin.appSettings.title')}
-        </h2>
+        </h1>
         <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
           {t('admin.appSettings.subtitle')}
         </p>

@@ -22,6 +22,69 @@
 - **Consistent formatting**: Follow ESLint rules (`npm run lint`)
 - **Type safety**: Use TypeScript types, avoid `any` unless absolutely necessary
 
+### W3C HTML and Accessibility Standards
+
+**All HTML must follow W3C standards and WCAG accessibility guidelines:**
+
+**Heading Hierarchy:**
+- **One `<h1>` per page**: Use only ONE `<h1>` tag as the main page heading (typically in hero/slider)
+- **Logical hierarchy**: Follow proper nesting order (h1 → h2 → h3), never skip levels
+- **Section titles**: Use `<h2>` for major section headings (News, Photos, Videos, Partners, etc.)
+- **Subsections**: Use `<h3>` for items within sections (individual news titles, card titles, etc.)
+- **Example structure**:
+  ```typescript
+  <h1>Main Page Title</h1>        // Hero/Slider (only one per page)
+    <h2>Section Title</h2>         // News, Photos, Videos section
+      <h3>Card Title</h3>          // Individual items
+      <h3>Card Title</h3>
+    <h2>Another Section</h2>
+      <h3>Item Title</h3>
+  ```
+
+**Semantic HTML:**
+- Use semantic elements: `<main>`, `<section>`, `<article>`, `<nav>`, `<header>`, `<footer>`
+- Use `<button>` for actions, `<a>` for navigation
+- Add `aria-label` for icon-only buttons
+- Include `alt` text for all images (descriptive, not decorative)
+- Use `<label>` elements for all form inputs
+
+**Accessibility (WCAG 2.1 Level AA):**
+- **Keyboard navigation**: All interactive elements must be keyboard accessible (Tab, Enter, Space)
+- **Focus indicators**: Visible focus states for all focusable elements
+- **Color contrast**: Minimum 4.5:1 ratio for normal text, 3:1 for large text
+- **ARIA attributes**: Use `aria-label`, `aria-describedby`, `aria-hidden` appropriately
+- **Form validation**: Clear error messages with `aria-invalid` and `aria-errormessage`
+- **Skip links**: Add skip-to-content links for screen readers
+
+**Examples:**
+```typescript
+// ✅ Correct heading hierarchy
+<section>
+  <h2>Latest News</h2>
+  <article>
+    <h3>News Item Title</h3>
+    <p>Description...</p>
+  </article>
+</section>
+
+// ❌ Wrong - multiple h1 tags
+<h1>Hero Title</h1>
+<section>
+  <h1>Section Title</h1>  // Should be h2
+</section>
+
+// ✅ Semantic button with accessibility
+<button 
+  aria-label="Close dialog"
+  className="rounded-full p-2"
+>
+  <XIcon className="w-5 h-5" />
+</button>
+
+// ✅ Proper image alt text
+<img src="photo.jpg" alt="Team celebrating project launch in office" />
+```
+
 ### Responsive UI Requirements
 
 **All UI components MUST be responsive:**

@@ -161,9 +161,9 @@ export default function AdminHomeSectionsPage() {
     <div className="space-y-6" dir={direction}>
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
           {language === 'ar' ? 'إعدادات أقسام الصفحة الرئيسية' : 'Home Page Sections Settings'}
-        </h2>
+        </h1>
         <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
           {language === 'ar'
             ? 'تحكم في ظهور الأقسام على الصفحة الرئيسية'

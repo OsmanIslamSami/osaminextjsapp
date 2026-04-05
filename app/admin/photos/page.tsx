@@ -205,9 +205,9 @@ export default function AdminPhotosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
             {language === 'ar' ? 'إدارة الصور' : 'Manage Photos'}
-          </h2>
+          </h1>
           <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
             {language === 'ar' 
               ? `${pagination.total} صورة إجمالاً` 

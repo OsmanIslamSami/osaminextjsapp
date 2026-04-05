@@ -112,9 +112,9 @@ export default function AdminPage() {
 
       {/* Quick Actions */}
       <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-zinc-100 mb-4">
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-zinc-100 mb-4">
           {t('admin.quickActions.title')}
-        </h2>
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <a
             href="/admin/users"

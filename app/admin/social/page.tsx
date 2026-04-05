@@ -229,9 +229,9 @@ export default function AdminSocialPage() {
     <div className="p-4 md:p-6">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
             Social Media Links
-          </h2>
+          </h1>
           <p className="text-gray-600 dark:text-zinc-400">
             Manage footer social media links
           </p>

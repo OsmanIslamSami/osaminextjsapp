@@ -34,9 +34,9 @@ export default function QuickLinksSection() {
       }`}
     >
       <div className="mb-8">
-        <h1 className="text-4xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
+        <h2 className="text-4xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
           {t('home.welcomeTitle')}
-        </h1>
+        </h2>
         <p className="mt-2" style={{ color: 'var(--color-text-secondary)' }}>
           {t('home.welcomeSubtitle')}
         </p>
