@@ -35,7 +35,7 @@ export default function AdminDateRangeFilter({
           }
         }}
         placeholder={language === 'ar' ? 'من تاريخ' : 'From date'}
-        className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
+        className="w-full flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
       />
       <input
         type="date"
@@ -47,7 +47,7 @@ export default function AdminDateRangeFilter({
           }
         }}
         placeholder={language === 'ar' ? 'إلى تاريخ' : 'To date'}
-        className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
+        className="w-full flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 min-w-0 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent transition-all"
       />
     </form>
   );

@@ -34,19 +34,19 @@ export default function DateRangeFilter({
       {/* Date inputs and buttons - responsive layout */}
       <div className="flex flex-col sm:flex-row gap-2">
         {/* Date inputs */}
-        <div className="flex flex-col sm:flex-row gap-2 flex-1">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:flex-1">
           <input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px]"
+            className="w-full flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px]"
             placeholder={language === 'ar' ? 'من تاريخ' : 'From Date'}
           />
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px]"
+            className="w-full flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px]"
             placeholder={language === 'ar' ? 'إلى تاريخ' : 'To Date'}
           />
         </div>
