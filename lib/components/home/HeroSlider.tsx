@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface Slide {
   id: string;
@@ -189,10 +190,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
             {/* Loading background - shows until media loads */}
             {!loadedMedia.has(slide.id) && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white via-gray-200 to-gray-400">
-                <div className="text-gray-800 text-center">
-                  <div className="w-16 h-16 border-4 border-gray-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-lg font-semibold">Loading...</p>
-                </div>
+                <LoadingSpinner size="lg" className="text-gray-800" />
               </div>
             )}
             

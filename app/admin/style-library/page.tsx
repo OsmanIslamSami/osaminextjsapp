@@ -20,6 +20,8 @@ import {
   CheckIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface Folder {
   id: string;
@@ -55,6 +57,7 @@ interface File {
 
 export default function StyleLibraryPage() {
   const { showError, showSuccess } = useToast();
+  const { t } = useTranslation();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [totalFileCount, setTotalFileCount] = useState(0);
@@ -343,7 +346,7 @@ export default function StyleLibraryPage() {
   if (loading) {
     return (
       <div className="h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading...</div>
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -355,9 +358,9 @@ export default function StyleLibraryPage() {
         <div className="max-w-full mx-auto px-4 md:px-6 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Style Library</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('admin.styleLibrary.title')}</h1>
               <p className="text-sm text-gray-600 mt-1">
-                Centralized asset management for your website
+                {t('admin.styleLibrary.subtitle')}
               </p>
             </div>
             

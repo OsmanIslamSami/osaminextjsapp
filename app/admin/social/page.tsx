@@ -5,6 +5,7 @@ import { PencilIcon, TrashIcon, PlusIcon, XMarkIcon, PhotoIcon } from '@heroicon
 import FilePicker from '@/lib/components/FilePicker';
 import { useToast } from '@/lib/components/ToastContainer';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface FormData {
   platform: string;
@@ -15,6 +16,7 @@ interface FormData {
 
 export default function AdminSocialPage() {
   const { showError, showSuccess } = useToast();
+  const { t } = useTranslation();
   const [links, setLinks] = useState<SocialMediaLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -230,10 +232,10 @@ export default function AdminSocialPage() {
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
-            Social Media Links
+            {t('admin.social.title')}
           </h1>
           <p className="text-gray-600 dark:text-zinc-400">
-            Manage footer social media links
+            {t('admin.social.subtitle')}
           </p>
         </div>
         <button

@@ -1,6 +1,6 @@
 'use client';
 
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -19,7 +19,7 @@ export default function PaginationControls({
   onPageChange,
   onLimitChange,
 }: PaginationControlsProps) {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
@@ -57,6 +57,9 @@ export default function PaginationControls({
     return pages;
   };
 
+  const start = (currentPage - 1) * limit + 1;
+  const end = Math.min(currentPage * limit, total);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-2">
@@ -67,7 +70,7 @@ export default function PaginationControls({
             disabled={currentPage === 1}
             className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
           >
-            {language === 'ar' ? 'الأولى' : 'First'}
+            {t('pagination.first')}
           </button>
 
           <button
@@ -75,7 +78,7 @@ export default function PaginationControls({
             disabled={currentPage === 1}
             className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
           >
-            {language === 'ar' ? 'السابق' : 'Previous'}
+            {t('pagination.previous')}
           </button>
         </div>
 
@@ -119,7 +122,7 @@ export default function PaginationControls({
             disabled={currentPage === totalPages}
             className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
           >
-            {language === 'ar' ? 'التالي' : 'Next'}
+            {t('pagination.next')}
           </button>
 
           <button
@@ -127,24 +130,21 @@ export default function PaginationControls({
             disabled={currentPage === totalPages}
             className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-zinc-300 font-medium transition-all text-sm bg-transparent"
           >
-            {language === 'ar' ? 'الأخيرة' : 'Last'}
+            {t('pagination.last')}
           </button>
         </div>
 
         {/* Showing count info */}
         <div className="flex items-center justify-center md:contents">
           <span className="text-sm text-gray-600 dark:text-zinc-400">
-            {language === 'ar'
-              ? `عرض ${(currentPage - 1) * limit + 1} - ${Math.min(currentPage * limit, total)} من ${total}`
-              : `Showing ${(currentPage - 1) * limit + 1} - ${Math.min(currentPage * limit, total)} of ${total}`
-            }
+            {t('pagination.showing').replace('{start}', start.toString()).replace('{end}', end.toString()).replace('{total}', total.toString())}
           </span>
         </div>
 
         {/* Page Size Selector */}
         <div className="flex items-center justify-center gap-2 md:contents">
           <label className="text-sm text-gray-600 dark:text-zinc-400">
-            {language === 'ar' ? 'عرض:' : 'Show:'}
+            {t('pagination.show')}
           </label>
           <select
             value={limit}

@@ -10,6 +10,7 @@ import {
   MagnifyingGlassIcon,
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface Folder {
   id: string;
@@ -207,7 +208,7 @@ export default function FilePicker({
           <div className="flex-1 overflow-y-auto p-6">
             {loading ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-gray-600">Loading...</div>
+                <LoadingSpinner size="md" />
               </div>
             ) : files.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">

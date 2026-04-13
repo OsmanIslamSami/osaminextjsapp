@@ -11,7 +11,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PlayIcon } from '@heroicons/react/24/solid';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { VideoPopup, VideoItem } from '@/lib/components/media/VideoPopup';
 import { getYouTubeThumbnailUrl } from '@/lib/utils/youtube';
 
@@ -38,7 +38,7 @@ interface VideosSectionProps {
  * - Popup video player with navigation
  */
 export function VideosSection({ videos, title }: VideosSectionProps) {
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const [showPopup, setShowPopup] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -114,12 +114,6 @@ export function VideosSection({ videos, title }: VideosSectionProps) {
     setCurrentIndex(Math.min(index, maxIndex));
   };
 
-  // Get section title in current language or use default
-  const sectionTitle =
-    language === 'ar' 
-      ? (title?.ar || 'الفيديوهات') 
-      : (title?.en || 'Videos');
-
   /**
    * Handle video card click
    * Opens popup at the clicked video index
@@ -144,6 +138,12 @@ export function VideosSection({ videos, title }: VideosSectionProps) {
   // Don't render section if no videos available
   if (videos.length === 0) return null;
 
+  // Get section title in current language or use translation fallback
+  const sectionTitle =
+    language === 'ar' 
+      ? (title?.ar || t('home.videos')) 
+      : (title?.en || t('home.videos'));
+
   return (
     <section className="py-16 px-4 bg-gray-50 dark:bg-zinc-800">
       <div className="container mx-auto max-w-7xl" ref={sectionRef}>
@@ -161,9 +161,7 @@ export function VideosSection({ videos, title }: VideosSectionProps) {
               {sectionTitle}
             </h2>
             <p className="text-gray-600 dark:text-zinc-400 mt-2">
-              {language === 'ar'
-                ? 'شاهد مجموعتنا من الفيديوهات'
-                : 'Watch our video collection'}
+              {t('home.videosSubtitle')}
             </p>
           </div>
           <Link
@@ -179,7 +177,7 @@ export function VideosSection({ videos, title }: VideosSectionProps) {
               e.currentTarget.style.backgroundColor = 'var(--color-primary)';
             }}
           >
-            {language === 'ar' ? 'جميع الفيديوهات' : 'All Videos'}
+            {t('home.viewAllVideos')}
           </Link>
         </div>
 

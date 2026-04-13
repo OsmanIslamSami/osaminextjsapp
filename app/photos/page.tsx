@@ -13,6 +13,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
 import { PhotoPopup, PhotoItem } from '@/lib/components/media/PhotoPopup';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface PaginationInfo {
   page: number;
@@ -22,7 +23,7 @@ interface PaginationInfo {
 }
 
 export default function PhotosGalleryPage() {
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const isRTL = useRTLDirection();
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
@@ -35,7 +36,7 @@ export default function PhotosGalleryPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
 
-  const title = language === 'ar' ? 'معرض الصور' : 'Photos Gallery';
+  const title = t('photos.gallery');
 
   useEffect(() => {
     async function fetchPhotos() {
@@ -82,14 +83,7 @@ export default function PhotosGalleryPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{language === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner className="min-h-screen" size="lg" />;
   }
 
   return (
@@ -110,14 +104,14 @@ export default function PhotosGalleryPage() {
             className="flex items-center gap-2 px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
           >
             <HomeIcon className="w-4 h-4" />
-            <span>{language === 'ar' ? 'الرئيسية' : 'Home'}</span>
+            <span>{t('photos.home')}</span>
           </Link>
         </div>
 
         {photos.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-500 text-lg">
-              {language === 'ar' ? 'لا توجد صور متاحة' : 'No photos available'}
+              {t('photos.noPhotos')}
             </p>
           </div>
         ) : (
@@ -147,7 +141,7 @@ export default function PhotosGalleryPage() {
                       {/* Featured badge */}
                       {photo.is_featured && (
                         <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg z-20" style={{ backgroundColor: 'var(--color-accent)' }}>
-                          {language === 'ar' ? 'مميز' : 'Featured'}
+                          {t('photos.featured')}
                         </div>
                       )}
                       {/* Gradient overlay - always visible */}

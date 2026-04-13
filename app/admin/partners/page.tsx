@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import PartnerForm from '@/lib/components/admin/PartnerForm';
 import { EyeIcon, EyeSlashIcon, PencilIcon, TrashIcon, PlusIcon, StarIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
@@ -41,7 +41,7 @@ export default function AdminPartnersPage() {
     totalPages: 0,
   });
 
-  const { language, direction, t } = useLanguage();
+  const { t, language, direction } = useTranslation();
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function AdminPartnersPage() {
       setPartners(data.data || []);
       setPagination(data.pagination);
     } catch (err) {
-      showError(language === 'ar' ? 'فشل تحميل الشركاء' : 'Failed to load partners');
+      showError(t('admin.media.loadFailed'));
     } finally {
       setLoading(false);
     }

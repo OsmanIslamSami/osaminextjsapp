@@ -6,6 +6,7 @@ import Link from 'next/link';
 import StatusBadge from '@/lib/components/clients/StatusBadge';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
 import { useToast } from '@/lib/components/ToastContainer';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface Client {
   id: number;
@@ -108,7 +109,7 @@ export default function ViewClient() {
     }
   };
 
-  if (loading) return <div className="container mx-auto py-8">Loading...</div>;
+  if (loading) return <LoadingSpinner className="container mx-auto py-8" size="lg" />;
   if (!client) return <div className="container mx-auto py-8 text-red-700">{error || 'Client not found'}</div>;
 
   return (

@@ -11,7 +11,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface PartnerItem {
   id: string;
@@ -42,7 +42,7 @@ interface PartnersSectionProps {
  * - RTL layout support
  */
 export function PartnersSection({ partners, title }: PartnersSectionProps) {
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -116,11 +116,11 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
     setCurrentIndex(Math.min(index, maxIndex));
   };
 
-  // Get section title in current language or use default
+  // Get section title in current language or use translation fallback
   const sectionTitle =
     language === 'ar' 
-      ? (title?.ar || 'شركاؤنا') 
-      : (title?.en || 'Our Partners');
+      ? (title?.ar || t('home.partners')) 
+      : (title?.en || t('home.partners'));
 
   // Don't render if no partners
   if (partners.length === 0) return null;
@@ -142,9 +142,7 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
               {sectionTitle}
             </h2>
             <p className="text-gray-600 dark:text-zinc-400 mt-2">
-              {language === 'ar'
-                ? 'تعرف على شركائنا الموثوقين'
-                : 'Meet our trusted partners'}
+              {t('home.partnersSubtitle')}
             </p>
           </div>
           <Link
@@ -160,7 +158,7 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
               e.currentTarget.style.backgroundColor = 'var(--color-primary)';
             }}
           >
-            {language === 'ar' ? 'جميع الشركاء' : 'All Partners'}
+            {t('home.viewAllPartners')}
           </Link>
         </div>
 

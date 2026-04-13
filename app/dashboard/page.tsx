@@ -8,6 +8,7 @@ import RecentActivity from '@/lib/components/dashboard/RecentActivity';
 import LatestClients from '@/lib/components/dashboard/LatestClients';
 import LatestNews from '@/lib/components/dashboard/LatestNews';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface DashboardMetrics {
   clientCount: number;
@@ -62,11 +63,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="text-center py-12">
-          <p className="text-gray-600">{t('common.loading')}</p>
-        </div>
-      </div>
+      <LoadingSpinner className="container mx-auto py-8 px-4 text-center py-12" size="lg" />
     );
   }
 

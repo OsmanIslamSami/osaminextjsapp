@@ -56,7 +56,14 @@ async function getNews(): Promise<News[]> {
   }
 }
 
-export default async function NewsSection() {
+interface NewsSectionProps {
+  title?: {
+    en: string | null;
+    ar: string | null;
+  };
+}
+
+export default async function NewsSection({ title }: NewsSectionProps = {}) {
   const news = await getNews();
 
   console.log('[NewsSection Server] Rendering with', news.length, 'news items');
@@ -69,7 +76,7 @@ export default async function NewsSection() {
   return (
     <section className="py-16 px-4 bg-gray-50 dark:bg-zinc-950">
       <div className="container mx-auto max-w-7xl">
-        <NewsGridClient news={news} />
+        <NewsGridClient news={news} title={title} />
       </div>
     </section>
   );

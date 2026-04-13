@@ -153,6 +153,57 @@
 - Handle loading and error states explicitly
 - Implement proper **accessibility** (ARIA labels, keyboard navigation)
 
+### Loading State Standards
+
+**All loading states MUST use the LoadingSpinner component:**
+
+```typescript
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+
+// Full page loading
+if (loading) return <LoadingSpinner className="min-h-screen" size="lg" />;
+
+// Section loading
+if (loading) return <LoadingSpinner className="py-12" size="md" />;
+
+// Inline loading
+{loading ? <LoadingSpinner size="sm" /> : <Content />}
+
+// With custom message (avoid - use only if critical)
+<LoadingSpinner message="Loading data..." size="md" />
+```
+
+**Requirements:**
+- **Never use**: Text like "Loading...", "Loading slides...", custom spinner divs
+- **Always import**: `import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';`
+- **Size options**: `'sm'` (inline), `'md'` (section), `'lg'` (page/full screen)
+- **Responsive**: Component handles dark mode automatically
+- **Accessible**: Includes proper ARIA labels and semantic markup
+
+**Standard patterns:**
+```typescript
+// Page-level loading
+if (loading) {
+  return <LoadingSpinner className="min-h-screen" size="lg" />;
+}
+
+// Component-level loading
+{loading ? (
+  <LoadingSpinner className="flex justify-center items-center py-12" size="lg" />
+) : (
+  <Content />
+)}
+
+// Grid/table loading
+{loading ? (
+  <LoadingSpinner className="py-8" size="md" />
+) : items.length === 0 ? (
+  <EmptyState />
+) : (
+  <ItemsGrid />
+)}
+```
+
 ### Pagination UI Standards
 
 **All pagination components MUST include:**

@@ -9,7 +9,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { PhotoPopup, PhotoItem } from '@/lib/components/media/PhotoPopup';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
@@ -19,7 +19,7 @@ interface PhotosSectionProps {
 }
 
 export function PhotosSection({ photos, title }: PhotosSectionProps) {
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const [showPopup, setShowPopup] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -110,10 +110,11 @@ export function PhotosSection({ photos, title }: PhotosSectionProps) {
 
   if (photos.length === 0) return null;
 
+  // Get section title in current language or use translation fallback
   const sectionTitle =
     language === 'ar' 
-      ? (title?.ar || 'الصور') 
-      : (title?.en || 'Photos');
+      ? (title?.ar || t('home.photos')) 
+      : (title?.en || t('home.photos'));
 
   return (
     <section className="py-16 px-4 bg-white dark:bg-zinc-900">
@@ -132,9 +133,7 @@ export function PhotosSection({ photos, title }: PhotosSectionProps) {
               {sectionTitle}
             </h2>
             <p className="text-gray-600 dark:text-zinc-400 mt-2">
-              {language === 'ar'
-                ? 'استكشف مجموعتنا من الصور'
-                : 'Explore our photo collection'}
+              {t('home.photosSubtitle')}
             </p>
           </div>
           <Link
@@ -150,7 +149,7 @@ export function PhotosSection({ photos, title }: PhotosSectionProps) {
               e.currentTarget.style.backgroundColor = 'var(--color-primary)';
             }}
           >
-            {language === 'ar' ? 'جميع الصور' : 'All Photos'}
+            {t('home.viewAllPhotos')}
           </Link>
         </div>
 

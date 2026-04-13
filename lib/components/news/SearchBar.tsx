@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface SearchBarProps {
   initialValue: string;
@@ -10,7 +10,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
   const [keyword, setKeyword] = useState(initialValue);
-  const { language } = useLanguage();
+  const { t, direction } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,17 +24,15 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          placeholder={
-            language === 'ar' ? 'ابحث عن الأخبار...' : 'Search news...'
-          }
+          placeholder={t('news.searchPlaceholder')}
           className={`w-full py-3 border-2 border-gray-200 dark:border-zinc-700 rounded-full focus:ring-2 focus:ring-gray-400 dark:focus:ring-zinc-500 focus:border-transparent focus:outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 transition-all min-h-[48px] ${
-            language === 'ar' ? 'pr-12 pl-5' : 'pl-5 pr-12'
+            direction === 'rtl' ? 'pr-12 pl-5' : 'pl-5 pr-12'
           }`}
-          dir={language === 'ar' ? 'rtl' : 'ltr'}
+          dir={direction}
         />
         <svg
           className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 ${
-            language === 'ar' ? 'left-3' : 'right-3'
+            direction === 'rtl' ? 'left-3' : 'right-3'
           }`}
           fill="none"
           stroke="currentColor"
@@ -52,7 +50,7 @@ export default function SearchBar({ initialValue, onSearch }: SearchBarProps) {
         type="submit"
         className="w-full sm:w-auto px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 min-h-[48px] whitespace-nowrap"
       >
-        {language === 'ar' ? 'بحث' : 'Search'}
+        {t('buttons.search')}
       </button>
     </form>
   );

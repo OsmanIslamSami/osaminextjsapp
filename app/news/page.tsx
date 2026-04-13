@@ -2,11 +2,12 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import NewsCard from '@/lib/components/home/NewsCard';
 import SearchBar from '@/lib/components/news/SearchBar';
 import DateRangeFilter from '@/lib/components/news/DateRangeFilter';
 import PaginationControls from '@/lib/components/news/PaginationControls';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface News {
   id: string;
@@ -37,7 +38,7 @@ function AllNewsContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -111,7 +112,7 @@ function AllNewsContent() {
         <div className="container mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {language === 'ar' ? 'جميع الأخبار' : 'All News'}
+              {t('news.allNews')}
             </h1>
           </div>
 
@@ -247,11 +248,7 @@ function NewsLoadingFallback() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 py-16 px-4">
       <div className="container mx-auto max-w-7xl">
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Loading...
-          </h1>
-        </div>
+        <LoadingSpinner className="mb-12" size="lg" />
 
         {/* Loading skeleton */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

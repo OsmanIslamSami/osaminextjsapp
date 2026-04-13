@@ -14,6 +14,8 @@
     "save": "حفظ",
     "cancel": "إلغاء",
     "export": "تصدير",
+    "exportExcel": "تصدير إلى Excel",
+    "exporting": "جاري التصدير...",
     "search": "بحث",
     "back": "رجوع",
     "confirm": "تأكيد",
@@ -81,7 +83,19 @@
     "dashboardDescription": "عرض التحليلات والمقاييس والنشاط الأخير للعملاء والطلبات",
     "searchClientsTitle": "البحث عن العملاء",
     "searchClientsDescription": "البحث وعرض وإدارة جميع معلومات العملاء مع سجلات التدقيق الكاملة",
-    "getStarted": "ابدأ الآن"
+    "getStarted": "ابدأ الآن",
+    "latestNews": "آخر الأخبار",
+    "latestNewsSubtitle": "ابق على اطلاع بأحدث الأخبار والإعلانات",
+    "viewAllNews": "جميع الأخبار",
+    "photos": "الصور",
+    "photosSubtitle": "استكشف مجموعتنا من الصور",
+    "viewAllPhotos": "جميع الصور",
+    "videos": "الفيديوهات",
+    "videosSubtitle": "شاهد مجموعتنا من الفيديوهات",
+    "viewAllVideos": "جميع الفيديوهات",
+    "partners": "شركاؤنا",
+    "partnersSubtitle": "تعرف على شركائنا الموثوقين",
+    "viewAllPartners": "جميع الشركاء"
   },
   "footer": {
     "appName": "تطبيق الغد",
@@ -134,6 +148,22 @@
     "info": {
       "title": "لوحة الإدارة جاهزة",
       "description": "توفر لوحة الإدارة إمكانيات إدارة كاملة للمستخدمين ومحتوى العرض التقديمي وروابط التواصل الاجتماعي. استخدم الروابط أعلاه للوصول إلى كل قسم."
+    },
+    "slider": {
+      "title": "إدارة العرض التقديمي",
+      "subtitle": "إدارة محتوى العرض التقديمي في الصفحة الرئيسية"
+    },
+    "social": {
+      "title": "روابط التواصل الاجتماعي",
+      "subtitle": "إدارة روابط وسائل التواصل في التذييل"
+    },
+    "styleLibrary": {
+      "title": "مكتبة الأنماط",
+      "subtitle": "إدارة ملفات التصميم والأصول"
+    },
+    "homeSections": {
+      "title": "إعدادات أقسام الصفحة الرئيسية",
+      "subtitle": "تحكم في الأقسام المعروضة في الصفحة الرئيسية"
     },
     "appSettings": {
       "title": "إعدادات التطبيق",
@@ -198,6 +228,56 @@
       "saving": "جاري الحفظ...",
       "saved": "تم حفظ الإعدادات بنجاح",
       "error": "فشل حفظ الإعدادات"
+    },
+    "users": {
+      "title": "إدارة المستخدمين",
+      "subtitle": "إدارة أدوار المستخدمين وحالة الحساب",
+      "tableHeaders": {
+        "user": "المستخدم",
+        "email": "البريد الإلكتروني",
+        "role": "الدور",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "roles": {
+        "admin": "مسؤول",
+        "user": "مستخدم"
+      },
+      "statuses": {
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "actions": {
+        "changeRole": "تغيير الدور",
+        "activate": "تفعيل",
+        "deactivate": "إلغاء التفعيل"
+      },
+      "messages": {
+        "roleUpdated": "تم تحديث الدور بنجاح",
+        "roleUpdateFailed": "فشل تحديث الدور",
+        "userActivated": "تم تفعيل المستخدم بنجاح",
+        "userDeactivated": "تم إلغاء تفعيل المستخدم بنجاح",
+        "statusUpdateFailed": "فشل تحديث حالة المستخدم"
+      }
+    },
+    "media": {
+      "loadFailed": "فشل تحميل العناصر",
+      "deleteFailed": "فشل الحذف",
+      "deleteSuccess": "تم الحذف بنجاح",
+      "updateFailed": "فشل التحديث",
+      "updateSuccess": "تم التحديث بنجاح",
+      "showHidden": "إظهار المخفي",
+      "showDeleted": "إظهار المحذوف",
+      "bulkDelete": "حذف المحدد",
+      "selectAll": "تحديد الكل",
+      "selected": "محدد",
+      "confirmBulkDelete": "حذف {count} عنصر؟",
+      "bulkDeleteMessage": "هل أنت متأكد من حذف {count} عنصر محدد؟",
+      "featured": "مميز",
+      "visible": "مرئي",
+      "hidden": "مخفي",
+      "toggleVisibility": "تبديل الرؤية",
+      "toggleFeatured": "تبديل المميز"
     }
   },
   "errors": {
@@ -206,7 +286,11 @@
     "invalidMobile": "رقم الهاتف غير صحيح",
     "serverError": "حدث خطأ في الخادم. يرجى المحاولة مرة أخرى.",
     "notFound": "المورد غير موجود",
-    "unauthorized": "غير مصرح لك بتنفيذ هذا الإجراء"
+    "unauthorized": "أنت غير مصرح بإجراء هذا الإجراء",
+    "deleteFailed": "فشل حذف العميل. يرجى المحاولة مرة أخرى.",
+    "exportFailed": "فشل تصدير العملاء. يرجى المحاولة مرة أخرى.",
+    "genericError": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    "dashboardLoadFailed": "فشل تحميل مقاييس لوحة التحكم. يرجى المحاولة مرة أخرى."
   },
   "common": {
     "loading": "جار التحميل...",
@@ -214,6 +298,72 @@
     "english": "الإنجليزية",
     "arabic": "العربية",
     "menu": "القائمة",
-    "profile": "الملف الشخصي"
-  }
+    "profile": "الملف الشخصي",
+    "siteLogo": "شعار الموقع"  },
+  "news": {
+    "allNews": "جميع الأخبار",
+    "browseSubtitle": "تصفح جميع الأخبار والإعلانات",
+    "newsItems": "خبر",
+    "errorLoading": "حدث خطأ أثناء تحميل الأخبار",
+    "searchPlaceholder": "ابحث عن الأخبار...",
+    "fromDate": "من تاريخ",
+    "toDate": "إلى تاريخ",
+    "filter": "تصفية",
+    "clear": "مسح"
+  },
+  "photos": {
+    "gallery": "معرض الصور",
+    "loading": "جاري التحميل...",
+    "noPhotos": "لا توجد صور متاحة",
+    "photoCount": "صورة",
+    "home": "الرئيسية",
+    "featured": "مميز"
+  },
+  "videos": {
+    "gallery": "معرض الفيديوهات",
+    "loading": "جاري التحميل...",
+    "videoCount": "فيديو"
+  },
+  "partners": {
+    "ourPartners": "شركاؤنا",
+    "loading": "جاري التحميل...",
+    "noPartners": "لا يوجد شركاء متاحون",
+    "partnerCount": "شريك",
+    "featured": "مميز",
+    "home": "الرئيسية"
+  },
+  "pagination": {
+    "first": "الأولى",
+    "previous": "السابق",
+    "next": "التالي",
+    "last": "الأخيرة",
+    "showing": "عرض {start} - {end} من {total}",
+    "show": "عرض:"
+  },
+  "table": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "status": "الحالة",
+    "options": "الخيارات"
+  },
+  "fields": {
+    "email": "البريد الإلكتروني:",
+    "mobile": "الهاتف:",
+    "address": "العنوان:",
+    "created": "تم الإنشاء:",
+    "updated": "تم التحديث:"
+  },
+  "dialogs": {
+    "deleteClient": "حذف العميل",
+    "deleteClientMessage": "هل أنت متأكد من حذف {clientName}؟ سيؤدي هذا الإجراء إلى حذف العميل من جميع القوائم.",
+    "deleting": "جاري الحذف...",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء"
+  },
+  "pages": {
+    "home": "الرئيسية"
+  },
+  "a11y": {
+    "closeDialog": "إغلاق الحوار"  }
 }

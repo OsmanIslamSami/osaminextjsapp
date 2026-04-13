@@ -162,12 +162,10 @@ export default function AdminHomeSectionsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
-          {language === 'ar' ? 'إعدادات أقسام الصفحة الرئيسية' : 'Home Page Sections Settings'}
+          {t('admin.homeSections.title')}
         </h1>
         <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
-          {language === 'ar'
-            ? 'تحكم في ظهور الأقسام على الصفحة الرئيسية'
-            : 'Control which sections appear on the home page'}
+          {t('admin.homeSections.subtitle')}
         </p>
       </div>
 

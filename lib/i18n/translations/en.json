@@ -14,6 +14,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "export": "Export",
+    "exportExcel": "Export to Excel",
+    "exporting": "Exporting...",
     "search": "Search",
     "back": "Back",
     "confirm": "Confirm",
@@ -81,7 +83,19 @@
     "dashboardDescription": "View analytics, metrics, and recent activity for your clients and orders",
     "searchClientsTitle": "Search Clients",
     "searchClientsDescription": "Search, view, and manage all your client information with full audit trails",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "latestNews": "Latest News",
+    "latestNewsSubtitle": "Stay updated with our latest news and announcements",
+    "viewAllNews": "All News",
+    "photos": "Photos",
+    "photosSubtitle": "Explore our photo collection",
+    "viewAllPhotos": "All Photos",
+    "videos": "Videos",
+    "videosSubtitle": "Watch our video collection",
+    "viewAllVideos": "All Videos",
+    "partners": "Our Partners",
+    "partnersSubtitle": "Meet our trusted partners",
+    "viewAllPartners": "All Partners"
   },
   "footer": {
     "appName": "Next App",
@@ -134,6 +148,22 @@
     "info": {
       "title": "Admin Panel Ready",
       "description": "This admin panel provides complete management capabilities for users, slider content, and social media links. Use the links above to access each section."
+    },
+    "slider": {
+      "title": "Slider Management",
+      "subtitle": "Manage homepage slider content"
+    },
+    "social": {
+      "title": "Social Media Links",
+      "subtitle": "Manage footer social media links"
+    },
+    "styleLibrary": {
+      "title": "Style Library",
+      "subtitle": "Manage design assets and files"
+    },
+    "homeSections": {
+      "title": "Home Page Sections Settings",
+      "subtitle": "Control which sections appear on the home page"
     },
     "appSettings": {
       "title": "Application Settings",
@@ -198,6 +228,56 @@
       "saving": "Saving...",
       "saved": "Settings saved successfully",
       "error": "Failed to save settings"
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Manage user roles and account status",
+      "tableHeaders": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "roles": {
+        "admin": "Admin",
+        "user": "User"
+      },
+      "statuses": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "changeRole": "Change Role",
+        "activate": "Activate",
+        "deactivate": "Deactivate"
+      },
+      "messages": {
+        "roleUpdated": "Role updated successfully",
+        "roleUpdateFailed": "Failed to update role",
+        "userActivated": "User activated successfully",
+        "userDeactivated": "User deactivated successfully",
+        "statusUpdateFailed": "Failed to update user status"
+      }
+    },
+    "media": {
+      "loadFailed": "Failed to load items",
+      "deleteFailed": "Failed to delete",
+      "deleteSuccess": "Deleted successfully",
+      "updateFailed": "Failed to update",
+      "updateSuccess": "Updated successfully",
+      "showHidden": "Show Hidden",
+      "showDeleted": "Show Deleted",
+      "bulkDelete": "Delete Selected",
+      "selectAll": "Select All",
+      "selected": "selected",
+      "confirmBulkDelete": "Delete {count} items?",
+      "bulkDeleteMessage": "Are you sure you want to delete {count} selected items?",
+      "featured": "Featured",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "toggleVisibility": "Toggle Visibility",
+      "toggleFeatured": "Toggle Featured"
     }
   },
   "errors": {
@@ -206,7 +286,11 @@
     "invalidMobile": "Invalid mobile number",
     "serverError": "Server error occurred. Please try again.",
     "notFound": "Resource not found",
-    "unauthorized": "You are not authorized to perform this action"
+    "unauthorized": "You are not authorized to perform this action",
+    "deleteFailed": "Failed to delete client. Please try again.",
+    "exportFailed": "Failed to export clients. Please try again.",
+    "genericError": "An error occurred. Please try again.",
+    "dashboardLoadFailed": "Failed to load dashboard metrics. Please try again."
   },
   "common": {
     "loading": "Loading...",
@@ -214,6 +298,74 @@
     "english": "English",
     "arabic": "Arabic",
     "menu": "Menu",
-    "profile": "Profile"
+    "profile": "Profile",
+    "siteLogo": "Site Logo"
+  },
+  "news": {
+    "allNews": "All News",
+    "browseSubtitle": "Browse all news and announcements",
+    "newsItems": "News Items",
+    "errorLoading": "Error loading news",
+    "searchPlaceholder": "Search news...",
+    "fromDate": "From Date",
+    "toDate": "To Date",
+    "filter": "Filter",
+    "clear": "Clear"
+  },
+  "photos": {
+    "gallery": "Photos Gallery",
+    "loading": "Loading...",
+    "noPhotos": "No photos available",
+    "photoCount": "Photo",
+    "home": "Home",
+    "featured": "Featured"
+  },
+  "videos": {
+    "gallery": "Videos Gallery",
+    "loading": "Loading...",
+    "videoCount": "Video"
+  },
+  "partners": {
+    "ourPartners": "Our Partners",
+    "loading": "Loading...",
+    "noPartners": "No partners available",
+    "partnerCount": "Partner",
+    "featured": "Featured",
+    "home": "Home"
+  },
+  "pagination": {
+    "first": "First",
+    "previous": "Previous",
+    "next": "Next",
+    "last": "Last",
+    "showing": "Showing {start} - {end} of {total}",
+    "show": "Show:"
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "status": "Status",
+    "options": "Options"
+  },
+  "fields": {
+    "email": "Email:",
+    "mobile": "Mobile:",
+    "address": "Address:",
+    "created": "Created:",
+    "updated": "Updated:"
+  },
+  "dialogs": {
+    "deleteClient": "Delete Client",
+    "deleteClientMessage": "Are you sure you want to delete {clientName}? This action will soft-delete the client and remove them from all lists.",
+    "deleting": "Deleting...",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "pages": {
+    "home": "Home"
+  },
+  "a11y": {
+    "closeDialog": "Close dialog"
   }
 }

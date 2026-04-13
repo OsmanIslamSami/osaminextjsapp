@@ -2,11 +2,13 @@
 import { useEffect, useState } from 'react';
 import { User } from '@/lib/types';
 import { useToast } from '@/lib/components/ToastContainer';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -35,6 +37,7 @@ export default function AdminUsersPage() {
       });
 
       if (response.ok) {
+        showSuccess(t('admin.users.messages.roleUpdated'));
         // Refresh users list
         const updatedResponse = await fetch('/api/users');
         if (updatedResponse.ok) {
@@ -43,11 +46,11 @@ export default function AdminUsersPage() {
         }
       } else {
         const error = await response.json();
-        showError(error.error || 'Failed to update role');
+        showError(error.error || t('admin.users.messages.roleUpdateFailed'));
       }
     } catch (error) {
       console.error('Error updating role:', error);
-      showError('Failed to update role');
+      showError(t('admin.users.messages.roleUpdateFailed'));
     }
   };
 
@@ -59,6 +62,7 @@ export default function AdminUsersPage() {
       });
 
       if (response.ok) {
+        showSuccess(isActive ? t('admin.users.messages.userDeactivated') : t('admin.users.messages.userActivated'));
         // Refresh users list
         const updatedResponse = await fetch('/api/users');
         if (updatedResponse.ok) {
@@ -67,11 +71,11 @@ export default function AdminUsersPage() {
         }
       } else {
         const error = await response.json();
-        showError(error.error || `Failed to ${endpoint} user`);
+        showError(error.error || t('admin.users.messages.statusUpdateFailed'));
       }
     } catch (error) {
       console.error(`Error ${isActive ? 'deactivating' : 'activating'} user:`, error);
-      showError(`Failed to ${isActive ? 'deactivate' : 'activate'} user`);
+      showError(t('admin.users.messages.statusUpdateFailed'));
     }
   };
 
@@ -87,10 +91,10 @@ export default function AdminUsersPage() {
     <div className="p-4 md:p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2">
-          User Management
+          {t('admin.users.title')}
         </h1>
         <p className="text-gray-600 dark:text-zinc-400">
-          Manage user roles and account status
+          {t('admin.users.subtitle')}
         </p>
       </div>
 
@@ -99,19 +103,19 @@ export default function AdminUsersPage() {
           <thead className="bg-gray-50 dark:bg-zinc-800">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                User
+                {t('admin.users.tableHeaders.user')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                Email
+                {t('admin.users.tableHeaders.email')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                Role
+                {t('admin.users.tableHeaders.role')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                Status
+                {t('admin.users.tableHeaders.status')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                Actions
+                {t('admin.users.tableHeaders.actions')}
               </th>
             </tr>
           </thead>
@@ -134,8 +138,8 @@ export default function AdminUsersPage() {
                     onChange={(e) => handleRoleChange(user.id, e.target.value as 'admin' | 'user')}
                     className="text-sm border border-gray-300 dark:border-zinc-700 rounded px-2 py-1 bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100"
                   >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
+                    <option value="user">{t('admin.users.roles.user')}</option>
+                    <option value="admin">{t('admin.users.roles.admin')}</option>
                   </select>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -144,7 +148,7 @@ export default function AdminUsersPage() {
                       ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                       : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
                   }`}>
-                    {user.is_active ? 'Active' : 'Inactive'}
+                    {user.is_active ? t('admin.users.statuses.active') : t('admin.users.statuses.inactive')}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -152,7 +156,7 @@ export default function AdminUsersPage() {
                     onClick={() => handleToggleActive(user.id, user.is_active)}
                     className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                   >
-                    {user.is_active ? 'Deactivate' : 'Activate'}
+                    {user.is_active ? t('admin.users.actions.deactivate') : t('admin.users.actions.activate')}
                   </button>
                 </td>
               </tr>

@@ -6,6 +6,7 @@ import { useToast } from '@/lib/components/ToastContainer';
 import { useAppSettings } from '@/lib/contexts/AppSettingsContext';
 import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon, ChevronRightIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface HomeSection {
   section_type: string;
@@ -393,14 +394,7 @@ export default function AppSettingsPage() {
   }, [partnersSection]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div 
-          className="animate-spin rounded-full h-12 w-12 border-b-2" 
-          style={{ borderColor: 'var(--color-primary)' }}
-        ></div>
-      </div>
-    );
+    return <LoadingSpinner className="flex justify-center items-center py-12" size="lg" />;
   }
 
   return (

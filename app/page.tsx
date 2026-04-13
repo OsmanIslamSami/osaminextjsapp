@@ -124,7 +124,14 @@ export default async function Home() {
       <HeroSlider />
       
       {/* News Section */}
-      {showNews && <NewsSection />}
+      {showNews && (
+        <NewsSection 
+          title={{
+            en: newsConfig?.title_en || 'Latest News',
+            ar: newsConfig?.title_ar || 'آخر الأخبار',
+          }}
+        />
+      )}
       
       {/* Photos Section - 5 items in slider */}
       {showPhotos && (

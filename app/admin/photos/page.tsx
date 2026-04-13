@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import PhotoForm from '@/lib/components/admin/PhotoForm';
 import { EyeIcon, EyeSlashIcon, PencilIcon, TrashIcon, PlusIcon, StarIcon } from '@heroicons/react/24/outline';
@@ -43,7 +43,7 @@ export default function AdminPhotosPage() {
     totalPages: 0,
   });
 
-  const { language, direction, t } = useLanguage();
+  const { t, language, direction } = useTranslation();
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function AdminPhotosPage() {
       setPhotos(data.data || []);
       setPagination(data.pagination);
     } catch (err) {
-      showError(language === 'ar' ? 'فشل تحميل الصور' : 'Failed to load photos');
+      showError(t('admin.media.loadFailed'));
     } finally {
       setLoading(false);
     }

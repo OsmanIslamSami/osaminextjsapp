@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import VideoForm from '@/lib/components/admin/VideoForm';
 import { EyeIcon, EyeSlashIcon, PencilIcon, TrashIcon, PlusIcon, StarIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface Video {
   id: string;
@@ -44,7 +45,7 @@ export default function AdminVideosPage() {
     totalPages: 0,
   });
 
-  const { language, direction, t } = useLanguage();
+  const { t, language, direction } = useTranslation();
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function AdminVideosPage() {
       setVideos(data.data || []);
       setPagination(data.pagination);
     } catch (err) {
-      showError(language === 'ar' ? 'فشل تحميل الفيديوهات' : 'Failed to load videos');
+      showError(t('admin.media.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -279,9 +280,7 @@ export default function AdminVideosPage() {
 
       {/* Table */}
       {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
+        <LoadingSpinner className="flex justify-center items-center py-12" size="lg" />
       ) : videos.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 dark:bg-zinc-800 rounded-lg">
           <p className="text-gray-600 dark:text-zinc-400">

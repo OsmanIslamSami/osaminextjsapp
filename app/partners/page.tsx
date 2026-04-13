@@ -21,6 +21,7 @@ import { ArrowTopRightOnSquareIcon, BuildingOfficeIcon, HomeIcon } from '@heroic
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface PartnerItem {
   id: string;
@@ -46,7 +47,7 @@ interface PaginationInfo {
  * Clicking a partner opens their website (if provided).
  */
 export default function PartnersDirectoryPage() {
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const isRTL = useRTLDirection();
   
   // Component state
@@ -60,7 +61,7 @@ export default function PartnersDirectoryPage() {
   });
 
   // Page title in current language
-  const title = language === 'ar' ? 'شركاؤنا' : 'Our Partners';
+  const title = t('partners.ourPartners');
 
   /**
    * Fetch partners with pagination from API
@@ -108,16 +109,7 @@ export default function PartnersDirectoryPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">
-            {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner className="min-h-screen" size="lg" />;
   }
 
   return (
@@ -138,7 +130,7 @@ export default function PartnersDirectoryPage() {
             className="flex items-center gap-2 px-5 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm"
           >
             <HomeIcon className="w-4 h-4" />
-            <span>{language === 'ar' ? 'الرئيسية' : 'Home'}</span>
+            <span>{t('partners.home')}</span>
           </Link>
         </div>
 

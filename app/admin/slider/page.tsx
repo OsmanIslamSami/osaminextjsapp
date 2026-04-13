@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/lib/components/ToastContainer';
 import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface Slide {
   id: string;
@@ -22,7 +23,7 @@ interface Slide {
 }
 
 export default function AdminSliderPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { showError, showSuccess } = useToast();
   const [slides, setSlides] = useState<Slide[]>([]);
   const [loading, setLoading] = useState(true);
@@ -268,14 +269,14 @@ export default function AdminSliderPage() {
   };
 
   if (loading) {
-    return <div className="p-8">Loading slides...</div>;
+    return <LoadingSpinner className="p-8" size="lg" />;
   }
 
   return (
     <div className="p-4 md:p-8">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Slider Management</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">{t('admin.slider.title')}</h1>
           {slides.length > 0 && (
             <p className="text-sm text-gray-600 mt-1">
               {slides.filter(s => s.is_visible).length} visible • {slides.filter(s => !s.is_visible).length} hidden • {slides.length} total

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 
 interface Client {
   id: number;
@@ -83,7 +84,7 @@ export default function EditClient() {
     }
   };
 
-  if (loading) return <div className="container mx-auto py-8">Loading...</div>;
+  if (loading) return <LoadingSpinner className="container mx-auto py-8" size="lg" />;
   if (!formData) return <div className="container mx-auto py-8 text-red-700">{error || 'Client not found'}</div>;
 
   return (

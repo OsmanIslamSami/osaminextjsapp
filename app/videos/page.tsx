@@ -13,6 +13,7 @@ import { PlayIcon, HomeIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
+import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import { VideoPopup, VideoItem } from '@/lib/components/media/VideoPopup';
 import { getYouTubeThumbnailUrl } from '@/lib/utils/youtube';
 
@@ -38,7 +39,7 @@ interface PaginationInfo {
  * - RTL support
  */
 export default function VideosGalleryPage() {
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const isRTL = useRTLDirection();
   
   // Component state
@@ -54,7 +55,7 @@ export default function VideosGalleryPage() {
   const [popupIndex, setPopupIndex] = useState(0);
 
   // Page title in current language
-  const title = language === 'ar' ? 'معرض الفيديوهات' : 'Videos Gallery';
+  const title = t('videos.gallery');
 
   /**
    * Fetch videos from API
@@ -119,16 +120,7 @@ export default function VideosGalleryPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">
-            {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner className="min-h-screen" size="lg" />;
   }
 
   return (

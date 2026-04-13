@@ -15,6 +15,7 @@ export default function Footer() {
   const { t, direction } = useTranslation();
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     async function fetchSocialLinks() {
@@ -34,6 +35,25 @@ export default function Footer() {
     fetchSocialLinks();
   }, []);
 
+  // Intersection Observer for animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const footerElement = document.querySelector('footer');
+    if (footerElement) {
+      observer.observe(footerElement);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const currentYear = new Date().getFullYear();
 
   return (
@@ -50,7 +70,9 @@ export default function Footer() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Footer Content */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className={`flex flex-col md:flex-row justify-between items-center gap-6 transition-all duration-700 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
           {/* Brand/Info */}
           <div className={`text-center ${direction === 'rtl' ? 'md:text-right' : 'md:text-left'}`}>
             <h3 className="text-lg font-semibold mb-2" style={{ color: 'white' }}>
@@ -66,7 +88,7 @@ export default function Footer() {
 
           {/* Social Media Links */}
           {!loading && socialLinks.length > 0 && (
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-3 animate-fade-in-up animate-delay-200">
               <p className="text-sm font-medium" style={{ color: 'white' }}>
                 {t('footer.followUs')}
               </p>
@@ -77,7 +99,7 @@ export default function Footer() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 hover-lift button-press"
                     style={{
                       backgroundColor: 'rgba(255, 255, 255, 0.2)',
                       backdropFilter: 'blur(10px)',

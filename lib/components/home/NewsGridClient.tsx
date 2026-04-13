@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import NewsCard from './NewsCard';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -19,10 +19,14 @@ interface News {
 
 interface NewsGridClientProps {
   news: News[];
+  title?: {
+    en: string | null;
+    ar: string | null;
+  };
 }
 
-export default function NewsGridClient({ news }: NewsGridClientProps) {
-  const { language } = useLanguage();
+export default function NewsGridClient({ news, title }: NewsGridClientProps) {
+  const { t, language } = useTranslation();
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -110,6 +114,12 @@ export default function NewsGridClient({ news }: NewsGridClientProps) {
   // Determine if RTL mode
   const isRTL = language === 'ar';
 
+  // Get section title in current language or use translation fallback
+  const sectionTitle = 
+    language === 'ar' 
+      ? (title?.ar || t('home.latestNews')) 
+      : (title?.en || t('home.latestNews'));
+
   return (
     <div ref={sectionRef}>
       {/* Header with title on left and button on right */}
@@ -123,12 +133,10 @@ export default function NewsGridClient({ news }: NewsGridClientProps) {
               color: 'var(--color-primary)',
             }}
           >
-            {language === 'ar' ? 'آخر الأخبار' : 'Latest News'}
+            {sectionTitle}
           </h2>
           <p className="text-gray-600 dark:text-zinc-400 mt-2">
-            {language === 'ar'
-              ? 'ابق على اطلاع بأحدث الأخبار والإعلانات'
-              : 'Stay updated with our latest news and announcements'}
+            {t('home.latestNewsSubtitle')}
           </p>
         </div>
         <Link
@@ -144,7 +152,7 @@ export default function NewsGridClient({ news }: NewsGridClientProps) {
             e.currentTarget.style.backgroundColor = 'var(--color-primary)';
           }}
         >
-          {language === 'ar' ? 'جميع الأخبار' : 'All News'}
+          {t('home.viewAllNews')}
         </Link>
       </div>
 
