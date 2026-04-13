@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
-import { EyeIcon, EyeSlashIcon, PhotoIcon, VideoCameraIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon, PhotoIcon, VideoCameraIcon, UsersIcon, NewspaperIcon, QuestionMarkCircleIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 
 interface HomeSection {
   section_type: string;
@@ -91,12 +91,18 @@ export default function AdminHomeSectionsPage() {
 
   const getSectionIcon = (section_type: string) => {
     switch (section_type) {
+      case 'news':
+        return <NewspaperIcon className="w-8 h-8" />;
       case 'photos':
         return <PhotoIcon className="w-8 h-8" />;
       case 'videos':
         return <VideoCameraIcon className="w-8 h-8" />;
       case 'partners':
         return <UsersIcon className="w-8 h-8" />;
+      case 'faq':
+        return <QuestionMarkCircleIcon className="w-8 h-8" />;
+      case 'magazines':
+        return <BookOpenIcon className="w-8 h-8" />;
       default:
         return null;
     }
@@ -104,6 +110,10 @@ export default function AdminHomeSectionsPage() {
 
   const getSectionTitle = (section_type: string) => {
     const titles: any = {
+      news: {
+        en: 'News Section',
+        ar: 'قسم الأخبار',
+      },
       photos: {
         en: 'Photos Section',
         ar: 'قسم الصور',
@@ -116,12 +126,24 @@ export default function AdminHomeSectionsPage() {
         en: 'Partners Section',
         ar: 'قسم الشركاء',
       },
+      faq: {
+        en: 'FAQ Section',
+        ar: 'قسم الأسئلة الشائعة',
+      },
+      magazines: {
+        en: 'Magazines Section',
+        ar: 'قسم المجلات',
+      },
     };
     return titles[section_type]?.[language] || section_type;
   };
 
   const getSectionDescription = (section_type: string) => {
     const descriptions: any = {
+      news: {
+        en: 'Display latest news articles on the home page',
+        ar: 'عرض أحدث المقالات الإخبارية على الصفحة الرئيسية',
+      },
       photos: {
         en: 'Display 5 featured photos in a slider on the home page',
         ar: 'عرض 5 صور مميزة في سلايدر على الصفحة الرئيسية',
@@ -133,6 +155,14 @@ export default function AdminHomeSectionsPage() {
       partners: {
         en: 'Display partner cards in a slider on the home page',
         ar: 'عرض بطاقات الشركاء في سلايدر على الصفحة الرئيسية',
+      },
+      faq: {
+        en: 'Display top 5 frequently asked questions on the home page',
+        ar: 'عرض أفضل 5 أسئلة شائعة على الصفحة الرئيسية',
+      },
+      magazines: {
+        en: 'Display latest magazine publications on the home page',
+        ar: 'عرض أحدث إصدارات المجلات على الصفحة الرئيسية',
       },
     };
     return descriptions[section_type]?.[language] || '';

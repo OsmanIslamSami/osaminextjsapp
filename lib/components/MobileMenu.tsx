@@ -2,10 +2,19 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { XMarkIcon, ChartBarIcon, UsersIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChartBarIcon, UsersIcon, Cog6ToothIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { UserButton } from '@clerk/nextjs';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
+
+interface NavItem {
+  id: string;
+  label_en: string;
+  label_ar: string;
+  url: string;
+  type: string;
+  items?: NavItem[];
+}
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -14,8 +23,26 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const pathname = usePathname();
-  const { t, direction } = useTranslation();
+  const { t, direction, language } = useTranslation();
   const { isAdmin } = useCurrentUser();
+  const [navItems, setNavItems] = useState<NavItem[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  // Fetch header navigation for mobile
+  useEffect(() => {
+    async function fetchNav() {
+      try {
+        const res = await fetch('/api/navigation?location=header');
+        if (res.ok) {
+          const { data } = await res.json();
+          setNavItems(data || []);
+        }
+      } catch {
+        // Silent fail for mobile nav
+      }
+    }
+    fetchNav();
+  }, []);
   
   // Close menu when route changes
   useEffect(() => {
@@ -111,6 +138,59 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 </Link>
               </li>
             )}
+
+            {/* Dynamic Navigation Items */}
+            {navItems.length > 0 && (
+              <li>
+                <hr className="my-2 border-gray-200 dark:border-zinc-800" />
+              </li>
+            )}
+            {navItems.map((item) => {
+              if (item.type === 'dropdown' && item.items && item.items.length > 0) {
+                const isOpen = openDropdown === item.id;
+                return (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => setOpenDropdown(isOpen ? null : item.id)}
+                      className="flex items-center justify-between w-full px-5 py-3 rounded-full transition-all font-medium text-sm text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900"
+                    >
+                      <span>{language === 'ar' ? item.label_ar : item.label_en}</span>
+                      <ChevronDownIcon className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isOpen && (
+                      <ul className="mt-1 space-y-1" style={{ paddingInlineStart: '1rem' }}>
+                        {item.items.map((subItem) => (
+                          <li key={subItem.id}>
+                            <Link
+                              href={subItem.url}
+                              className="block px-5 py-2 rounded-full text-sm text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all"
+                            >
+                              {language === 'ar' ? subItem.label_ar : subItem.label_en}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
+
+              // Regular link
+              return (
+                <li key={item.id}>
+                  <Link
+                    href={item.url}
+                    className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all font-medium text-sm ${
+                      pathname === item.url
+                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
+                        : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900 hover:scale-105'
+                    }`}
+                  >
+                    <span>{language === 'ar' ? item.label_ar : item.label_en}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 

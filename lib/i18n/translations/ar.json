@@ -121,7 +121,9 @@
       "slider": "الشرائح",
       "photos": "الصور",
       "videos": "الفيديوهات",
-      "partners": "الشركاء",
+      "partners": "الشركاء",      "faq": "الأسئلة المتكررة",
+      "magazines": "المجلات",
+      "navigation": "التنقل",
       "homeSections": "أقسام الصفحة الرئيسية",
       "users": "المستخدمين",
       "social": "وسائل التواصل",
@@ -365,5 +367,47 @@
     "home": "الرئيسية"
   },
   "a11y": {
-    "closeDialog": "إغلاق الحوار"  }
+    "closeDialog": "إغلاق الحوار"
+  },
+  "faq": {
+    "title": "الأسئلة المتكررة",
+    "viewAll": "عرض جميع الأسئلة",
+    "noFaqs": "لا توجد أسئلة متاحة",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "addNewFaq": "إضافة سؤال جديد",
+    "editFaq": "تعديل السؤال",
+    "management": "إدارة الأسئلة المتكررة",
+    "questionEn": "السؤال (إنجليزي)",
+    "questionAr": "السؤال (عربي)",
+    "answerEn": "الإجابة (إنجليزي)",
+    "answerAr": "الإجابة (عربي)",
+    "markAsFavorite": "إضافة إلى المفضلة",
+    "created": "تم الإنشاء",
+    "deleteFaq": "حذف السؤال",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا السؤال؟"
+  },
+  "magazines": {
+    "title": "المجلات",
+    "addMagazine": "إضافة مجلة",
+    "viewAll": "عرض جميع المجلات",
+    "noMagazines": "لا توجد مجلات متاحة",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "addNewMagazine": "إضافة مجلة جديدة",
+    "editMagazine": "تعديل المجلة",
+    "management": "إدارة المجلات",
+    "titleEn": "العنوان (إنجليزي)",
+    "titleAr": "العنوان (عربي)",
+    "descriptionEn": "الوصف (إنجليزي)",
+    "descriptionAr": "الوصف (عربي)",
+    "publishedDate": "تاريخ النشر",
+    "coverImage": "صورة الغلاف",
+    "pdfFile": "ملف PDF",
+    "downloadPdf": "تحميل PDF",
+    "selected": "تم اختيار:",
+    "deleteMagazine": "حذف المجلة",
+    "deleteConfirm": "هل أنت متأكد من حذف هذه المجلة؟",
+    "browseSubtitle": "تصفح وتحميل أحدث إصداراتنا"
+  }
 }

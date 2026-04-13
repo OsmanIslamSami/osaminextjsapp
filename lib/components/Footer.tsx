@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import Image from 'next/image';
 
 interface SocialMediaLink {
   id: string;
@@ -11,28 +11,46 @@ interface SocialMediaLink {
   display_order: number;
 }
 
+interface FooterNavItem {
+  id: string;
+  label_en: string;
+  label_ar: string;
+  url: string;
+  type: string;
+  target: string;
+  items?: FooterNavItem[];
+}
+
 export default function Footer() {
-  const { t, direction } = useTranslation();
+  const { t, direction, language } = useTranslation();
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>([]);
+  const [footerNav, setFooterNav] = useState<FooterNavItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    async function fetchSocialLinks() {
+    async function fetchData() {
       try {
-        const response = await fetch('/api/social-media');
-        if (response.ok) {
-          const data = await response.json();
+        const [socialRes, navRes] = await Promise.all([
+          fetch('/api/social-media'),
+          fetch('/api/navigation?location=footer'),
+        ]);
+        if (socialRes.ok) {
+          const data = await socialRes.json();
           setSocialLinks(data);
         }
+        if (navRes.ok) {
+          const { data } = await navRes.json();
+          setFooterNav(data || []);
+        }
       } catch (error) {
-        console.error('Error fetching social media links:', error);
+        console.error('Error fetching footer data:', error);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchSocialLinks();
+    fetchData();
   }, []);
 
   // Intersection Observer for animation
@@ -70,7 +88,7 @@ export default function Footer() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Footer Content */}
-        <div className={`flex flex-col md:flex-row justify-between items-center gap-6 transition-all duration-700 ${
+        <div className={`flex flex-col md:flex-row justify-between items-start gap-8 transition-all duration-700 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           {/* Brand/Info */}
@@ -85,6 +103,60 @@ export default function Footer() {
               {t('footer.email')}
             </p>
           </div>
+
+          {/* Dynamic Footer Navigation Sections */}
+          {footerNav.length > 0 && (
+            <div className="flex flex-wrap gap-8 md:gap-12">
+              {footerNav.map((section) => {
+                // Section headers with child links
+                if (section.type === 'section-header' && section.items && section.items.length > 0) {
+                  return (
+                    <div key={section.id} className={`text-center ${direction === 'rtl' ? 'md:text-right' : 'md:text-left'}`}>
+                      <h4 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'white' }}>
+                        {language === 'ar' ? section.label_ar : section.label_en}
+                      </h4>
+                      <ul className="space-y-2">
+                        {section.items.map((link) => (
+                          <li key={link.id}>
+                            <Link
+                              href={link.url}
+                              target={link.target}
+                              className="text-sm transition-colors hover:underline"
+                              style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'white'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)'; }}
+                            >
+                              {language === 'ar' ? link.label_ar : link.label_en}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                }
+
+                // Standalone footer links (no parent)
+                if (section.type === 'link') {
+                  return (
+                    <div key={section.id} className={`text-center ${direction === 'rtl' ? 'md:text-right' : 'md:text-left'}`}>
+                      <Link
+                        href={section.url}
+                        target={section.target}
+                        className="text-sm transition-colors hover:underline"
+                        style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = 'white'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)'; }}
+                      >
+                        {language === 'ar' ? section.label_ar : section.label_en}
+                      </Link>
+                    </div>
+                  );
+                }
+
+                return null;
+              })}
+            </div>
+          )}
 
           {/* Social Media Links */}
           {!loading && socialLinks.length > 0 && (

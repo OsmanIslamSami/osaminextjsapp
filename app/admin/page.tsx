@@ -203,6 +203,50 @@ export default function AdminPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </a>
+
+          <a
+            href="/admin/faq"
+            className="flex items-center justify-between p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+          >
+            <div>
+              <div className="font-medium text-gray-900 dark:text-zinc-100">
+                {direction === 'rtl' ? 'إدارة الأسئلة الشائعة' : 'Manage FAQs'}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-zinc-400">
+                {direction === 'rtl' ? 'إضافة وتعديل الأسئلة الشائعة' : 'Add and edit frequently asked questions'}
+              </div>
+            </div>
+            <svg 
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 ${direction === 'rtl' ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+
+          <a
+            href="/admin/magazines"
+            className="flex items-center justify-between p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+          >
+            <div>
+              <div className="font-medium text-gray-900 dark:text-zinc-100">
+                {direction === 'rtl' ? 'إدارة المجلات' : 'Manage Magazines'}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-zinc-400">
+                {direction === 'rtl' ? 'رفع وإدارة ملفات المجلات' : 'Upload and manage magazine files'}
+              </div>
+            </div>
+            <svg 
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 ${direction === 'rtl' ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
         </div>
       </div>
 

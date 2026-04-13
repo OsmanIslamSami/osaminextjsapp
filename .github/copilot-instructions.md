@@ -359,6 +359,188 @@ if (loading) {
 - Buttons: `whitespace-nowrap` to prevent text wrapping
 - Clear button: Only show when dates are set
 
+### Home Page Sections UI Standards
+
+**All home page sections MUST follow this consistent pattern:**
+
+**Container Requirements:**
+- **Max-width container**: Use `container mx-auto max-w-7xl` for consistent width
+- **Section wrapper**: `<section className="py-16 px-4 bg-gray-50 dark:bg-zinc-950">`
+- **Header alignment**: Title and description at top, "View All" button aligned to right
+- **Bilingual support**: Display title/description/buttons in Arabic or English based on `language`
+- **Theme integration**: Use `var(--color-primary)` for titles and buttons
+- **Visibility control**: Each section has admin toggle via `home_sections` table
+
+**Section Types and Content Limits:**
+- **News**: Latest articles, horizontal carousel (3 cards per view)
+- **Photos**: Featured photos, horizontal carousel (3 cards per view)  
+- **Videos**: Featured videos, horizontal carousel (3 cards per view)
+- **Partners**: Partner cards, horizontal carousel (responsive: 1/2/3/4 cards)
+- **FAQ**: Top 5 questions, vertical accordion list (max-w-4xl centered)
+- **Magazines**: Latest publications, horizontal carousel (4 cards per view)
+
+**Standard Carousel Section Structure:**
+```typescript
+<section className="py-16 px-4 bg-gray-50 dark:bg-zinc-950">
+  <div className="container mx-auto max-w-7xl">
+    {/* Header with title and "View All" button */}
+    <div className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 transition-all duration-700 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+    }`}>
+      <div>
+        <h2 
+          className="text-3xl md:text-4xl font-bold"
+          style={{ color: 'var(--color-primary)' }}
+        >
+          {language === 'ar' ? 'العنوان بالعربية' : 'English Title'}
+        </h2>
+        <p className="text-gray-600 dark:text-zinc-400 mt-2">
+          {language === 'ar' ? 'الوصف بالعربية' : 'English description'}
+        </p>
+      </div>
+      {hasMore && (
+        <Link
+          href="/section-page"
+          className="inline-block text-white px-6 py-2.5 rounded-full font-medium transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 whitespace-nowrap w-fit text-sm"
+          style={{ backgroundColor: 'var(--color-primary)' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+          }}
+        >
+          {language === 'ar' ? 'جميع العناصر' : 'All Items'}
+        </Link>
+      )}
+    </div>
+
+    {/* Horizontal Scroll Carousel */}
+    <div className="relative" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+      <div className="overflow-hidden">
+        <div 
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{
+            transform: `translateX(${isRTL ? currentIndex * (100 / cardsPerView) : -currentIndex * (100 / cardsPerView)}%)`
+          }}
+        >
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex-shrink-0 px-2 md:px-4"
+              style={{ width: `${100 / cardsPerView}%` }}
+            >
+              <ItemCard item={item} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      {items.length > cardsPerView && (
+        <>
+          <button
+            onClick={goToPrevious}
+            className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'right-2' : 'left-2'} p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all z-10`}
+            aria-label={language === 'ar' ? 'السابق' : 'Previous'}
+          >
+            {isRTL ? (
+              <ChevronRightIcon className="w-6 h-6 text-gray-700 dark:text-zinc-300" />
+            ) : (
+              <ChevronLeftIcon className="w-6 h-6 text-gray-700 dark:text-zinc-300" />
+            )}
+          </button>
+          <button
+            onClick={goToNext}
+            className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-2' : 'right-2'} p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all z-10`}
+            aria-label={language === 'ar' ? 'التالي' : 'Next'}
+          >
+            {isRTL ? (
+              <ChevronLeftIcon className="w-6 h-6 text-gray-700 dark:text-zinc-300" />
+            ) : (
+              <ChevronRightIcon className="w-6 h-6 text-gray-700 dark:text-zinc-300" />
+            )}
+          </button>
+        </>
+      )}
+    </div>
+
+    {/* Dots indicator */}
+    {items.length > cardsPerView && (
+      <div className="flex justify-center gap-2 mt-6">
+        {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === currentIndex
+                ? 'w-8 bg-gray-900 dark:bg-white'
+                : 'bg-gray-400 dark:bg-zinc-600'
+            }`}
+            aria-label={`${language === 'ar' ? 'انتقل إلى الشريحة' : 'Go to slide'} ${index + 1}`}
+          />
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+```
+
+**FAQ Section Pattern (Vertical List):**
+```typescript
+<section className="py-16 px-4 bg-gray-50 dark:bg-zinc-950">
+  <div className="container mx-auto max-w-7xl">
+    <div className="max-w-4xl mx-auto">
+      {/* Header with title and button */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: 'var(--color-primary)' }}>
+            {language === 'ar' ? 'الأسئلة المتكررة' : 'Frequently Asked Questions'}
+          </h2>
+          <p className="text-gray-600 dark:text-zinc-400 mt-2">
+            {language === 'ar' ? 'إجابات على الأسئلة الشائعة' : 'Find answers to common questions'}
+          </p>
+        </div>
+        {hasMore && (
+          <Link href="/faq" className="...">
+            {language === 'ar' ? 'جميع الأسئلة' : 'All FAQs'}
+          </Link>
+        )}
+      </div>
+      
+      {/* Vertical accordion list */}
+      <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden">
+        {faqs.map((faq) => (
+          <FAQAccordionItem key={faq.id} faq={faq} />
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+**Admin Visibility Controls:**
+- Access: `/admin/home-sections`
+- Toggle visibility for: News, Photos, Videos, Partners, FAQ, Magazines
+- Each section stored in `home_sections` table with `section_type` and `is_visible` fields
+- Run seed script: `npx tsx scripts/add-faq-magazine-sections.ts` to initialize FAQ/Magazine sections
+
+**Button Text Patterns:**
+- **News**: `{language === 'ar' ? 'جميع الأخبار' : 'All News'}`
+- **Photos**: `{language === 'ar' ? 'جميع الصور' : 'All Photos'}`
+- **Videos**: `{language === 'ar' ? 'جميع الفيديوهات' : 'All Videos'}`
+- **Partners**: `{language === 'ar' ? 'جميع الشركاء' : 'All Partners'}`
+- **FAQs**: `{language === 'ar' ? 'جميع الأسئلة' : 'All FAQs'}`
+- **Magazines**: `{language === 'ar' ? 'جميع المجلات' : 'All Magazines'}`
+
+**Example Implementations:**
+- [lib/components/home/NewsGridClient.tsx](../lib/components/home/NewsGridClient.tsx) - News carousel (3 cards)
+- [lib/components/home/PhotosSection.tsx](../lib/components/home/PhotosSection.tsx) - Photos carousel (3 cards)
+- [lib/components/home/VideosSection.tsx](../lib/components/home/VideosSection.tsx) - Videos carousel (3 cards)
+- [lib/components/home/PartnersSection.tsx](../lib/components/home/PartnersSection.tsx) - Partners carousel (responsive)
+- [lib/components/home/FAQSection.tsx](../lib/components/home/FAQSection.tsx) - Vertical accordion (top 5)
+- [lib/components/home/MagazineSection.tsx](../lib/components/home/MagazineSection.tsx) - Magazines carousel (4 cards)
+
 ### Media Card UI Standards (Photos/Videos)
 
 **All media cards MUST display published date:**

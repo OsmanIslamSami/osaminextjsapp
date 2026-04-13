@@ -187,3 +187,98 @@ export interface NewsListResponse {
     totalPages: number;
   };
 }
+
+// FAQ types
+export interface FAQ {
+  id: string;
+  question_en: string;
+  question_ar: string;
+  answer_en: string;
+  answer_ar: string;
+  is_favorite: boolean;
+  display_order: number;
+  is_deleted: boolean;
+  created_by: string;
+  updated_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FAQFormData {
+  question_en: string;
+  question_ar: string;
+  answer_en: string;
+  answer_ar: string;
+  is_favorite?: boolean;
+}
+
+export interface CreateFAQInput extends FAQFormData {}
+
+export interface UpdateFAQInput extends Partial<FAQFormData> {}
+
+export interface FAQListResponse {
+  data: FAQ[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+}
+
+// Magazine types
+export interface Magazine {
+  id: string;
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
+  image_url: string;
+  storage_type: 'blob' | 'local';
+  file_data?: Uint8Array | null;
+  file_name?: string | null;
+  file_size?: number | null;
+  mime_type?: string | null;
+  download_link: string;
+  published_date: string;
+  is_deleted: boolean;
+  created_by: string;
+  updated_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MagazineFormData {
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
+  published_date: string;
+}
+
+export interface CreateMagazineInput extends MagazineFormData {
+  image_url: string;
+  storage_type: 'blob' | 'local';
+  file_data?: Uint8Array;
+  file_name?: string;
+  file_size?: number;
+  mime_type?: string;
+  download_link: string;
+}
+
+export interface UpdateMagazineInput extends Partial<MagazineFormData> {
+  image_url?: string;
+  storage_type?: 'blob' | 'local';
+  file_data?: Uint8Array;
+  file_name?: string;
+  file_size?: number;
+  mime_type?: string;
+  download_link?: string;
+}
+
+export interface MagazineListResponse {
+  data: Magazine[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+}
+

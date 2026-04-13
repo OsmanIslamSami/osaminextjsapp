@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ChartBarIcon, UsersIcon, Bars3Icon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { LanguageSwitcher } from "@/lib/components/LanguageSwitcher";
 import MobileMenu from "@/lib/components/MobileMenu";
+import PublicNavigation from "@/lib/components/PublicNavigation";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import { useAppSettings } from "@/lib/contexts/AppSettingsContext";
@@ -69,7 +70,10 @@ export default function Header() {
           )}
         </Link>
         
-        {/* Desktop Navigation Tabs */}
+        {/* Public Navigation (Media dropdown, FAQs, Partners) */}
+        <PublicNavigation />
+        
+        {/* Desktop Navigation Tabs (Authenticated Users) */}
         <nav className="hidden md:flex items-center gap-2">
           {isSignedIn && (
             <>

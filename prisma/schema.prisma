@@ -76,6 +76,12 @@ model User {
   videosUpdated     videos[]    @relation("VideosUpdatedBy")
   partnersCreated   partners[]  @relation("PartnersCreatedBy")
   partnersUpdated   partners[]  @relation("PartnersUpdatedBy")
+  
+  // FAQ and Magazine relations
+  faqCreated        FAQ[]       @relation("FAQCreatedBy")
+  faqUpdated        FAQ[]       @relation("FAQUpdatedBy")
+  magazinesCreated  Magazine[]  @relation("MagazineCreatedBy")
+  magazinesUpdated  Magazine[]  @relation("MagazineUpdatedBy")
 
   @@index([clerk_user_id])
   @@index([email])
@@ -315,6 +321,56 @@ model partners {
   @@map("partners")
 }
 
+// FAQ Section
+model FAQ {
+  id            String   @id @default(cuid())
+  question_en   String   @db.VarChar(500)
+  question_ar   String   @db.VarChar(500)
+  answer_en     String   @db.Text
+  answer_ar     String   @db.Text
+  is_favorite   Boolean  @default(false)
+  display_order Int      @default(0)
+  is_deleted    Boolean  @default(false)
+  created_by    String
+  updated_by    String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  creator       User     @relation("FAQCreatedBy", fields: [created_by], references: [id])
+  updater       User     @relation("FAQUpdatedBy", fields: [updated_by], references: [id])
+
+  @@index([is_deleted, is_favorite, created_at])
+  @@map("faq")
+}
+
+// Magazine Section
+model Magazine {
+  id              String   @id @default(cuid())
+  title_en        String   @db.VarChar(500)
+  title_ar        String   @db.VarChar(500)
+  description_en  String   @db.Text
+  description_ar  String   @db.Text
+  image_url       String
+  storage_type    String   @default("blob")
+  file_data       Bytes?
+  file_name       String?
+  file_size       Int?
+  mime_type       String?
+  download_link   String
+  published_date  DateTime @db.Timestamp(6)
+  is_deleted      Boolean  @default(false)
+  created_by      String
+  updated_by      String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  creator         User     @relation("MagazineCreatedBy", fields: [created_by], references: [id])
+  updater         User     @relation("MagazineUpdatedBy", fields: [updated_by], references: [id])
+
+  @@index([is_deleted, published_date(sort: Desc)])
+  @@map("magazines")
+}
+
 // Media Library: Home Section Configuration
 model home_sections {
   id                      String    @id @default(cuid())
@@ -378,3 +434,31 @@ model app_settings {
   
   @@map("app_settings")
 }
+
+// Navigation Items (Header + Footer)
+model navigation {
+  id                String    @id @default(cuid())
+  
+  // Navigation item details
+  label_en          String    // English label
+  label_ar          String    // Arabic label
+  url               String    // URL path
+  location          String    @default("header") // 'header' or 'footer'
+  type              String    // 'link' or 'dropdown' or 'dropdown-item' or 'section-header'
+  parent_id         String?   // For dropdown/section items, reference to parent
+  icon              String?   // Optional icon name
+  
+  // Display settings
+  is_visible        Boolean   @default(true)
+  display_order     Int       @default(0)
+  target            String    @default("_self") // '_self' or '_blank'
+  
+  // Audit trail
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  
+  @@index([location, is_visible, display_order])
+  @@index([parent_id])
+  @@map("navigation")
+}
+

@@ -55,7 +55,14 @@ export default function DateRangeFilter({
         <div className="flex gap-2 sm:w-auto">
           <button
             type="submit"
-            className="flex-1 sm:flex-initial px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-medium transition-all focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 min-h-[48px] text-sm whitespace-nowrap"
+            className="flex-1 sm:flex-initial px-6 py-3 text-white rounded-full font-medium transition-all focus:ring-2 focus:ring-offset-2 min-h-[48px] text-sm whitespace-nowrap"
+            style={{ backgroundColor: 'var(--color-primary)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+            }}
           >
             {t('news.filter')}
           </button>
