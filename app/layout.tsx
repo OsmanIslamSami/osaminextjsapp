@@ -12,6 +12,8 @@ import { ToastProvider } from "@/lib/components/ToastContainer";
 import { AppSettingsProvider } from "@/lib/contexts/AppSettingsContext";
 import { FontApplier } from "@/lib/components/FontApplier";
 import { ThemeApplier } from "@/lib/components/ThemeApplier";
+import ScrollToTop from "@/lib/components/ScrollToTop";
+import ScrollDown from "@/lib/components/ScrollDown";
 import { prisma } from "@/lib/db";
 
 // Modern English font
@@ -143,6 +145,8 @@ export default function RootLayout({
                   {children}
                 </main>
                 <Footer />
+                <ScrollToTop />
+                <ScrollDown />
               </body>
             </LanguageAwareHTML>
           </ToastProvider>
