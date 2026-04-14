@@ -76,10 +76,13 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       />
 
       {/* Drawer */}
-      <div className={direction === 'rtl' 
-        ? 'fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-950 shadow-lg z-[110] mobile-menu-drawer'
-        : 'fixed top-0 right-0 h-full w-64 bg-white dark:bg-zinc-950 shadow-lg z-[110] mobile-menu-drawer'
-      }>
+      <div 
+        className={direction === 'rtl' 
+          ? 'fixed top-0 right-0 h-full w-64 bg-white dark:bg-zinc-950 shadow-lg z-[110] mobile-menu-drawer'
+          : 'fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-950 shadow-lg z-[110] mobile-menu-drawer'
+        }
+        dir={direction}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-800">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-zinc-100">

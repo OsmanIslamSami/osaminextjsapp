@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/lib/components/ToastContainer';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
@@ -55,9 +53,7 @@ const defaultFormData: NavFormData = {
   target: '_self',
 };
 
-export default function NavigationAdmin() {
-  const router = useRouter();
-  const { user, isAdmin, isLoading: userLoading } = useCurrentUser();
+export default function NavigationManager() {
   const { language, direction } = useTranslation();
   const { showError, showSuccess } = useToast();
 
@@ -71,13 +67,8 @@ export default function NavigationAdmin() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (userLoading) return;
-    if (!user || !isAdmin) {
-      router.push('/login');
-      return;
-    }
     fetchNavigation();
-  }, [userLoading, user, isAdmin, router]);
+  }, []);
 
   const fetchNavigation = useCallback(async () => {
     try {
@@ -259,11 +250,9 @@ export default function NavigationAdmin() {
     handleReorder(item, siblings[index + 1]);
   };
 
-  if (userLoading || loading) {
-    return <LoadingSpinner className="min-h-screen" size="lg" />;
+  if (loading) {
+    return <LoadingSpinner className="py-12" size="md" />;
   }
-
-  if (!user || !isAdmin) return null;
 
   const typeOptions = activeTab === 'header'
     ? [
@@ -278,17 +267,31 @@ export default function NavigationAdmin() {
 
   return (
     <div className="space-y-6" dir={direction}>
-      {/* Page Header */}
+      {/* Controls Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {language === 'ar' ? 'إدارة التنقل' : 'Navigation Management'}
-          </h2>
-          <p className="text-gray-600 dark:text-zinc-400 mt-1">
-            {language === 'ar'
-              ? 'إدارة روابط الهيدر والفوتر'
-              : 'Manage header and footer navigation links'}
-          </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setActiveTab('header')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all ${
+              activeTab === 'header'
+                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
+                : 'border-2 border-gray-300 dark:border-zinc-600 text-gray-700 dark:text-zinc-300 hover:border-gray-400 dark:hover:border-zinc-500'
+            }`}
+          >
+            <GlobeAltIcon className="w-5 h-5" />
+            {language === 'ar' ? 'الهيدر' : 'Header'}
+          </button>
+          <button
+            onClick={() => setActiveTab('footer')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all ${
+              activeTab === 'footer'
+                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
+                : 'border-2 border-gray-300 dark:border-zinc-600 text-gray-700 dark:text-zinc-300 hover:border-gray-400 dark:hover:border-zinc-500'
+            }`}
+          >
+            <Bars3BottomLeftIcon className="w-5 h-5" />
+            {language === 'ar' ? 'الفوتر' : 'Footer'}
+          </button>
         </div>
         <button
           onClick={openAddForm}
@@ -296,32 +299,6 @@ export default function NavigationAdmin() {
         >
           <PlusIcon className="w-5 h-5" />
           {language === 'ar' ? 'إضافة عنصر' : 'Add Item'}
-        </button>
-      </div>
-
-      {/* Tab Switcher */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setActiveTab('header')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all ${
-            activeTab === 'header'
-              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
-              : 'border-2 border-gray-300 dark:border-zinc-600 text-gray-700 dark:text-zinc-300 hover:border-gray-400 dark:hover:border-zinc-500'
-          }`}
-        >
-          <GlobeAltIcon className="w-5 h-5" />
-          {language === 'ar' ? 'الهيدر' : 'Header'}
-        </button>
-        <button
-          onClick={() => setActiveTab('footer')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all ${
-            activeTab === 'footer'
-              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
-              : 'border-2 border-gray-300 dark:border-zinc-600 text-gray-700 dark:text-zinc-300 hover:border-gray-400 dark:hover:border-zinc-500'
-          }`}
-        >
-          <Bars3BottomLeftIcon className="w-5 h-5" />
-          {language === 'ar' ? 'الفوتر' : 'Footer'}
         </button>
       </div>
 
@@ -619,21 +596,23 @@ export default function NavigationAdmin() {
                                 </span>
                               )}
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-zinc-400">{child.url}</span>
+                            <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5 truncate">
+                              {child.url}
+                            </p>
                           </div>
 
-                          {/* Child Actions */}
+                          {/* Child Action Buttons */}
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => openEditForm(child)}
-                              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                              className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                               aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
                             >
                               <PencilIcon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                             </button>
                             <button
                               onClick={() => handleToggleVisibility(child)}
-                              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                              className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                               aria-label={child.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
                             >
                               {child.is_visible ? (
@@ -644,7 +623,7 @@ export default function NavigationAdmin() {
                             </button>
                             <button
                               onClick={() => handleDelete(child)}
-                              className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                              className="p-1.5 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
                               aria-label={language === 'ar' ? 'حذف' : 'Delete'}
                             >
                               <TrashIcon className="w-4 h-4 text-red-600" />

@@ -46,14 +46,14 @@ export function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div className={`absolute mt-2 w-48 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg shadow-lg z-[9999] ${
+        <div className={`absolute mt-2 w-32 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg shadow-lg z-[9999] ${
           language === 'ar' ? 'right-0' : 'left-0'
         }`}>
           {languages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => handleLanguageChange(lang.code as 'en' | 'ar')}
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors first:rounded-t-lg last:rounded-b-lg flex items-center justify-between ${
+              className={`w-full text-center px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors first:rounded-t-lg last:rounded-b-lg flex items-center justify-center gap-2 ${
                 language === lang.code ? 'bg-blue-50 dark:bg-blue-900/20' : ''
               }`}
             >
@@ -61,7 +61,7 @@ export function LanguageSwitcher() {
                 {lang.nativeLabel}
               </span>
               {language === lang.code && (
-                <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               )}

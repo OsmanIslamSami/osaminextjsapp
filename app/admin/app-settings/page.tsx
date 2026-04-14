@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
 import { useAppSettings } from '@/lib/contexts/AppSettingsContext';
-import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon, ChevronRightIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6ToothIcon, ChevronRightIcon, ClipboardDocumentIcon, ChevronUpIcon, ChevronDownIcon, QuestionMarkCircleIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import NavigationManager from '@/lib/components/admin/NavigationManager';
 
 interface HomeSection {
   section_type: string;
@@ -40,7 +41,7 @@ interface AppSettings {
   site_keywords_ar?: string | null;
 }
 
-type SettingsTab = 'home-sections' | 'fonts' | 'themes' | 'site-settings';
+type SettingsTab = 'home-sections' | 'fonts' | 'themes' | 'site-settings' | 'navigation';
 
 const ARABIC_FONTS = [
   'Cairo',
@@ -243,6 +244,28 @@ export default function AppSettingsPage() {
     }
   };
 
+  const handleMoveSection = async (section_type: string, direction: 'up' | 'down') => {
+    try {
+      setSaving(section_type);
+      const response = await fetch('/api/home-sections/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ section_type, direction }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reorder section');
+      }
+
+      showSuccess(language === 'ar' ? 'تم إعادة الترتيب بنجاح' : 'Reordered successfully');
+      fetchData();
+    } catch (err) {
+      showError(language === 'ar' ? 'فشل إعادة الترتيب' : 'Failed to reorder');
+    } finally {
+      setSaving(null);
+    }
+  };
+
   const handleUpdateAppSettings = async (updates: Partial<AppSettings>) => {
     try {
       setSaving('app-settings');
@@ -333,6 +356,10 @@ export default function AppSettingsPage() {
         return <VideoCameraIcon className="w-8 h-8" />;
       case 'partners':
         return <UsersIcon className="w-8 h-8" />;
+      case 'faq':
+        return <QuestionMarkCircleIcon className="w-8 h-8" />;
+      case 'magazines':
+        return <BookOpenIcon className="w-8 h-8" />;
       default:
         return null;
     }
@@ -356,6 +383,14 @@ export default function AppSettingsPage() {
         en: 'Partners Section',
         ar: 'قسم الشركاء',
       },
+      faq: {
+        en: 'FAQ Section',
+        ar: 'قسم الأسئلة الشائعة',
+      },
+      magazines: {
+        en: 'Magazines Section',
+        ar: 'قسم المجلات',
+      },
     };
     return titles[section_type]?.[language] || section_type;
   };
@@ -377,6 +412,14 @@ export default function AppSettingsPage() {
       partners: {
         en: 'Display partner cards in a slider on the home page',
         ar: 'عرض بطاقات الشركاء في سلايدر على الصفحة الرئيسية',
+      },
+      faq: {
+        en: 'Display top 5 frequently asked questions on the home page',
+        ar: 'عرض أفضل 5 أسئلة شائعة على الصفحة الرئيسية',
+      },
+      magazines: {
+        en: 'Display latest magazine publications on the home page',
+        ar: 'عرض أحدث إصدارات المجلات على الصفحة الرئيسية',
       },
     };
     return descriptions[section_type]?.[language] || '';
@@ -452,6 +495,16 @@ export default function AppSettingsPage() {
           >
             {language === 'ar' ? 'معلومات التطبيق' : 'App Information'}
           </button>
+          <button
+            onClick={() => setActiveTab('navigation')}
+            className="px-3 sm:px-4 py-3 font-medium transition-colors whitespace-nowrap text-sm sm:text-base"
+            style={{
+              borderBottom: activeTab === 'navigation' ? '2px solid var(--color-primary)' : '2px solid transparent',
+              color: activeTab === 'navigation' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+            }}
+          >
+            {language === 'ar' ? 'التنقل' : 'Navigation'}
+          </button>
         </nav>
       </div>
 
@@ -471,76 +524,101 @@ export default function AppSettingsPage() {
               </p>
             </div>
 
-            {/* Sections Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sections.map((section) => (
+            {/* Sections List - Row-based layout */}
+            <div className="flex flex-col gap-4">
+              {sections.map((section, index) => (
                 <div
                   key={section.section_type}
-                  className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-800 p-6 space-y-4"
+                  className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all border-2 border-gray-100 dark:border-zinc-800"
                 >
-                  {/* Section Icon & Title */}
-                  <div className="flex items-center gap-4">
-                    <div 
-                      className="p-3 rounded-lg"
-                      style={{
-                        backgroundColor: section.is_visible ? 'var(--color-primary-light)' : 'var(--color-surface-hover)',
-                        color: section.is_visible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-                      }}
-                    >
-                      {getSectionIcon(section.section_type)}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-zinc-100">
-                        {getSectionTitle(section.section_type)}
-                      </h3>
-                      <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1">
-                        {getSectionDescription(section.section_type)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Visibility Toggle */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-zinc-800">
-                    <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">
-                      {language === 'ar' ? 'مرئي على الصفحة الرئيسية' : 'Visible on Home Page'}
-                    </span>
-                    <button
-                      onClick={() => handleToggleVisibility(section.section_type, section.is_visible)}
-                      disabled={saving === section.section_type}
-                      className="relative inline-flex items-center h-6 rounded-full w-11 transition-all duration-200 ease-in-out focus:outline-none cursor-pointer flex-shrink-0"
-                      style={{
-                        backgroundColor: section.is_visible ? 'var(--color-primary)' : 'var(--color-border)',
-                        opacity: saving === section.section_type ? 0.5 : 1,
-                        cursor: saving === section.section_type ? 'not-allowed' : 'pointer',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!saving) {
-                          e.currentTarget.style.backgroundColor = section.is_visible ? 'var(--color-primary-hover)' : 'var(--color-border-hover)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!saving) {
-                          e.currentTarget.style.backgroundColor = section.is_visible ? 'var(--color-primary)' : 'var(--color-border)';
-                        }
-                      }}
-                      aria-label={language === 'ar' ? 'تبديل الرؤية' : 'Toggle visibility'}
-                      role="switch"
-                      aria-checked={section.is_visible}
-                    >
-                      <span
-                        className="inline-block w-4 h-4 transform transition-all duration-200 ease-in-out bg-white rounded-full shadow-sm"
+                  <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+                    {/* Section Icon & Title */}
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div 
+                        className="p-3 rounded-lg flex-shrink-0"
                         style={{
-                          transform: section.is_visible 
-                            ? (language === 'ar' ? 'translateX(-26px)' : 'translateX(26px)')
-                            : 'translateX(2px)',
+                          backgroundColor: section.is_visible ? 'var(--color-primary-light)' : 'var(--color-surface-hover)',
+                          color: section.is_visible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
                         }}
-                      />
-                    </button>
+                      >
+                        {getSectionIcon(section.section_type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 dark:text-zinc-100 text-lg">
+                          {getSectionTitle(section.section_type)}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-zinc-500 mt-1">
+                          {getSectionDescription(section.section_type)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Controls: Reorder, Visibility Toggle */}
+                    <div className="flex flex-col sm:flex-row items-center gap-4 flex-shrink-0">
+                      {/* Reorder buttons */}
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleMoveSection(section.section_type, 'up')}
+                          disabled={index === 0 || saving === section.section_type}
+                          className="p-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                          title={language === 'ar' ? 'تحريك لأعلى' : 'Move up'}
+                        >
+                          <ChevronUpIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                        </button>
+                        <button
+                          onClick={() => handleMoveSection(section.section_type, 'down')}
+                          disabled={index === sections.length - 1 || saving === section.section_type}
+                          className="p-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                          title={language === 'ar' ? 'تحريك لأسفل' : 'Move down'}
+                        >
+                          <ChevronDownIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                        </button>
+                      </div>
+
+                      {/* Visibility Toggle */}
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-gray-700 dark:text-zinc-300 whitespace-nowrap">
+                          {language === 'ar' ? 'مرئي' : 'Visible'}
+                        </span>
+                        <button
+                          onClick={() => handleToggleVisibility(section.section_type, section.is_visible)}
+                          disabled={saving === section.section_type}
+                          className="relative inline-flex items-center h-7 rounded-full w-14 transition-all duration-200 ease-in-out focus:outline-none cursor-pointer flex-shrink-0"
+                          style={{
+                            backgroundColor: section.is_visible ? 'var(--color-primary)' : 'var(--color-border)',
+                            opacity: saving === section.section_type ? 0.5 : 1,
+                            cursor: saving === section.section_type ? 'not-allowed' : 'pointer',
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!saving) {
+                              e.currentTarget.style.backgroundColor = section.is_visible ? 'var(--color-primary-hover)' : 'var(--color-border-hover)';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!saving) {
+                              e.currentTarget.style.backgroundColor = section.is_visible ? 'var(--color-primary)' : 'var(--color-border)';
+                            }
+                          }}
+                          aria-label={language === 'ar' ? 'تبديل الرؤية' : 'Toggle visibility'}
+                          role="switch"
+                          aria-checked={section.is_visible}
+                        >
+                          <span
+                            className="inline-block w-5 h-5 transform transition-all duration-200 ease-in-out bg-white rounded-full shadow-md"
+                            style={{
+                              transform: section.is_visible 
+                                ? (language === 'ar' ? 'translateX(-28px)' : 'translateX(28px)')
+                                : 'translateX(2px)',
+                            }}
+                          />
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Partners-specific controls */}
                   {section.section_type === 'partners' && section.is_visible && (
-                    <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-zinc-800">
+                    <div className="w-full space-y-4 p-4 md:px-6 pt-4 border-t border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 rounded-b-lg">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-2">
                           {language === 'ar' ? 'وضع العرض' : 'Display Mode'}
@@ -649,6 +727,11 @@ export default function AppSettingsPage() {
                   {language === 'ar'
                     ? 'التغييرات تُطبق فوراً على الموقع'
                     : 'Changes are applied immediately to the website'}
+                </li>
+                <li>
+                  {language === 'ar'
+                    ? 'استخدم أزرار السهم لإعادة ترتيب الأقسام على الصفحة الرئيسية'
+                    : 'Use arrow buttons to reorder sections on the home page'}
                 </li>
                 <li>
                   {language === 'ar'
@@ -1784,6 +1867,25 @@ export default function AppSettingsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Navigation Tab */}
+        {activeTab === 'navigation' && (
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 mb-1">
+                {language === 'ar' ? 'إدارة التنقل' : 'Navigation Management'}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-zinc-400">
+                {language === 'ar'
+                  ? 'قم بإدارة عناصر التنقل في الرأس والتذييل'
+                  : 'Manage header and footer navigation items'}
+              </p>
+            </div>
+
+            {/* Navigation Manager Component */}
+            <NavigationManager />
           </div>
         )}
       </div>

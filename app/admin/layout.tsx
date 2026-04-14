@@ -15,8 +15,8 @@ const adminTabs = [
   { path: '/admin/faq', labelKey: 'admin.tabs.faq' },
   { path: '/admin/magazines', labelKey: 'admin.tabs.magazines' },
   { path: '/admin/users', labelKey: 'admin.tabs.users' },
-  { path: '/admin/navigation', labelKey: 'admin.tabs.navigation' },
   { path: '/admin/social', labelKey: 'admin.tabs.social' },
+  { path: '/admin/home-sections', labelKey: 'admin.tabs.homeSections' },
   { path: '/admin/style-library', labelKey: 'admin.tabs.styleLibrary' },
   { path: '/admin/app-settings', labelKey: 'admin.tabs.appSettings' },
 ];

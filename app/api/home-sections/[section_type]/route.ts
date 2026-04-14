@@ -20,7 +20,7 @@ export async function PATCH(
     const data = await request.json();
 
     // Validate section_type enum
-    const validSectionTypes = ['news', 'photos', 'videos', 'partners'];
+    const validSectionTypes = ['news', 'photos', 'videos', 'partners', 'faq', 'magazines'];
     if (!validSectionTypes.includes(section_type)) {
       return NextResponse.json(
         { success: false, error: `Invalid section_type. Must be one of: ${validSectionTypes.join(', ')}` },

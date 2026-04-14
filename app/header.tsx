@@ -38,6 +38,27 @@ export default function Header() {
     >
       {/* Left: Logo + Navigation Tabs */}
       <div className="flex items-center gap-6">
+        {/* Mobile Menu Button - at row start for both LTR and RTL */}
+        {isSignedIn && (
+          <button
+            onClick={handleMobileMenuToggle}
+            type="button"
+            className="md:hidden p-3 rounded-full transition-all hover:scale-105"
+            style={{ color: 'var(--color-text-primary)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
+              e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+            aria-label="Open menu"
+          >
+            <Bars3Icon className="w-5 h-5" />
+          </button>
+        )}
+        
         <Link href="/" className="flex items-center min-h-[40px]">
           {loading ? (
             <div className="h-10 w-[120px] flex items-center justify-center">
@@ -154,30 +175,9 @@ export default function Header() {
         )}
         <LanguageSwitcher />
         {isSignedIn && (
-          <>
-            <div className="hidden md:block">
-              <UserButton />
-            </div>
-        
-            {/* Mobile Menu Button */}
-            <button
-              onClick={handleMobileMenuToggle}
-              type="button"
-              className="md:hidden p-3 rounded-full transition-all hover:scale-105"
-              style={{ color: 'var(--color-text-primary)' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-surface-hover)';
-                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-              aria-label="Open menu"
-            >
-              <Bars3Icon className="w-5 h-5" />
-            </button>
-          </>
+          <div className="hidden md:block">
+            <UserButton />
+          </div>
         )}
       </div>
 
