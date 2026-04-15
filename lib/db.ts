@@ -26,6 +26,11 @@ export async function getClient() {
 
 // Prisma Client with Neon adapter
 const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
-export const prisma = new PrismaClient({ adapter });
+export const prisma = new PrismaClient({ 
+  adapter,
+  log: process.env.NODE_ENV === 'development' 
+    ? ['error', 'warn'] 
+    : ['error'],
+});
 
 export default pool;
