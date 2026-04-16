@@ -36,9 +36,10 @@ export async function GET(
     }
     
     if (!magazine.file_data) {
+      console.error(`Magazine ${id} has storage_type='local' but no file_data. Use Blob storage or upload file data.`);
       return NextResponse.json(
-        { error: 'No local file data available' },
-        { status: 404 }
+        { error: 'No local file data available. Magazine may be using Blob storage - update storage_type or upload file.' },
+        { status: 400 }
       );
     }
     

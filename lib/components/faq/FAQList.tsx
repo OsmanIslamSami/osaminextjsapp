@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { getBilingualQuestion } from '@/lib/utils/bilingual';
+import { useToast } from '@/lib/components/ToastContainer';
+import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { StarIcon, EyeIcon, EyeSlashIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface FAQ {
   id: string;
@@ -14,6 +17,7 @@ interface FAQ {
   answer_en: string;
   answer_ar: string;
   is_favorite: boolean;
+  is_visible?: boolean;
   created_at: string;
 }
 
@@ -30,13 +34,22 @@ interface FAQListProps {
   onPageChange?: (page: number) => void;
   onLimitChange?: (limit: number) => void;
   showPagination?: boolean;
+  selectedFAQs?: Set<string>;
+  onSelectFAQ?: (id: string) => void;
+  onSelectAll?: () => void;
+  onVisibilityToggled?: () => void;
+  onFavoriteToggled?: () => void;
 }
 
-export default function FAQList({ faqs, pagination, onPageChange, onLimitChange, showPagination = false }: FAQListProps) {
+export default function FAQList({ faqs, pagination, onPageChange, onLimitChange, showPagination = false, selectedFAQs = new Set(), onSelectFAQ, onSelectAll, onVisibilityToggled, onFavoriteToggled }: FAQListProps) {
   const { t, language, direction } = useTranslation();
   const router = useRouter();
+  const { showError, showSuccess } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingFavoriteId, setTogglingFavoriteId] = useState<string | null>(null);
+  const [togglingVisibleId, setTogglingVisibleId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletingQuestion, setDeletingQuestion] = useState<{ id: string; question: string } | null>(null);
 
   const handleToggleFavorite = async (id: string, currentFavorite: boolean) => {
     setTogglingFavoriteId(id);
@@ -50,23 +63,56 @@ export default function FAQList({ faqs, pagination, onPageChange, onLimitChange,
         throw new Error('Failed to toggle favorite');
       }
 
+      showSuccess(language === 'ar' ? 'تم تحديث المفضلة بنجاح' : 'Favorite updated successfully');
+      // Call parent callback to reload data
+      if (onFavoriteToggled) {
+        onFavoriteToggled();
+      }
       router.refresh();
     } catch (error) {
-      alert(language === 'ar' ? 'فشل تحديث المفضلة' : 'Failed to update favorite');
+      showError(language === 'ar' ? 'فشل تحديث المفضلة' : 'Failed to update favorite');
     } finally {
       setTogglingFavoriteId(null);
     }
   };
 
-  const handleDelete = async (id: string, question: string) => {
-    if (!confirm(language === 'ar' ? `هل أنت متأكد من حذف "${question}"؟` : `Are you sure you want to delete "${question}"?`)) {
-      return;
-    }
-
-    setDeletingId(id);
+  const handleToggleVisible = async (id: string, currentVisible: boolean) => {
+    setTogglingVisibleId(id);
 
     try {
-      const response = await fetch(`/api/faq/${id}`, {
+      const response = await fetch(`/api/faq/${id}/visible`, {
+        method: 'PATCH',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to toggle visibility');
+      }
+
+      showSuccess(language === 'ar' ? 'تم تحديث الظهور بنجاح' : 'Visibility updated successfully');
+      // Call parent callback to reload data
+      if (onVisibilityToggled) {
+        onVisibilityToggled();
+      }
+      router.refresh();
+    } catch (error) {
+      showError(language === 'ar' ? 'فشل تحديث الظهور' : 'Failed to update visibility');
+    } finally {
+      setTogglingVisibleId(null);
+    }
+  };
+
+  const handleDelete = (id: string, question: string) => {
+    setDeletingQuestion({ id, question });
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingQuestion) return;
+
+    setDeletingId(deletingQuestion.id);
+
+    try {
+      const response = await fetch(`/api/faq/${deletingQuestion.id}`, {
         method: 'DELETE',
       });
 
@@ -74,11 +120,14 @@ export default function FAQList({ faqs, pagination, onPageChange, onLimitChange,
         throw new Error('Failed to delete FAQ');
       }
 
+      showSuccess(language === 'ar' ? 'تم حذف السؤال بنجاح' : 'FAQ deleted successfully');
       router.refresh();
     } catch (error) {
-      alert(language === 'ar' ? 'فشل حذف السؤال' : 'Failed to delete FAQ');
+      showError(language === 'ar' ? 'فشل حذف السؤال' : 'Failed to delete FAQ');
     } finally {
       setDeletingId(null);
+      setShowDeleteConfirm(false);
+      setDeletingQuestion(null);
     }
   };
 
@@ -94,73 +143,230 @@ export default function FAQList({ faqs, pagination, onPageChange, onLimitChange,
 
   return (
     <div className="space-y-6" dir={direction}>
-      <div className="space-y-4">
+      {onSelectAll && (
+        <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
+          <input
+            type="checkbox"
+            checked={selectedFAQs && selectedFAQs.size === faqs.length && faqs.length > 0}
+            onChange={onSelectAll}
+            className="w-4 h-4 cursor-pointer"
+            aria-label={language === 'ar' ? 'تحديد الكل' : 'Select all'}
+          />
+          <span className="text-sm text-gray-600 dark:text-zinc-400">
+            {language === 'ar' ? 'تحديد الكل' : 'Select All'}
+          </span>
+        </div>
+      )}
+      
+      {/* Desktop Table View */}
+      <div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-800">
+          <thead className="bg-gray-50 dark:bg-zinc-800">
+            <tr>
+              {onSelectFAQ && (
+                <th className="px-6 py-3 text-left w-12">
+                  <input
+                    type="checkbox"
+                    checked={selectedFAQs && selectedFAQs.size === faqs.length && faqs.length > 0}
+                    onChange={onSelectAll}
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </th>
+              )}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+                {language === 'ar' ? 'السؤال' : 'Question'}
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+                {language === 'ar' ? 'تاريخ الإنشاء' : 'Created'}
+              </th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+                {language === 'ar' ? 'الإجراءات' : 'Actions'}
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-zinc-800">
+            {faqs.map((faq) => {
+              const question = getBilingualQuestion(faq, language);
+              const createdDate = new Date(faq.created_at).toLocaleDateString(
+                language === 'ar' ? 'ar-SA' : 'en-US',
+                { year: 'numeric', month: 'short', day: 'numeric' }
+              );
+
+              return (
+                <tr key={faq.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50">
+                  {onSelectFAQ && (
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedFAQs?.has(faq.id) || false}
+                        onChange={() => onSelectFAQ(faq.id)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                    </td>
+                  )}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      {faq.is_favorite && (
+                        <svg className="w-5 h-5 text-yellow-500 fill-current flex-shrink-0" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      )}
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">{question}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-zinc-400 whitespace-nowrap">
+                    {createdDate}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => handleToggleFavorite(faq.id, faq.is_favorite)}
+                        disabled={togglingFavoriteId === faq.id}
+                        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                        aria-label={faq.is_favorite ? (language === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites') : (language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to favorites')}
+                        title={faq.is_favorite ? (language === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites') : (language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to favorites')}
+                      >
+                        {togglingFavoriteId === faq.id ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <StarIcon className={`w-5 h-5 ${faq.is_favorite ? 'text-yellow-500 fill-yellow-500' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleToggleVisible(faq.id, faq.is_visible ?? true)}
+                        disabled={togglingVisibleId === faq.id}
+                        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                        aria-label={faq.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                        title={faq.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                      >
+                        {togglingVisibleId === faq.id ? (
+                          <LoadingSpinner size="sm" />
+                        ) : faq.is_visible ? (
+                          <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        ) : (
+                          <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
+                        )}
+                      </button>
+                      <Link
+                        href={`/admin/faq/${faq.id}/edit`}
+                        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                        aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
+                        title={language === 'ar' ? 'تعديل' : 'Edit'}
+                      >
+                        <PencilIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(faq.id, question)}
+                        disabled={deletingId === faq.id}
+                        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                        aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                        title={language === 'ar' ? 'حذف' : 'Delete'}
+                      >
+                        {deletingId === faq.id ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
+                        )}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
         {faqs.map((faq) => {
           const question = getBilingualQuestion(faq, language);
-          
+          const createdDate = new Date(faq.created_at).toLocaleDateString(
+            language === 'ar' ? 'ar-SA' : 'en-US',
+            { year: 'numeric', month: 'long', day: 'numeric' }
+          );
+
           return (
             <div
               key={faq.id}
-              className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6 flex items-start justify-between gap-4"
+              className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-4"
             >
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  {faq.is_favorite && (
-                    <svg
-                      className="w-5 h-5 text-yellow-500 fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  )}
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {question}
-                  </h3>
+              {/* Card Header */}
+              <div className="flex items-start gap-3 mb-3">
+                {onSelectFAQ && (
+                  <input
+                    type="checkbox"
+                    checked={selectedFAQs?.has(faq.id) || false}
+                    onChange={() => onSelectFAQ(faq.id)}
+                    className="w-4 h-4 cursor-pointer mt-1 flex-shrink-0"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    {faq.is_favorite && (
+                      <svg className="w-5 h-5 text-yellow-500 fill-current flex-shrink-0" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    )}
+                    <h3 className="font-semibold text-gray-900 dark:text-zinc-100 line-clamp-2">
+                      {question}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400">
+                    {createdDate}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-zinc-400">
-                  {language === 'ar' 
-                    ? `تم الإنشاء: ${new Date(faq.created_at).toLocaleDateString('ar-SA')}`
-                    : `Created: ${new Date(faq.created_at).toLocaleDateString('en-US')}`
-                  }
-                </p>
               </div>
 
-              <div className={`flex gap-2 ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}>
+              {/* Action buttons at bottom */}
+              <div className="flex gap-2 pt-3 border-t border-gray-200 dark:border-zinc-800">
                 <button
                   onClick={() => handleToggleFavorite(faq.id, faq.is_favorite)}
                   disabled={togglingFavoriteId === faq.id}
-                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap"
-                  title={language === 'ar' ? (faq.is_favorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة') : (faq.is_favorite ? 'Remove from favorites' : 'Add to favorites')}
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                  aria-label={faq.is_favorite ? (language === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites') : (language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to favorites')}
+                  title={faq.is_favorite ? (language === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites') : (language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to favorites')}
                 >
                   {togglingFavoriteId === faq.id ? (
                     <LoadingSpinner size="sm" />
                   ) : (
-                    <svg
-                      className={`w-5 h-5 ${faq.is_favorite ? 'text-yellow-500 fill-current' : 'text-gray-400 dark:text-zinc-500'}`}
-                      viewBox="0 0 20 20"
-                      fill={faq.is_favorite ? 'currentColor' : 'none'}
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+                    <StarIcon className={`w-5 h-5 ${faq.is_favorite ? 'text-yellow-500 fill-yellow-500' : 'text-gray-400 dark:text-zinc-500'}`} />
+                  )}
+                </button>
+                <button
+                  onClick={() => handleToggleVisible(faq.id, faq.is_visible ?? true)}
+                  disabled={togglingVisibleId === faq.id}
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                  aria-label={faq.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                  title={faq.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                >
+                  {togglingVisibleId === faq.id ? (
+                    <LoadingSpinner size="sm" />
+                  ) : faq.is_visible ? (
+                    <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
                   )}
                 </button>
                 <Link
                   href={`/admin/faq/${faq.id}/edit`}
-                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium text-gray-700 dark:text-zinc-300 hover:border-gray-400 dark:hover:border-zinc-500 transition-all whitespace-nowrap"
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                  aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
+                  title={language === 'ar' ? 'تعديل' : 'Edit'}
                 >
-                  {language === 'ar' ? 'تعديل' : 'Edit'}
+                  <PencilIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </Link>
                 <button
                   onClick={() => handleDelete(faq.id, question)}
                   disabled={deletingId === faq.id}
-                  className="px-4 py-2 border-2 border-red-300 dark:border-red-800 rounded-full text-sm font-medium text-red-600 dark:text-red-400 hover:border-red-400 dark:hover:border-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                  aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                  title={language === 'ar' ? 'حذف' : 'Delete'}
                 >
                   {deletingId === faq.id ? (
                     <LoadingSpinner size="sm" />
                   ) : (
-                    language === 'ar' ? 'حذف' : 'Delete'
+                    <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
                   )}
                 </button>
               </div>
@@ -178,6 +384,25 @@ export default function FAQList({ faqs, pagination, onPageChange, onLimitChange,
           language={language}
         />
       )}
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title={language === 'ar' ? 'تأكيد الحذف' : 'Confirm Delete'}
+        message={
+          deletingQuestion
+            ? language === 'ar'
+              ? `هل أنت متأكد من حذف "${deletingQuestion.question}"؟`
+              : `Are you sure you want to delete "${deletingQuestion.question}"?`
+            : ''
+        }
+        confirmLabel={language === 'ar' ? 'حذف' : 'Delete'}
+        cancelLabel={language === 'ar' ? 'إلغاء' : 'Cancel'}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setDeletingQuestion(null);
+        }}
+      />
     </div>
   );
 }

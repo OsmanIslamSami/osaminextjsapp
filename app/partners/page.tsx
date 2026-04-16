@@ -141,7 +141,7 @@ export default function PartnersDirectoryPage() {
               <BuildingOfficeIcon className="w-16 h-16 mx-auto" />
             </div>
             <p className="text-gray-500 text-lg">
-              {language === 'ar' ? 'لا يوجد شركاء متاحون' : 'No partners available'}
+              {t('partners.noPartners')}
             </p>
           </div>
         ) : (
@@ -162,7 +162,7 @@ export default function PartnersDirectoryPage() {
                       {/* Featured badge */}
                       {partner.is_featured && (
                         <div className="absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-bold text-white shadow-lg z-10" style={{ backgroundColor: 'var(--color-accent)' }}>
-                          {language === 'ar' ? 'مميز' : 'Featured'}
+                          {t('partners.featured')}
                         </div>
                       )}
                       <Image
@@ -193,7 +193,7 @@ export default function PartnersDirectoryPage() {
                       {partner.url && (
                         <div className="flex items-center justify-center gap-1 text-sm" style={{ color: 'var(--color-primary)' }}>
                           <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                          <span>{language === 'ar' ? 'زيارة الموقع' : 'Visit Website'}</span>
+                          <span>{t('partners.visitWebsite')}</span>
                         </div>
                       )}
                     </div>
@@ -235,7 +235,7 @@ export default function PartnersDirectoryPage() {
                       disabled={pagination.page === 1}
                       className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
                     >
-                      {language === 'ar' ? 'الأولى' : 'First'}
+                      {t('pagination.first')}
                     </button>
 
                     <button
@@ -243,7 +243,7 @@ export default function PartnersDirectoryPage() {
                       disabled={pagination.page === 1}
                       className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
                     >
-                      {language === 'ar' ? 'السابق' : 'Previous'}
+                      {t('pagination.previous')}
                     </button>
                   </div>
 
@@ -291,7 +291,7 @@ export default function PartnersDirectoryPage() {
                       disabled={pagination.page === pagination.totalPages}
                       className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
                     >
-                      {language === 'ar' ? 'التالي' : 'Next'}
+                      {t('pagination.next')}
                     </button>
 
                     {/* Last Page Button */}
@@ -300,24 +300,25 @@ export default function PartnersDirectoryPage() {
                       disabled={pagination.page === pagination.totalPages}
                       className="px-4 py-2 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm text-gray-700 dark:text-zinc-300"
                     >
-                      {language === 'ar' ? 'الأخيرة' : 'Last'}
+                      {t('pagination.last')}
                     </button>
                   </div>
 
                   {/* Showing count info */}
                   <div className="flex items-center justify-center md:contents">
                     <span className="text-sm text-gray-600 dark:text-zinc-400">
-                      {language === 'ar'
-                        ? `عرض ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} من ${pagination.total}`
-                        : `Showing ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total}`
-                      }
+                      {t('pagination.showing', {
+                        start: (pagination.page - 1) * pagination.limit + 1,
+                        end: Math.min(pagination.page * pagination.limit, pagination.total),
+                        total: pagination.total
+                      })}
                     </span>
                   </div>
 
                   {/* Page Size Selector */}
                   <div className="flex items-center justify-center gap-2 md:contents">
                     <label className="text-sm text-gray-600 dark:text-zinc-400">
-                      {language === 'ar' ? 'عرض:' : 'Show:'}
+                      {t('pagination.show')}
                     </label>
                     <select
                       value={pagination.limit}

@@ -130,10 +130,10 @@ export default function FilePicker({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-5xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg w-full max-w-5xl max-h-[90vh] flex flex-col m-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b">
           <h2 className="text-xl font-bold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
@@ -157,9 +157,9 @@ export default function FilePicker({
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
           {/* Sidebar - Folders */}
-          <div className="w-64 border-r overflow-y-auto bg-gray-50">
+          <div className="w-full md:w-1/4 border-b md:border-b-0 md:border-r overflow-y-auto bg-gray-50 max-h-48 md:max-h-none flex-shrink-0">
             <div className="p-3">
               <button
                 onClick={() => setSelectedFolderId(null)}
@@ -205,7 +205,7 @@ export default function FilePicker({
           </div>
 
           {/* Main Content - File Grid */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto overflow-x-auto p-4 md:p-6">
             {loading ? (
               <div className="flex items-center justify-center h-full">
                 <LoadingSpinner size="md" />
@@ -230,7 +230,7 @@ export default function FilePicker({
                 </a>
               </div>
             ) : (
-              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 min-w-min">
                 {files.map((file) => (
                   <button
                     key={file.id}
@@ -275,13 +275,13 @@ export default function FilePicker({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t bg-gray-50 flex justify-between items-center">
+        <div className="p-4 border-t bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-gray-600">
             {files.length} file{files.length !== 1 ? 's' : ''} available
           </p>
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             Cancel
           </button>

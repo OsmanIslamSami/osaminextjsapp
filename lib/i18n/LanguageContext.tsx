@@ -6,7 +6,7 @@ export type Language = 'en' | 'ar';
 export interface LanguageContextValue {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
   direction: 'ltr' | 'rtl';
 }
 
@@ -40,8 +40,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Translation function with nested key support
-  const t = (key: string): string => {
+  // Translation function with nested key support and parameter substitution
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
     let value: any = translations;
     
@@ -53,7 +53,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
     }
     
-    return typeof value === 'string' ? value : key;
+    let result = typeof value === 'string' ? value : key;
+    
+    // Replace parameters in the format {paramName}
+    if (params) {
+      Object.entries(params).forEach(([paramKey, paramValue]) => {
+        result = result.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(paramValue));
+      });
+    }
+    
+    return result;
   };
 
   const direction = language === 'ar' ? 'rtl' : 'ltr';

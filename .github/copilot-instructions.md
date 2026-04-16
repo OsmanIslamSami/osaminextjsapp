@@ -136,6 +136,121 @@
 - **Desktop**: Horizontal row with `md:contents` to flatten wrapper divs
 - **Centering**: Use `md:items-center md:justify-center` for desktop alignment
 
+### Responsive Table Design Standards
+
+**All tables MUST be responsive with both desktop and mobile views:**
+
+**CRITICAL REQUIREMENTS:**
+- **NEVER use horizontal scrolling** for tables on mobile
+- **Always provide two layouts**: Desktop table view + Mobile card view
+- **Hide desktop table on mobile**: Use `hidden md:block` on table wrapper
+- **Show mobile cards on mobile**: Use `md:hidden` on card wrapper
+- **Maintain functionality**: Both views must have all actions (edit, delete, etc.)
+
+**Standard Responsive Table Pattern:**
+
+```typescript
+{/* Desktop Table View */}
+<div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 overflow-hidden">
+  <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-800">
+    <thead className="bg-gray-50 dark:bg-zinc-800">
+      <tr>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase">
+          Column 1
+        </th>
+        {/* More columns */}
+      </tr>
+    </thead>
+    <tbody className="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-zinc-800">
+      {items.map((item) => (
+        <tr key={item.id}>
+          <td className="px-6 py-4">{item.name}</td>
+          {/* More cells */}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+{/* Mobile Card View */}
+<div className="md:hidden space-y-4">
+  {items.map((item) => (
+    <div
+      key={item.id}
+      className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-4"
+    >
+      {/* Card header with icon/image */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-12 h-12 bg-gray-50 dark:bg-zinc-800 rounded">
+          {/* Icon or image */}
+        </div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-gray-900 dark:text-zinc-100">
+            {item.title}
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
+            {item.subtitle}
+          </p>
+        </div>
+      </div>
+
+      {/* Card content - display fields vertically */}
+      <div className="space-y-2 mb-3">
+        <div>
+          <label className="text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase">
+            Field Label
+          </label>
+          <p className="text-sm text-gray-900 dark:text-zinc-100 mt-1">
+            {item.fieldValue}
+          </p>
+        </div>
+        {/* More fields */}
+      </div>
+
+      {/* Action buttons - icon-only on mobile */}
+      <div className="flex gap-2 pt-3 border-t border-gray-200 dark:border-zinc-800">
+        <button 
+          className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full inline-flex items-center justify-center"
+          aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
+          title={language === 'ar' ? 'تعديل' : 'Edit'}
+        >
+          <PencilIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+        </button>
+        <button 
+          className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full inline-flex items-center justify-center"
+          aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+          title={language === 'ar' ? 'حذف' : 'Delete'}
+        >
+          <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+**Mobile Card Design Guidelines:**
+- **Header section**: Icon/image + title + subtitle (horizontally aligned)
+- **Content section**: Display each table column as labeled field (vertically stacked)
+- **Action buttons**: Icon-only with bilingual `aria-label` and `title` attributes
+- **Button sizing**: `flex-1` to share space equally, `px-4 py-2` for proper touch targets
+- **Spacing**: Use `p-4` for card padding, `gap-3` between sections, `gap-2` for buttons
+- **Borders**: Separate action buttons from content with `border-t`
+- **Typography**: Use smaller text (`text-xs`, `text-sm`) to fit mobile screens
+- **Accessibility**: Always include bilingual `aria-label` and `title` for icon-only buttons
+
+**When to Use Each Approach:**
+- **Desktop table**: Data with 4+ columns, comparison needed, bulk actions
+- **Mobile cards**: Individual item focus, vertical reading flow, touch-friendly actions
+- **Both required**: Always implement both for proper responsive behavior
+
+**Common Mistakes to Avoid:**
+- ❌ Using `overflow-x-auto` for horizontal scrolling on mobile
+- ❌ Only providing desktop table view (not mobile-friendly)
+- ❌ Making mobile cards too dense (hard to read/tap)
+- ❌ Forgetting action buttons on mobile cards
+- ❌ Not testing on actual mobile devices (use browser dev tools)
+
 ### TypeScript Standards
 
 - Use **explicit types** for function parameters and return values
@@ -203,6 +318,259 @@ if (loading) {
   <ItemsGrid />
 )}
 ```
+
+### User Notification Standards
+
+**All user notifications MUST use the Toast system:**
+
+```typescript
+import { useToast } from '@/lib/components/ToastContainer';
+
+const { showSuccess, showError, showInfo } = useToast();
+
+// Success notification
+showSuccess('Operation completed successfully');
+showSuccess(language === 'ar' ? 'تم بنجاح' : 'Success');
+
+// Error notification
+showError('Failed to save changes');
+showError(language === 'ar' ? 'فشل الحفظ' : 'Failed to save');
+
+// Info notification
+showInfo('Processing your request...');
+```
+
+**Requirements:**
+- **NEVER use**: `alert()`, `confirm()`, or `window.alert()`
+- **Always use**: Toast system from `@/lib/components/ToastContainer`
+- **Bilingual messages**: Provide both Arabic and English messages based on `language` state
+- **Use cases**:
+  - `showSuccess()` - Successful operations (save, delete, update)
+  - `showError()` - Failed operations, validation errors
+  - `showInfo()` - Informational messages, processing states
+- **For confirmations**: Use `ConfirmDialog` component instead of `confirm()`
+
+**Standard patterns:**
+```typescript
+// ✅ Correct - Using toast
+try {
+  const response = await fetch('/api/data', { method: 'POST' });
+  if (!response.ok) throw new Error('Failed');
+  showSuccess(language === 'ar' ? 'تم الحفظ بنجاح' : 'Saved successfully');
+} catch (error) {
+  showError(language === 'ar' ? 'فشل الحفظ' : 'Failed to save');
+}
+
+// ❌ Wrong - Using browser alert
+alert('Data saved successfully');
+
+// ✅ Correct - Using ConfirmDialog for confirmations
+const [showConfirm, setShowConfirm] = useState(false);
+<ConfirmDialog
+  isOpen={showConfirm}
+  title="Confirm Delete"
+  message="Are you sure you want to delete this item?"
+  onConfirm={handleDelete}
+  onCancel={() => setShowConfirm(false)}
+/>
+
+// ❌ Wrong - Using browser confirm
+if (confirm('Are you sure?')) { handleDelete(); }
+```
+
+### Action Button Standards
+
+**All action buttons MUST use icon-only format with Heroicons and proper accessibility:**
+
+**CRITICAL REQUIREMENTS:**
+- **ALWAYS use Heroicons** from `@heroicons/react/24/outline` - NEVER use custom SVG paths
+- **NEVER use text labels** - Use icons only (icon-only buttons)
+- **Mandatory attributes**: Every icon-only button MUST have `aria-label` and `title` for accessibility
+- **Bilingual support**: Use conditional `language === 'ar' ? 'النص العربي' : 'English Text'` for aria-label and title
+- **Icon switching**: Icons and colors must change based on state (visible/hidden, favorite/not-favorite, etc.)
+- **Minimum touch target**: `min-w-[44px] min-h-[44px]` for mobile accessibility
+- **Loading state**: Show `<LoadingSpinner size="sm" />` during async operations
+- **Consistent sizing**: Use `w-5 h-5` for all action icons (or `w-4 h-4` for very compact layouts)
+- **Consistent styling**: Use `inline-flex items-center justify-center` for proper icon centering
+
+**STANDARDIZED ICONS (from @heroicons/react/24/outline):**
+
+**1. Edit Actions:**
+```typescript
+import { PencilIcon } from '@heroicons/react/24/outline';
+
+<PencilIcon className="w-5 h-5" />
+// Color: Inherits from button text color (blue-600 typically)
+```
+
+**2. Delete Actions:**
+```typescript
+import { TrashIcon } from '@heroicons/react/24/outline';
+
+<TrashIcon className="w-5 h-5" />
+// Color: Inherits from button text color (red-600 typically)
+```
+
+**3. Visibility Toggle (with state-based color and icon switching):**
+```typescript
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+
+// Visible state (green):
+<EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+
+// Hidden state (grey/dimmed):
+<EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
+```
+
+**4. Favorite/Featured Toggle (with state-based color and fill):**
+```typescript
+import { StarIcon } from '@heroicons/react/24/outline';
+
+// Active/Favorite state (yellow with fill):
+<StarIcon className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+
+// Inactive state (grey outline only):
+<StarIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
+```
+
+**5. Restore Actions:**
+```typescript
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+
+<ArrowPathIcon className="w-5 h-5" />
+// Color: Inherits from button text color (green-600 typically)
+```
+
+**COMPLETE IMPLEMENTATION PATTERNS:**
+
+```typescript
+// ✅ CORRECT - Icon-only Edit button
+import { PencilIcon } from '@heroicons/react/24/outline';
+
+<button
+  onClick={() => handleEdit(item)}
+  className="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded text-blue-600 dark:text-blue-400"
+  aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
+  title={language === 'ar' ? 'تعديل' : 'Edit'}
+>
+  <PencilIcon className="w-5 h-5" />
+</button>
+
+// ✅ CORRECT - Icon-only Delete button with loading state
+import { TrashIcon } from '@heroicons/react/24/outline';
+
+<button
+  onClick={() => handleDelete(item.id)}
+  disabled={deletingId === item.id}
+  className="px-4 py-2 border-2 border-red-300 dark:border-red-800 rounded-full text-red-600 dark:text-red-400 hover:border-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+  aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+  title={language === 'ar' ? 'حذف' : 'Delete'}
+>
+  {deletingId === item.id ? (
+    <LoadingSpinner size="sm" />
+  ) : (
+    <TrashIcon className="w-5 h-5" />
+  )}
+</button>
+
+// ✅ CORRECT - Visibility toggle (switches icon AND color based on state)
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+
+<button
+  onClick={() => handleToggleVisible(item.id, item.is_visible)}
+  disabled={togglingId === item.id}
+  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 transition-all inline-flex items-center justify-center"
+  aria-label={item.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+  title={item.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+>
+  {togglingId === item.id ? (
+    <LoadingSpinner size="sm" />
+  ) : item.is_visible ? (
+    <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+  ) : (
+    <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
+  )}
+</button>
+
+// ✅ CORRECT - Favorite toggle (switches fill and color based on state)
+import { StarIcon } from '@heroicons/react/24/outline';
+
+<button
+  onClick={() => handleToggleFavorite(item.id, item.is_favorite)}
+  disabled={togglingId === item.id}
+  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-50 transition-all inline-flex items-center justify-center"
+  aria-label={item.is_favorite ? (language === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites') : (language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to favorites')}
+  title={item.is_favorite ? (language === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites') : (language === 'ar' ? 'إضافة إلى المفضلة' : 'Add to favorites')}
+>
+  {togglingId === item.id ? (
+    <LoadingSpinner size="sm" />
+  ) : (
+    <StarIcon className={`w-5 h-5 ${item.is_favorite ? 'text-yellow-500 fill-yellow-500' : 'text-gray-400 dark:text-zinc-500'}`} />
+  )}
+</button>
+
+// ✅ CORRECT - Restore button
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+
+<button
+  onClick={() => handleRestore(item.id)}
+  className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+  aria-label={language === 'ar' ? 'استعادة' : 'Restore'}
+  title={language === 'ar' ? 'استعادة' : 'Restore'}
+>
+  <ArrowPathIcon className="w-5 h-5" />
+</button>
+
+// ❌ WRONG - Text-only button (NO TEXT ALLOWED)
+<button onClick={() => handleEdit(item)}>
+  {language === 'ar' ? 'تعديل' : 'Edit'}
+</button>
+
+// ❌ WRONG - Icon+Text button (NO TEXT ALLOWED)
+<button onClick={() => handleDelete(item.id)}>
+  <TrashIcon className="w-4 h-4" />
+  <span>{language === 'ar' ? 'حذف' : 'Delete'}</span>
+</button>
+
+// ❌ WRONG - Custom SVG instead of Heroicon
+<button onClick={() => handleEdit(item)}>
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6..." />
+  </svg>
+</button>
+
+// ❌ WRONG - Missing aria-label and title
+<button onClick={() => handleEdit(item)}>
+  <PencilIcon className="w-5 h-5" />
+</button>
+
+// ❌ WRONG - Not switching icon based on state
+<button onClick={() => handleToggleVisible(item.id)}>
+  <EyeIcon className="w-5 h-5" /> 
+  {/* Should switch to EyeSlashIcon when hidden */}
+</button>
+```
+
+**Required Icon Imports:**
+```typescript
+import { 
+  PencilIcon,      // Edit actions
+  TrashIcon,       // Delete actions
+  EyeIcon,         // Visible state
+  EyeSlashIcon,    // Hidden state
+  ArrowPathIcon,   // Restore actions
+  StarIcon         // Favorite/Featured toggle
+} from '@heroicons/react/24/outline';
+```
+
+**Icon Color Standards:**
+- **Edit (PencilIcon)**: Blue tones (`text-blue-600 dark:text-blue-400`)
+- **Delete (TrashIcon)**: Red tones (`text-red-600 dark:text-red-400`)
+- **Visible (EyeIcon)**: **Green** (`text-green-600 dark:text-green-400`)
+- **Hidden (EyeSlashIcon)**: **Grey/dimmed** (`text-gray-400 dark:text-zinc-500`)
+- **Favorite Active (StarIcon)**: **Yellow with fill** (`text-yellow-500 fill-yellow-500`)
+- **Favorite Inactive (StarIcon)**: **Grey outline** (`text-gray-400 dark:text-zinc-500`)
+- **Restore (ArrowPathIcon)**: Green tones (`text-green-600 dark:text-green-400`)
 
 ### Pagination UI Standards
 

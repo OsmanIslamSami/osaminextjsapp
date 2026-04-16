@@ -107,7 +107,10 @@ async function getHomeSectionConfig(sectionType: 'news' | 'photos' | 'videos' | 
 async function getHomeFAQs() {
   try {
     const faqs = await prisma.fAQ.findMany({
-      where: { is_deleted: false },
+      where: { 
+        is_deleted: false,
+        is_visible: true,
+      },
       orderBy: [
         { is_favorite: 'desc' },
         { display_order: 'asc' },
@@ -124,7 +127,10 @@ async function getHomeFAQs() {
     });
     
     const totalCount = await prisma.fAQ.count({
-      where: { is_deleted: false }
+      where: { 
+        is_deleted: false,
+        is_visible: true,
+      }
     });
     
     return { faqs, hasMore: totalCount > 5 };
@@ -140,7 +146,10 @@ async function getHomeFAQs() {
 async function getHomeMagazines() {
   try {
     const magazines = await prisma.magazine.findMany({
-      where: { is_deleted: false },
+      where: { 
+        is_deleted: false,
+        is_visible: true,
+      },
       orderBy: { published_date: 'desc' },
       take: 5,
       select: {
@@ -162,7 +171,10 @@ async function getHomeMagazines() {
     }));
     
     const totalCount = await prisma.magazine.count({
-      where: { is_deleted: false }
+      where: { 
+        is_deleted: false,
+        is_visible: true,
+      }
     });
     
     return { magazines: magazinesData, hasMore: totalCount > 5 };

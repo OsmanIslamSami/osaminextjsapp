@@ -193,14 +193,14 @@ export default function NewsGridClient({ news, title }: NewsGridClientProps) {
             <button
               onClick={isRTL ? goToNext : goToPrevious}
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label={language === 'ar' ? 'الخبر السابق' : 'Previous news'}
+              aria-label={t('slider.previous')}
             >
               <ChevronLeftIcon className="w-6 h-6" />
             </button>
             <button
               onClick={isRTL ? goToPrevious : goToNext}
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label={language === 'ar' ? 'الخبر التالي' : 'Next news'}
+              aria-label={t('slider.next')}
             >
               <ChevronRightIcon className="w-6 h-6" />
             </button>

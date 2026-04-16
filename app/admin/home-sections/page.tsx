@@ -256,6 +256,7 @@ export default function AdminHomeSectionsPage() {
                     onClick={() => handleMoveSection(section.section_type, 'up')}
                     disabled={index === 0 || saving === section.section_type}
                     className="p-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label={language === 'ar' ? 'تحريك لأعلى' : 'Move up'}
                     title={language === 'ar' ? 'تحريك لأعلى' : 'Move up'}
                   >
                     <ChevronUpIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
@@ -264,6 +265,7 @@ export default function AdminHomeSectionsPage() {
                     onClick={() => handleMoveSection(section.section_type, 'down')}
                     disabled={index === sections.length - 1 || saving === section.section_type}
                     className="p-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label={language === 'ar' ? 'تحريك لأسفل' : 'Move down'}
                     title={language === 'ar' ? 'تحريك لأسفل' : 'Move down'}
                   >
                     <ChevronDownIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />

@@ -154,11 +154,46 @@
     },
     "slider": {
       "title": "Slider Management",
-      "subtitle": "Manage homepage slider content"
+      "subtitle": "Manage homepage slider content",
+      "addNewSlide": "Add New Slide",
+      "editSlide": "Edit Slide",
+      "cancel": "Cancel"
     },
     "social": {
       "title": "Social Media Links",
-      "subtitle": "Manage footer social media links"
+      "subtitle": "Manage footer social media links",
+      "addNewLink": "Add New Link",
+      "editLink": "Edit",
+      "addNew": "Add New",
+      "socialMediaLink": "Social Media Link",
+      "platformName": "Platform Name",
+      "platformPlaceholder": "e.g., Facebook, Twitter",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://facebook.com/yourpage",
+      "iconLabel": "Icon",
+      "chooseFromLibrary": "Choose from Library",
+      "uploadNew": "Upload New",
+      "iconFileTypes": "SVG, PNG, JPG, or WebP (max 2MB)",
+      "selectedIcon": "Selected Icon",
+      "keepCurrentIcon": "Leave empty to keep the current icon",
+      "displayOrder": "Display Order",
+      "lowerNumbersFirst": "Lower numbers appear first",
+      "uploadingIcon": "Uploading Icon...",
+      "saving": "Saving...",
+      "updateLink": "Update Link",
+      "addLink": "Add Link",
+      "cancel": "Cancel",
+      "iconFile": "Icon File",
+      "chooseFile": "Choose file",
+      "noFileChosen": "No file chosen",
+      "selectFromLibrary": "Select from Library",
+      "table": {
+        "platform": "Platform",
+        "url": "URL",
+        "icon": "Icon",
+        "order": "Order",
+        "actions": "Actions"
+      }
     },
     "styleLibrary": {
       "title": "Style Library",
@@ -280,7 +315,74 @@
       "visible": "Visible",
       "hidden": "Hidden",
       "toggleVisibility": "Toggle Visibility",
-      "toggleFeatured": "Toggle Featured"
+      "toggleFeatured": "Toggle Featured",
+      "photos": {
+        "title": "Manage Photos",
+        "addPhoto": "Add Photo",
+        "totalPhotos": "total photos",
+        "noPhotos": "No photos found",
+        "tableHeaders": {
+          "image": "Image",
+          "titleEn": "Title (EN)",
+          "titleAr": "Title (AR)",
+          "published": "Published",
+          "storage": "Storage",
+          "featured": "Featured",
+          "actions": "Actions"
+        },
+        "storage": {
+          "library": "Library",
+          "local": "Local"
+        },
+        "deleteConfirmTitle": "Confirm Delete",
+        "deleteConfirmMessage": "Are you sure you want to delete this photo? It can be restored later.",
+        "bulkDeleteConfirmMessage": "Are you sure you want to delete {count} selected photos? They can be restored later.",
+        "bulkDeleteSuccess": "Successfully deleted {count} photos",
+        "bulkDeletePartial": "Failed to delete {failed} of {total} photos"
+      },
+      "videos": {
+        "title": "Manage Videos",
+        "addVideo": "Add Video",
+        "totalVideos": "total videos",
+        "noVideos": "No videos found",
+        "tableHeaders": {
+          "thumbnail": "Thumbnail",
+          "titleEn": "Title (EN)",
+          "titleAr": "Title (AR)",
+          "published": "Published",
+          "featured": "Featured",
+          "actions": "Actions"
+        },
+        "deleteConfirmTitle": "Confirm Delete",
+        "deleteConfirmMessage": "Are you sure you want to delete this video? It can be restored later.",
+        "bulkDeleteConfirmMessage": "Are you sure you want to delete {count} selected videos? They can be restored later.",
+        "bulkDeleteSuccess": "Successfully deleted {count} videos",
+        "bulkDeletePartial": "Failed to delete {failed} of {total} videos"
+      },
+      "partners": {
+        "title": "Manage Partners",
+        "addPartner": "Add Partner",
+        "totalPartners": "total partners",
+        "noPartners": "No partners found",
+        "tableHeaders": {
+          "logo": "Logo",
+          "titleEn": "Title (EN)",
+          "titleAr": "Title (AR)",
+          "url": "URL",
+          "storage": "Storage",
+          "featured": "Featured",
+          "actions": "Actions"
+        },
+        "storage": {
+          "library": "Library",
+          "local": "Local"
+        },
+        "deleteConfirmTitle": "Confirm Delete",
+        "deleteConfirmMessage": "Are you sure you want to delete this partner? It can be restored later.",
+        "bulkDeleteConfirmMessage": "Are you sure you want to delete {count} selected partners? They can be restored later.",
+        "bulkDeleteSuccess": "Successfully deleted {count} partners",
+        "bulkDeletePartial": "Failed to delete {failed} of {total} partners"
+      }
     }
   },
   "errors": {
@@ -326,7 +428,9 @@
   "videos": {
     "gallery": "Videos Gallery",
     "loading": "Loading...",
-    "videoCount": "Video"
+    "noVideos": "No videos available",
+    "videoCount": "Video",
+    "featured": "Featured"
   },
   "partners": {
     "ourPartners": "Our Partners",
@@ -334,7 +438,8 @@
     "noPartners": "No partners available",
     "partnerCount": "Partner",
     "featured": "Featured",
-    "home": "Home"
+    "home": "Home",
+    "visitWebsite": "Visit Website"
   },
   "pagination": {
     "first": "First",
@@ -373,6 +478,7 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
+    "addFAQ": "Add FAQ",
     "viewAll": "View All FAQs",
     "noFaqs": "No FAQs available",
     "create": "Create",

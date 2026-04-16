@@ -310,9 +310,6 @@ export default function AdminPhotosPage() {
                   {language === 'ar' ? 'مميز' : 'Featured'}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-700 dark:text-zinc-300 uppercase tracking-wider">
-                  {language === 'ar' ? 'مرئي' : 'Visible'}
-                </th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-700 dark:text-zinc-300 uppercase tracking-wider">
                   {language === 'ar' ? 'إجراءات' : 'Actions'}
                 </th>
               </tr>
@@ -368,34 +365,35 @@ export default function AdminPhotosPage() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <button
-                      onClick={() => handleToggleVisibility(photo.id, photo.is_visible)}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded"
-                      title={photo.is_visible ? 'Hide' : 'Show'}
-                    >
-                      {photo.is_visible ? (
-                        <EyeIcon className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <EyeSlashIcon className="w-5 h-5 text-gray-400" />
-                      )}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-center">
                     <div className="flex justify-center gap-2">
                       <button
-                        onClick={() => handleEdit(photo)}
-                        className="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded text-blue-600 dark:text-blue-400"
-                        title="Edit"
+                        onClick={() => handleToggleVisibility(photo.id, photo.is_visible)}
+                        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                        aria-label={photo.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                        title={photo.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
                       >
-                        <PencilIcon className="w-4 h-4" />
+                        {photo.is_visible ? (
+                          <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        ) : (
+                          <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleEdit(photo)}
+                        className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                        aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
+                        title={language === 'ar' ? 'تعديل' : 'Edit'}
+                      >
+                        <PencilIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                       </button>
                       {!photo.is_deleted && (
                         <button
                           onClick={() => handleDelete(photo.id)}
-                          className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded text-red-600 dark:text-red-400"
-                          title="Delete"
+                          className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                          aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                          title={language === 'ar' ? 'حذف' : 'Delete'}
                         >
-                          <TrashIcon className="w-4 h-4" />
+                          <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
                         </button>
                       )}
                     </div>

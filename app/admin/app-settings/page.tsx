@@ -327,6 +327,32 @@ export default function AppSettingsPage() {
 
     console.log('Selected file from library:', file);
 
+    // Validate OG Image requirements
+    if (filePickerTarget === 'og_image') {
+      const maxSize = 600 * 1024; // 600 KB in bytes
+      
+      if (file.file_size > maxSize) {
+        showError(
+          language === 'ar'
+            ? `حجم الصورة كبير جداً. يجب أن يكون أقل من 600 كيلوبايت. (الحجم الحالي: ${Math.round(file.file_size / 1024)} كيلوبايت)`
+            : `Image size is too large. Must be less than 600 KB. (Current: ${Math.round(file.file_size / 1024)} KB)`
+        );
+        return;
+      }
+
+      // Check dimensions if available
+      if (file.width && file.height) {
+        if (file.width !== 1200 || file.height !== 630) {
+          showError(
+            language === 'ar'
+              ? `أبعاد الصورة غير صحيحة. يجب أن تكون 1200x630 بكسل. (الأبعاد الحالية: ${file.width}x${file.height})`
+              : `Image dimensions are incorrect. Must be 1200x630 pixels. (Current: ${file.width}x${file.height})`
+          );
+          return;
+        }
+      }
+    }
+
     const updates: Partial<AppSettings> = {};
     
     if (filePickerTarget === 'logo') {
@@ -1787,11 +1813,16 @@ export default function AppSettingsPage() {
                   >
                     {language === 'ar' ? 'اختيار صورة المشاركة' : 'Select OG Image'}
                   </button>
-                  <p className="text-xs mt-2" style={{ color: 'var(--color-text-tertiary)' }}>
-                    {language === 'ar'
-                      ? 'الحجم المثالي: 1200x630 بكسل. قم بتحميل الصور إلى مكتبة الأنماط أولاً'
-                      : 'Ideal size: 1200x630px. Upload images to Style Library first'}
-                  </p>
+                  <div className="mt-3 p-3 rounded-lg" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', borderLeft: '3px solid rgb(59, 130, 246)' }}>
+                    <p className="text-xs font-semibold mb-1" style={{ color: 'rgb(30, 64, 175)' }}>
+                      {language === 'ar' ? 'ℹ️ متطلبات الصورة' : 'ℹ️ Image Requirements'}
+                    </p>
+                    <ul className="text-xs space-y-1" style={{ color: 'rgb(30, 64, 175)' }}>
+                      <li>• {language === 'ar' ? 'الأبعاد: 1200 × 630 بكسل (إلزامي)' : 'Dimensions: 1200 × 630 pixels (required)'}</li>
+                      <li>• {language === 'ar' ? 'حجم الملف: أقل من 600 كيلوبايت (إلزامي)' : 'File size: Less than 600 KB (required)'}</li>
+                      <li>• {language === 'ar' ? 'قم بتحميل الصور إلى مكتبة الأنماط أولاً' : 'Upload to Style Library first'}</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 

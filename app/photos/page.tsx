@@ -193,7 +193,7 @@ export default function PhotosGalleryPage() {
                       disabled={pagination.page === 1}
                       className="px-4 py-1.5 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {language === 'ar' ? 'السابق' : 'Previous'}
+                      {t('pagination.previous')}
                     </button>
                   </div>
                   
@@ -221,24 +221,25 @@ export default function PhotosGalleryPage() {
                       disabled={pagination.page === pagination.totalPages}
                       className="px-4 py-1.5 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {language === 'ar' ? 'التالي' : 'Next'}
+                      {t('pagination.next')}
                     </button>
                   </div>
 
                   {/* Showing count info */}
                   <div className="flex items-center justify-center md:contents">
                     <span className="text-sm text-gray-600 dark:text-zinc-400">
-                      {language === 'ar'
-                        ? `عرض ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} من ${pagination.total}`
-                        : `Showing ${(pagination.page - 1) * pagination.limit + 1} - ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total}`
-                      }
+                      {t('pagination.showing', {
+                        start: (pagination.page - 1) * pagination.limit + 1,
+                        end: Math.min(pagination.page * pagination.limit, pagination.total),
+                        total: pagination.total
+                      })}
                     </span>
                   </div>
 
                   {/* Page Size Selector */}
                   <div className="flex items-center justify-center gap-2 md:contents">
                     <label className="text-sm text-gray-600 dark:text-zinc-400">
-                      {language === 'ar' ? 'عرض:' : 'Show:'}
+                      {t('pagination.show')}
                     </label>
                     <select
                       value={pagination.limit}

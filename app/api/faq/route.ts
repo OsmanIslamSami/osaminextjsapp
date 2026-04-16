@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
           answer_en: true,
           answer_ar: true,
           is_favorite: true,
+          is_visible: true,
           display_order: true,
           created_at: true,
           updated_at: true,

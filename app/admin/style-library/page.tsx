@@ -57,7 +57,7 @@ interface File {
 
 export default function StyleLibraryPage() {
   const { showError, showSuccess } = useToast();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [totalFileCount, setTotalFileCount] = useState(0);
@@ -387,7 +387,7 @@ export default function StyleLibraryPage() {
 
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Sidebar - Folder Tree */}
-        <div className="w-full md:w-80 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0">
+        <div className="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-gray-200 overflow-y-auto flex-shrink-0 max-h-[300px] md:max-h-none">
           <div className="p-4 border-b border-gray-200">
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Folders</h2>
             
@@ -418,7 +418,7 @@ export default function StyleLibraryPage() {
 
         {/* Main Content - File List */}
         <div 
-          className="flex-1 overflow-y-auto bg-white relative"
+          className="flex-1 overflow-y-auto bg-white relative min-h-[600px] md:min-h-0"
           onDragOver={handleMainAreaDragOver}
           onDragLeave={handleMainAreaDragLeave}
           onDrop={handleMainAreaDrop}
@@ -458,7 +458,7 @@ export default function StyleLibraryPage() {
                     onClick={handleBulkDelete}
                     className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm font-medium"
                   >
-                    <TrashIcon className="w-3 h-3" />
+                    <TrashIcon className="w-4 h-4" />
                     Delete
                   </button>
                   <button
@@ -515,17 +515,19 @@ export default function StyleLibraryPage() {
                     <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={(e) => copyFilePath(file.file_url, e)}
-                        className="w-7 h-7 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 shadow-sm"
-                        title="Copy URL"
+                        className="p-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 shadow-sm inline-flex items-center justify-center"
+                        aria-label={language === 'ar' ? 'نسخ الرابط' : 'Copy URL'}
+                        title={language === 'ar' ? 'نسخ الرابط' : 'Copy URL'}
                       >
-                        <ClipboardDocumentIcon className="w-4 h-4 text-gray-600" />
+                        <ClipboardDocumentIcon className="w-5 h-5 text-gray-600" />
                       </button>
                       <button
                         onClick={(e) => handleDeleteFile(file.id, e)}
-                        className="w-7 h-7 bg-white border border-red-300 rounded flex items-center justify-center hover:bg-red-50 shadow-sm"
-                        title="Delete"
+                        className="p-2 bg-white border border-red-300 rounded-full hover:bg-red-50 shadow-sm inline-flex items-center justify-center"
+                        aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                        title={language === 'ar' ? 'حذف' : 'Delete'}
                       >
-                        <TrashIcon className="w-4 h-4 text-red-600" />
+                        <TrashIcon className="w-5 h-5 text-red-600" />
                       </button>
                     </div>
 
@@ -640,17 +642,19 @@ export default function StyleLibraryPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={(e) => copyFilePath(file.file_url, e)}
-                              className="p-1.5 hover:bg-blue-50 rounded transition-colors"
-                              title="Copy URL"
+                              className="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors inline-flex items-center justify-center"
+                              aria-label={language === 'ar' ? 'نسخ الرابط' : 'Copy URL'}
+                              title={language === 'ar' ? 'نسخ الرابط' : 'Copy URL'}
                             >
-                              <ClipboardDocumentIcon className="w-4 h-4 text-gray-500 hover:text-blue-600" />
+                              <ClipboardDocumentIcon className="w-5 h-5 text-gray-500 hover:text-blue-600" />
                             </button>
                             <button
                               onClick={(e) => handleDeleteFile(file.id, e)}
-                              className="p-1.5 hover:bg-red-50 rounded transition-colors"
-                              title="Delete"
+                              className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors inline-flex items-center justify-center"
+                              aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                              title={language === 'ar' ? 'حذف' : 'Delete'}
                             >
-                              <TrashIcon className="w-4 h-4 text-gray-500 hover:text-red-600" />
+                              <TrashIcon className="w-5 h-5 text-gray-500 hover:text-red-600" />
                             </button>
                           </div>
                         </td>

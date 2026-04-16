@@ -153,11 +153,46 @@
     },
     "slider": {
       "title": "إدارة العرض التقديمي",
-      "subtitle": "إدارة محتوى العرض التقديمي في الصفحة الرئيسية"
+      "subtitle": "إدارة محتوى العرض التقديمي في الصفحة الرئيسية",
+      "addNewSlide": "إضافة شريحة جديدة",
+      "editSlide": "تعديل الشريحة",
+      "cancel": "إلغاء"
     },
     "social": {
       "title": "روابط التواصل الاجتماعي",
-      "subtitle": "إدارة روابط وسائل التواصل في التذييل"
+      "subtitle": "إدارة روابط وسائل التواصل في التذييل",
+      "addNewLink": "إضافة رابط جديد",
+      "editLink": "تعديل",
+      "addNew": "إضافة جديد",
+      "socialMediaLink": "رابط وسائل التواصل الاجتماعي",
+      "platformName": "اسم المنصة",
+      "platformPlaceholder": "مثال: فيسبوك، تويتر",
+      "urlLabel": "الرابط",
+      "urlPlaceholder": "https://facebook.com/yourpage",
+      "iconLabel": "الأيقونة",
+      "chooseFromLibrary": "اختر من المكتبة",
+      "uploadNew": "تحميل جديد",
+      "iconFileTypes": "SVG, PNG, JPG, or WebP (الحد الأقصى 2 ميجابايت)",
+      "selectedIcon": "الأيقونة المختارة",
+      "keepCurrentIcon": "اتركها فارغة للإبقاء على الأيقونة الحالية",
+      "displayOrder": "ترتيب العرض",
+      "lowerNumbersFirst": "الأرقام الأقل تظهر أولاً",
+      "uploadingIcon": "جاري تحميل الأيقونة...",
+      "saving": "جاري الحفظ...",
+      "updateLink": "تحديث الرابط",
+      "addLink": "إضافة الرابط",
+      "cancel": "إلغاء",
+      "iconFile": "ملف الأيقونة",
+      "chooseFile": "اختر ملف",
+      "noFileChosen": "لم يتم اختيار ملف",
+      "selectFromLibrary": "اختر من المكتبة",
+      "table": {
+        "platform": "المنصة",
+        "url": "الرابط",
+        "icon": "الأيقونة",
+        "order": "الترتيب",
+        "actions": "الإجراءات"
+      }
     },
     "styleLibrary": {
       "title": "مكتبة الأنماط",
@@ -279,7 +314,74 @@
       "visible": "مرئي",
       "hidden": "مخفي",
       "toggleVisibility": "تبديل الرؤية",
-      "toggleFeatured": "تبديل المميز"
+      "toggleFeatured": "تبديل المميز",
+      "photos": {
+        "title": "إدارة الصور",
+        "addPhoto": "إضافة صورة",
+        "totalPhotos": "صورة إجمالاً",
+        "noPhotos": "لا توجد صور",
+        "tableHeaders": {
+          "image": "الصورة",
+          "titleEn": "العنوان (إنجليزي)",
+          "titleAr": "العنوان (عربي)",
+          "published": "تاريخ النشر",
+          "storage": "التخزين",
+          "featured": "مميز",
+          "actions": "إجراءات"
+        },
+        "storage": {
+          "library": "مكتبة",
+          "local": "محلي"
+        },
+        "deleteConfirmTitle": "تأكيد الحذف",
+        "deleteConfirmMessage": "هل أنت متأكد من حذف هذه الصورة؟ يمكن استعادتها لاحقاً.",
+        "bulkDeleteConfirmMessage": "هل أنت متأكد من حذف {count} صورة محددة؟ يمكن استعادتها لاحقاً.",
+        "bulkDeleteSuccess": "تم حذف {count} صورة بنجاح",
+        "bulkDeletePartial": "فشل حذف {failed} من {total} صورة"
+      },
+      "videos": {
+        "title": "إدارة الفيديوهات",
+        "addVideo": "إضافة فيديو",
+        "totalVideos": "فيديو إجمالاً",
+        "noVideos": "لا توجد فيديوهات",
+        "tableHeaders": {
+          "thumbnail": "الصورة المصغرة",
+          "titleEn": "العنوان (إنجليزي)",
+          "titleAr": "العنوان (عربي)",
+          "published": "تاريخ النشر",
+          "featured": "مميز",
+          "actions": "إجراءات"
+        },
+        "deleteConfirmTitle": "تأكيد الحذف",
+        "deleteConfirmMessage": "هل أنت متأكد من حذف هذا الفيديو؟ يمكن استعاد ته لاحقاً.",
+        "bulkDeleteConfirmMessage": "هل أنت متأكد من حذف {count} فيديو محدد؟ يمكن استعادتها لاحقاً.",
+        "bulkDeleteSuccess": "تم حذف {count} فيديو بنجاح",
+        "bulkDeletePartial": "فشل حذف {failed} من {total} فيديو"
+      },
+      "partners": {
+        "title": "إدارة الشركاء",
+        "addPartner": "إضافة شريك",
+        "totalPartners": "شريك إجمالاً",
+        "noPartners": "لا يوجد شركاء",
+        "tableHeaders": {
+          "logo": "الشعار",
+          "titleEn": "العنوان (إنجليزي)",
+          "titleAr": "العنوان (عربي)",
+          "url": "الرابط",
+          "storage": "التخزين",
+          "featured": "مميز",
+          "actions": "إجراءات"
+        },
+        "storage": {
+          "library": "مكتبة",
+          "local": "محلي"
+        },
+        "deleteConfirmTitle": "تأكيد الحذف",
+        "deleteConfirmMessage": "هل أنت متأكد من حذف هذا الشريك؟ يمكن استعادته لاحقاً.",
+        "bulkDeleteConfirmMessage": "هل أنت متأكد من حذف {count} شريك محدد؟ يمكن استعادتهم لاحقاً.",
+        "bulkDeleteSuccess": "تم حذف {count} شريك بنجاح",
+        "bulkDeletePartial": "فشل حذف {failed} من {total} شريك"
+      }
     }
   },
   "errors": {
@@ -324,7 +426,9 @@
   "videos": {
     "gallery": "معرض الفيديوهات",
     "loading": "جاري التحميل...",
-    "videoCount": "فيديو"
+    "noVideos": "لا توجد فيديوهات متاحة",
+    "videoCount": "فيديو",
+    "featured": "مميز"
   },
   "partners": {
     "ourPartners": "شركاؤنا",
@@ -332,7 +436,8 @@
     "noPartners": "لا يوجد شركاء متاحون",
     "partnerCount": "شريك",
     "featured": "مميز",
-    "home": "الرئيسية"
+    "home": "الرئيسية",
+    "visitWebsite": "زيارة الموقع"
   },
   "pagination": {
     "first": "الأولى",
@@ -371,6 +476,7 @@
   },
   "faq": {
     "title": "الأسئلة المتكررة",
+    "addFAQ": "إضافة سؤال",
     "viewAll": "عرض جميع الأسئلة",
     "noFaqs": "لا توجد أسئلة متاحة",
     "create": "إنشاء",

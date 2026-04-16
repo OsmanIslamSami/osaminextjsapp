@@ -73,8 +73,10 @@ export async function GET(request: NextRequest) {
           description_ar: true,
           image_url: true,
           storage_type: true,
+          file_data: true,  // Include to check if data exists
           download_link: true,
           published_date: true,
+          is_visible: true,
           created_at: true,
           updated_at: true,
         }
@@ -83,12 +85,26 @@ export async function GET(request: NextRequest) {
     ]);
     
     // Transform image URLs for local storage
-    const magazinesWithUrls = magazines.map(magazine => ({
-      ...magazine,
-      image_url: magazine.storage_type === 'local' 
-        ? `/api/magazines/media/${magazine.id}`
-        : magazine.image_url
-    }));
+    const magazinesWithUrls = magazines.map(magazine => {
+      let imageUrl = magazine.image_url;
+      
+      // Only use local API endpoint if storage_type is 'local' AND file_data exists
+      if (magazine.storage_type === 'local') {
+        if (magazine.file_data && magazine.file_data.length > 0) {
+          imageUrl = `/api/magazines/media/${magazine.id}`;
+        } else {
+          console.warn(`Magazine ${magazine.id} has storage_type='local' but no file_data. Using original URL.`);
+        }
+      }
+      
+      // Remove file_data from response (it's binary and large)
+      const { file_data, ...magazineWithoutFileData } = magazine;
+      
+      return {
+        ...magazineWithoutFileData,
+        image_url: imageUrl
+      };
+    });
     
     const totalPages = Math.ceil(totalCount / finalLimit);
     

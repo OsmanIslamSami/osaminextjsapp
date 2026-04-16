@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/lib/components/ToastContainer';
+import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
@@ -34,6 +35,8 @@ export default function AdminSliderPage() {
   const [showFilePicker, setShowFilePicker] = useState(false);
   const [uploadedSlideId, setUploadedSlideId] = useState<string | null>(null); // Track uploaded slide ID
   const formRef = useRef<HTMLDivElement>(null); // Reference to form section
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletingSlideId, setDeletingSlideId] = useState<string | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -190,11 +193,16 @@ export default function AdminSliderPage() {
     }, 100);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this slide?')) return;
+  const handleDelete = (id: string) => {
+    setDeletingSlideId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingSlideId) return;
 
     try {
-      const response = await fetch(`/api/slider/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/slider/${deletingSlideId}`, { method: 'DELETE' });
       if (response.ok) {
         fetchSlides();
       } else {
@@ -204,6 +212,9 @@ export default function AdminSliderPage() {
     } catch (error) {
       console.error('Error deleting slide:', error);
       showError('Delete failed');
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeletingSlideId(null);
     }
   };
 
@@ -287,7 +298,7 @@ export default function AdminSliderPage() {
           onClick={() => setShowAddForm(!showAddForm)}
           className="px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-full font-medium transition-all text-sm min-h-[44px]"
         >
-          {showAddForm ? 'Cancel' : 'Add New Slide'}
+          {showAddForm ? t('admin.slider.cancel') : t('admin.slider.addNewSlide')}
         </button>
       </div>
 
@@ -295,7 +306,7 @@ export default function AdminSliderPage() {
       {showAddForm && (
         <div ref={formRef} className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">
-            {editingSlide ? 'Edit Slide' : 'Add New Slide'}
+            {editingSlide ? t('admin.slider.editSlide') : t('admin.slider.addNewSlide')}
           </h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -539,44 +550,49 @@ export default function AdminSliderPage() {
               <div className="flex md:flex-col gap-2 items-center">
                 <button
                   onClick={() => handleToggleVisible(slide.id)}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 min-h-[44px] min-w-[44px] transition-all"
-                  title={slide.is_visible ? 'Hide from homepage' : 'Show on homepage'}
+                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                  aria-label={slide.is_visible ? (language === 'ar' ? 'إخفاء من الصفحة الرئيسية' : 'Hide from homepage') : (language === 'ar' ? 'إظهار في الصفحة الرئيسية' : 'Show on homepage')}
+                  title={slide.is_visible ? (language === 'ar' ? 'إخفاء من الصفحة الرئيسية' : 'Hide from homepage') : (language === 'ar' ? 'إظهار في الصفحة الرئيسية' : 'Show on homepage')}
                 >
                   {slide.is_visible ? (
-                    <EyeIcon className="w-5 h-5 text-green-600" />
+                    <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                   ) : (
-                    <EyeSlashIcon className="w-5 h-5 text-gray-400" />
+                    <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
                   )}
                 </button>
                 <button
                   onClick={() => handleReorder(index, 'up')}
                   disabled={index === 0}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-30 min-h-[44px] min-w-[44px] transition-all"
-                  title="Move up"
+                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                  aria-label={language === 'ar' ? 'تحريك لأعلى' : 'Move up'}
+                  title={language === 'ar' ? 'تحريك لأعلى' : 'Move up'}
                 >
-                  <ArrowUpIcon className="w-5 h-5" />
+                  <ArrowUpIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
                 </button>
                 <button
                   onClick={() => handleReorder(index, 'down')}
                   disabled={index === slides.length - 1}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-30 min-h-[44px] min-w-[44px] transition-all"
-                  title="Move down"
+                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                  aria-label={language === 'ar' ? 'تحريك لأسفل' : 'Move down'}
+                  title={language === 'ar' ? 'تحريك لأسفل' : 'Move down'}
                 >
-                  <ArrowDownIcon className="w-5 h-5" />
+                  <ArrowDownIcon className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
                 </button>
                 <button
                   onClick={() => handleEdit(slide)}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 min-h-[44px] min-w-[44px] transition-all"
-                  title="Edit"
+                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                  aria-label={language === 'ar' ? 'تعديل' : 'Edit'}
+                  title={language === 'ar' ? 'تعديل' : 'Edit'}
                 >
-                  <PencilIcon className="w-5 h-5 text-blue-600" />
+                  <PencilIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </button>
                 <button
                   onClick={() => handleDelete(slide.id)}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 min-h-[44px] min-w-[44px] transition-all"
-                  title="Delete"
+                  className="px-4 py-2 border-2 border-gray-300 dark:border-zinc-600 rounded-full text-sm font-medium hover:border-gray-400 dark:hover:border-zinc-500 transition-all inline-flex items-center justify-center"
+                  aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                  title={language === 'ar' ? 'حذف' : 'Delete'}
                 >
-                  <TrashIcon className="w-5 h-5 text-red-600" />
+                  <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </button>
               </div>
             </div>

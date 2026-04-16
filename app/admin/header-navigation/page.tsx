@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/lib/components/ToastContainer';
+import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import { PencilIcon, TrashIcon, PlusIcon, EyeIcon, EyeSlashIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
@@ -28,6 +29,8 @@ export default function HeaderNavigationAdmin() {
   
   const [navItems, setNavItems] = useState<NavItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<NavItem | null>(null);
 
@@ -73,11 +76,16 @@ export default function HeaderNavigationAdmin() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this navigation item?')) return;
+  const handleDelete = (id: string) => {
+    setDeletingItemId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingItemId) return;
 
     try {
-      const response = await fetch(`/api/header-navigation/${id}`, {
+      const response = await fetch(`/api/header-navigation/${deletingItemId}`, {
         method: 'DELETE',
       });
 
@@ -87,6 +95,9 @@ export default function HeaderNavigationAdmin() {
       }
     } catch (error) {
       showError('Failed to delete');
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeletingItemId(null);
     }
   };
 
@@ -207,19 +218,23 @@ export default function HeaderNavigationAdmin() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleToggleVisibility(item.id, item.is_visible)}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors inline-flex items-center justify-center"
+                    aria-label={item.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                    title={item.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
                   >
                     {item.is_visible ? (
-                      <EyeIcon className="w-5 h-5 text-green-600" />
+                      <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                     ) : (
-                      <EyeSlashIcon className="w-5 h-5 text-gray-400" />
+                      <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
                     )}
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                    className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors inline-flex items-center justify-center"
+                    aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                    title={language === 'ar' ? 'حذف' : 'Delete'}
                   >
-                    <TrashIcon className="w-5 h-5 text-red-600" />
+                    <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
                   </button>
                 </div>
               </div>
@@ -238,19 +253,23 @@ export default function HeaderNavigationAdmin() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleToggleVisibility(subItem.id, subItem.is_visible)}
-                          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors inline-flex items-center justify-center"
+                          aria-label={subItem.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
+                          title={subItem.is_visible ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'إظهار' : 'Show')}
                         >
                           {subItem.is_visible ? (
-                            <EyeIcon className="w-4 h-4 text-green-600" />
+                            <EyeIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                           ) : (
-                            <EyeSlashIcon className="w-4 h-4 text-gray-400" />
+                            <EyeSlashIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
                           )}
                         </button>
                         <button
                           onClick={() => handleDelete(subItem.id)}
-                          className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                          className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors inline-flex items-center justify-center"
+                          aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                          title={language === 'ar' ? 'حذف' : 'Delete'}
                         >
-                          <TrashIcon className="w-4 h-4 text-red-600" />
+                          <TrashIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
                         </button>
                       </div>
                     </div>

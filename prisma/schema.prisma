@@ -329,6 +329,7 @@ model FAQ {
   answer_en     String   @db.Text
   answer_ar     String   @db.Text
   is_favorite   Boolean  @default(false)
+  is_visible    Boolean  @default(true)
   display_order Int      @default(0)
   is_deleted    Boolean  @default(false)
   created_by    String
@@ -339,7 +340,7 @@ model FAQ {
   creator       User     @relation("FAQCreatedBy", fields: [created_by], references: [id])
   updater       User     @relation("FAQUpdatedBy", fields: [updated_by], references: [id])
 
-  @@index([is_deleted, is_favorite, created_at])
+  @@index([is_deleted, is_visible, is_favorite, created_at])
   @@map("faq")
 }
 
@@ -358,6 +359,7 @@ model Magazine {
   mime_type       String?
   download_link   String
   published_date  DateTime @db.Timestamp(6)
+  is_visible      Boolean  @default(true)
   is_deleted      Boolean  @default(false)
   created_by      String
   updated_by      String
@@ -367,7 +369,7 @@ model Magazine {
   creator         User     @relation("MagazineCreatedBy", fields: [created_by], references: [id])
   updater         User     @relation("MagazineUpdatedBy", fields: [updated_by], references: [id])
 
-  @@index([is_deleted, published_date(sort: Desc)])
+  @@index([is_deleted, is_visible, published_date(sort: Desc)])
   @@map("magazines")
 }
 

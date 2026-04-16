@@ -7,7 +7,9 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/lib/components/ToastContainer';
 import Link from 'next/link';
 import MagazineList from '@/lib/components/magazines/MagazineList';
+import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 interface Magazine {
   id: string;
@@ -17,17 +19,20 @@ interface Magazine {
   description_ar: string;
   image_url: string;
   published_date: string;
+  is_visible: boolean;
 }
 
 export default function AdminMagazinesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAdmin, isLoading: userLoading } = useCurrentUser();
-  const { t, language } = useTranslation();
-  const { showError } = useToast();
+  const { t, language, direction } = useTranslation();
+  const { showError, showSuccess } = useToast();
   
   const [magazines, setMagazines] = useState<Magazine[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMagazines, setSelectedMagazines] = useState<Set<string>>(new Set());
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -100,6 +105,61 @@ export default function AdminMagazinesPage() {
     router.push(`/admin/magazines?${params.toString()}`);
   };
 
+  const handleSelectAll = () => {
+    if (selectedMagazines.size === magazines.length) {
+      setSelectedMagazines(new Set());
+    } else {
+      setSelectedMagazines(new Set(magazines.map(item => item.id)));
+    }
+  };
+
+  const handleSelectMagazine = (id: string) => {
+    const newSelected = new Set(selectedMagazines);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedMagazines(newSelected);
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedMagazines.size === 0) return;
+    setShowBulkDeleteConfirm(true);
+  };
+
+  const confirmBulkDelete = async () => {
+    try {
+      const deletePromises = Array.from(selectedMagazines).map(id =>
+        fetch(`/api/magazines/${id}`, { method: 'DELETE' })
+      );
+
+      const results = await Promise.all(deletePromises);
+      const failedCount = results.filter(r => !r.ok).length;
+
+      if (failedCount > 0) {
+        showError(
+          language === 'ar' 
+            ? `فشل حذف ${failedCount} من ${selectedMagazines.size} مجلة` 
+            : `Failed to delete ${failedCount} of ${selectedMagazines.size} magazines`
+        );
+      } else {
+        showSuccess(
+          language === 'ar' 
+            ? `تم حذف ${selectedMagazines.size} مجلة بنجاح` 
+            : `Successfully deleted ${selectedMagazines.size} magazines`
+        );
+      }
+
+      setSelectedMagazines(new Set());
+      loadMagazines();
+    } catch (err) {
+      showError(language === 'ar' ? 'فشل الحذف الجماعي' : 'Failed to bulk delete');
+    } finally {
+      setShowBulkDeleteConfirm(false);
+    }
+  };
+
   const start = (pagination.page - 1) * pagination.limit + 1;
   const end = Math.min(pagination.page * pagination.limit, pagination.total);
 
@@ -140,22 +200,54 @@ export default function AdminMagazinesPage() {
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          {t('magazines.title')}
-        </h1>
-        <Link
-          href="/admin/magazines/add"
-          className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all"
-        >
-          {t('magazines.addMagazine')}
-        </Link>
+    <div className="space-y-6" dir={direction}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {t('magazines.title')}
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-zinc-400 mt-1">
+            {language === 'ar' 
+              ? `${pagination.total} مجلة إجمالاً` 
+              : `${pagination.total} total magazines`}
+            {selectedMagazines.size > 0 && (
+              <span className="mx-2 text-blue-600 dark:text-blue-400 font-semibold">
+                ({language === 'ar' 
+                  ? `${selectedMagazines.size} محدد` 
+                  : `${selectedMagazines.size} selected`})
+              </span>
+            )}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {selectedMagazines.size > 0 && (
+            <button
+              onClick={handleBulkDelete}
+              className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-all text-sm shadow-sm"
+            >
+              <TrashIcon className="w-4 h-4" />
+              {language === 'ar' ? `حذف المحدد (${selectedMagazines.size})` : `Delete Selected (${selectedMagazines.size})`}
+            </button>
+          )}
+          <Link
+            href="/admin/magazines/add"
+            className="flex items-center gap-2 px-5 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all text-sm shadow-sm"
+          >
+            <PlusIcon className="w-4 h-4" />
+            {t('magazines.addMagazine')}
+          </Link>
+        </div>
       </div>
 
-      <MagazineList magazines={magazines} />
+      <MagazineList 
+        magazines={magazines}
+        selectedMagazines={selectedMagazines}
+        onSelectMagazine={handleSelectMagazine}
+        onSelectAll={handleSelectAll}
+        onVisibilityToggled={loadMagazines}
+      />
 
-      {/* Pagination Controls - Always Visible */}
+      {/* Pagination */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-2">
           {/* First and Previous */}
@@ -244,6 +336,21 @@ export default function AdminMagazinesPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        title={language === 'ar' ? 'حذف المجلات المحددة' : 'Delete Selected Magazines'}
+        message={
+          language === 'ar'
+            ? `هل أنت متأكد من حذف ${selectedMagazines.size} مجلة؟ لا يمكن التراجع عن هذا الإجراء.`
+            : `Are you sure you want to delete ${selectedMagazines.size} magazines? This action cannot be undone.`
+        }
+        confirmText={language === 'ar' ? 'حذف' : 'Delete'}
+        cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
+        isDangerous={true}
+        onConfirm={confirmBulkDelete}
+        onCancel={() => setShowBulkDeleteConfirm(false)}
+      />
     </div>
   );
 }

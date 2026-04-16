@@ -1,0 +1,36 @@
+<svg width="400" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="magGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f9fafb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e5e7eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="600" fill="url(#magGradient)"/>
+  
+  <!-- Magazine icon -->
+  <g transform="translate(200, 300)">
+    <!-- Book/Magazine outline -->
+    <rect x="-80" y="-100" width="160" height="200" rx="6" fill="white" stroke="#9ca3af" stroke-width="4"/>
+    
+    <!-- Cover design elements -->
+    <rect x="-60" y="-80" width="120" height="40" rx="3" fill="#d1d5db"/>
+    <text x="0" y="-50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#6b7280" text-anchor="middle">MAG</text>
+    
+    <!-- Lines for text -->
+    <line x1="-60" y1="-20" x2="60" y2="-20" stroke="#9ca3af" stroke-width="2"/>
+    <line x1="-60" y1="-5" x2="60" y2="-5" stroke="#9ca3af" stroke-width="2"/>
+    <line x1="-60" y1="10" x2="40" y2="10" stroke="#9ca3af" stroke-width="2"/>
+    
+    <!-- Decorative box -->
+    <rect x="-60" y="30" width="50" height="50" rx="2" fill="#e5e7eb"/>
+    <line x1="-5" y1="35" x2="60" y2="35" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="-5" y1="50" x2="60" y2="50" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="-5" y1="65" x2="45" y2="65" stroke="#9ca3af" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="520" font-family="Arial, sans-serif" font-size="16" fill="#6b7280" text-anchor="middle">Magazine Placeholder</text>
+</svg>

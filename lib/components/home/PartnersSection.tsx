@@ -243,7 +243,7 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
                 className={`absolute top-1/2 -translate-y-1/2 ${
                   isRTL ? 'right-4' : 'left-4'
                 } z-10 bg-white/90 dark:bg-zinc-800/90 hover:bg-white dark:hover:bg-zinc-800 p-3 rounded-full shadow-lg transition-all hover:scale-110`}
-                aria-label={language === 'ar' ? 'السابق' : 'Previous'}
+                aria-label={t('slider.previous')}
               >
                 {isRTL ? (
                   <ChevronRightIcon className="w-6 h-6 text-gray-800 dark:text-zinc-100" />
@@ -256,7 +256,7 @@ export function PartnersSection({ partners, title }: PartnersSectionProps) {
                 className={`absolute top-1/2 -translate-y-1/2 ${
                   isRTL ? 'left-4' : 'right-4'
                 } z-10 bg-white/90 dark:bg-zinc-800/90 hover:bg-white dark:hover:bg-zinc-800 p-3 rounded-full shadow-lg transition-all hover:scale-110`}
-                aria-label={language === 'ar' ? 'التالي' : 'Next'}
+                aria-label={t('slider.next')}
               >
                 {isRTL ? (
                   <ChevronLeftIcon className="w-6 h-6 text-gray-800 dark:text-zinc-100" />
