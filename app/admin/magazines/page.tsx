@@ -347,7 +347,6 @@ export default function AdminMagazinesPage() {
         }
         confirmText={language === 'ar' ? 'حذف' : 'Delete'}
         cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
-        isDangerous={true}
         onConfirm={confirmBulkDelete}
         onCancel={() => setShowBulkDeleteConfirm(false)}
       />
