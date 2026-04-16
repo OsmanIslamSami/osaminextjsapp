@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { Metadata } from "next";
 import HeroSlider from "@/lib/components/home/HeroSlider";
 import StatsSection from "@/lib/components/home/StatsSection";
 import NewsSection from "@/lib/components/home/NewsSection";
@@ -12,6 +13,28 @@ import { ErrorBoundary } from "@/lib/components/ErrorBoundary";
 import FAQSectionError from "@/lib/components/home/FAQSectionError";
 import MagazineSectionError from "@/lib/components/home/MagazineSectionError";
 import { prisma } from "@/lib/db";
+
+/**
+ * Home Page Metadata
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await prisma.app_settings.findFirst();
+  
+  return {
+    title: settings?.site_title_en || "Home - Next App",
+    description: settings?.site_description_en || "Welcome to Next App - Your complete business management solution with client management, analytics, news, and more.",
+    openGraph: {
+      title: settings?.site_title_en || "Next App",
+      description: settings?.site_description_en || "Complete business management platform",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: settings?.site_title_en || "Next App",
+      description: settings?.site_description_en || "Complete business management platform",
+    },
+  };
+}
 
 /**
  * Fetch photos for home page (featured items)

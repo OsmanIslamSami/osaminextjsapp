@@ -32,7 +32,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [loadedMedia, setLoadedMedia] = useState<Set<string>>(new Set());
+  const [firstSlideLoaded, setFirstSlideLoaded] = useState(false);
   const videoRefsMap = useRef<{ [key: string]: HTMLVideoElement | null }>({});
   const isRTL = language === 'ar';
 
@@ -41,9 +41,9 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
     videoRefsMap.current[id] = element;
   }, []);
 
-  // Mark media as loaded
-  const handleMediaLoad = useCallback((slideId: string) => {
-    setLoadedMedia(prev => new Set(prev).add(slideId));
+  // Mark first slide as loaded
+  const handleFirstSlideLoad = useCallback(() => {
+    setFirstSlideLoaded(true);
   }, []);
 
   // Play current video when slide changes
@@ -212,57 +212,63 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
     >
       {/* Slides */}
       <div className="relative w-full h-full">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
-          >
-            {/* Skeleton Loader - shows until media loads */}
-            {!loadedMedia.has(slide.id) && (
-              <div className="absolute inset-0 bg-gray-50 dark:bg-gray-950 z-20">
-                {/* Skeleton content */}
-                <div className="flex flex-col items-center justify-center h-full space-y-6 px-8">
-                  {/* Simulated video/media player icon with pulse animation */}
-                  <div className="relative">
-                    <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center border-2 border-gray-300 dark:border-gray-700 animate-pulse">
-                      {slide.media_type === 'video' ? (
-                        <svg className="w-10 h-10 md:w-14 md:h-14 text-gray-400 dark:text-gray-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-10 h-10 md:w-14 md:h-14 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      )}
+        {slides.map((slide, index) => {
+          const isCurrentSlide = index === currentIndex;
+          const isNextSlide = index === (currentIndex + 1) % slides.length;
+          const isFirstSlide = index === 0;
+          const showLoading = isFirstSlide && !firstSlideLoaded && !loading;
+          
+          return (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                isCurrentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
+            >
+              {/* Skeleton Loader - only show for first slide on initial load */}
+              {showLoading && (
+                <div className="absolute inset-0 bg-gray-50 dark:bg-gray-950 z-20">
+                  {/* Skeleton content */}
+                  <div className="flex flex-col items-center justify-center h-full space-y-6 px-8">
+                    {/* Simulated video/media player icon with pulse animation */}
+                    <div className="relative">
+                      <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center border-2 border-gray-300 dark:border-gray-700 animate-pulse">
+                        {slide.media_type === 'video' ? (
+                          <svg className="w-10 h-10 md:w-14 md:h-14 text-gray-400 dark:text-gray-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-10 h-10 md:w-14 md:h-14 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        )}
+                      </div>
+                      {/* Pulsing ring around icon */}
+                      <div className="absolute inset-0 rounded-full border-4 border-gray-300 dark:border-gray-700 animate-ping opacity-75"></div>
                     </div>
-                    {/* Pulsing ring around icon */}
-                    <div className="absolute inset-0 rounded-full border-4 border-gray-300 dark:border-gray-700 animate-ping opacity-75"></div>
-                  </div>
-                  
-                  {/* Skeleton text bars */}
-                  <div className="space-y-4 w-full max-w-lg">
-                    <div className="h-8 md:h-12 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4 mx-auto skeleton animate-shimmer"></div>
-                    <div className="h-6 md:h-8 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2 mx-auto skeleton animate-shimmer" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mx-auto skeleton animate-shimmer" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
-                  
-                  {/* Loading progress indicator */}
-                  <div className="w-full max-w-xs mt-8">
-                    <div className="flex items-center justify-center gap-3 text-gray-600 dark:text-gray-400 text-sm md:text-base mb-3">
-                      <LoadingSpinner size="sm" />
-                      <span className="font-medium">
-                        {slide.media_type === 'video' ? 'Loading video...' : 'Loading image...'}
-                      </span>
+                    
+                    {/* Skeleton text bars */}
+                    <div className="space-y-4 w-full max-w-lg">
+                      <div className="h-8 md:h-12 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4 mx-auto skeleton animate-shimmer"></div>
+                      <div className="h-6 md:h-8 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2 mx-auto skeleton animate-shimmer" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mx-auto skeleton animate-shimmer" style={{ animationDelay: '0.2s' }}></div>
                     </div>
-                    <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-shimmer rounded-full" style={{ width: '60%', animationDuration: '2s' }}></div>
+                    
+                    {/* Loading progress indicator */}
+                    <div className="w-full max-w-xs mt-8">
+                      <div className="flex items-center justify-center gap-3 text-gray-600 dark:text-gray-400 text-sm md:text-base mb-3">
+                        <LoadingSpinner size="sm" />
+                        <span className="font-medium">
+                          {slide.media_type === 'video' ? 'Loading video...' : 'Loading image...'}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-shimmer rounded-full" style={{ width: '60%', animationDuration: '2s' }}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
             
             {slide.media_type === 'video' ? (
               <video
@@ -273,7 +279,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload={isCurrentSlide || isNextSlide ? "auto" : "metadata"}
                 crossOrigin="anonymous"
                 webkit-playsinline="true"
                 x-webkit-airplay="allow"
@@ -290,7 +296,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                   backgroundColor: '#000'
                 }}
                 onLoadedData={(e) => {
-                  handleMediaLoad(slide.id);
+                  if (isFirstSlide) handleFirstSlideLoad();
                   const video = e.currentTarget;
                   if (index === currentIndex) {
                     const playPromise = video.play();
@@ -311,8 +317,10 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 src={getMediaUrl(slide)}
                 alt={title || 'Slide'}
                 className="w-full h-full object-cover"
-                loading="eager"
-                onLoad={() => handleMediaLoad(slide.id)}
+                loading={isCurrentSlide || isNextSlide ? "eager" : "lazy"}
+                onLoad={() => {
+                  if (isFirstSlide) handleFirstSlideLoad();
+                }}
               />
             )}
 
@@ -337,7 +345,8 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
               </div>
             )}
           </div>
-        ))}
+        );
+        })}
       </div>
 
       {/* Navigation Arrows */}
