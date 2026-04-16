@@ -92,6 +92,19 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
     fetchSlides();
   }, []);
 
+  // Fallback: Remove skeleton after 5 seconds even if video hasn't loaded
+  // This prevents infinite loading states on slow connections
+  useEffect(() => {
+    if (!loading && !firstSlideLoaded) {
+      const fallbackTimer = setTimeout(() => {
+        console.warn('Slider skeleton removed by fallback timeout (5s)');
+        setFirstSlideLoaded(true);
+      }, 5000);
+
+      return () => clearTimeout(fallbackTimer);
+    }
+  }, [loading, firstSlideLoaded]);
+
   // Auto-play
   useEffect(() => {
     if (slides.length <= 1 || isPaused) return;
@@ -279,7 +292,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 loop
                 muted
                 playsInline
-                preload={isCurrentSlide || isNextSlide ? "auto" : "metadata"}
+                preload={isFirstSlide ? "auto" : isCurrentSlide || isNextSlide ? "metadata" : "none"}
                 crossOrigin="anonymous"
                 webkit-playsinline="true"
                 x-webkit-airplay="allow"
@@ -295,7 +308,8 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                   objectFit: 'cover',
                   backgroundColor: '#000'
                 }}
-                onLoadedData={(e) => {
+                onLoadedMetadata={(e) => {
+                  // Fire as soon as metadata is available (1-2 seconds instead of 40)
                   if (isFirstSlide) handleFirstSlideLoad();
                   const video = e.currentTarget;
                   if (index === currentIndex) {
@@ -305,6 +319,13 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                         // Silently handle - autoplay may be blocked by browser
                       });
                     }
+                  }
+                }}
+                onError={() => {
+                  // Hide skeleton even if video fails to load
+                  if (isFirstSlide) {
+                    console.error('Video failed to load, removing skeleton');
+                    handleFirstSlideLoad();
                   }
                 }}
               >
@@ -317,9 +338,16 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 src={getMediaUrl(slide)}
                 alt={title || 'Slide'}
                 className="w-full h-full object-cover"
-                loading={isCurrentSlide || isNextSlide ? "eager" : "lazy"}
+                loading={isFirstSlide ? "eager" : isCurrentSlide || isNextSlide ? "eager" : "lazy"}
                 onLoad={() => {
                   if (isFirstSlide) handleFirstSlideLoad();
+                }}
+                onError={() => {
+                  // Hide skeleton even if image fails to load
+                  if (isFirstSlide) {
+                    console.error('Image failed to load, removing skeleton');
+                    handleFirstSlideLoad();
+                  }
                 }}
               />
             )}
