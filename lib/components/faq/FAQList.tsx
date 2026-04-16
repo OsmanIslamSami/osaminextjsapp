@@ -395,8 +395,8 @@ export default function FAQList({ faqs, pagination, onPageChange, onLimitChange,
               : `Are you sure you want to delete "${deletingQuestion.question}"?`
             : ''
         }
-        confirmLabel={language === 'ar' ? 'حذف' : 'Delete'}
-        cancelLabel={language === 'ar' ? 'إلغاء' : 'Cancel'}
+        confirmText={language === 'ar' ? 'حذف' : 'Delete'}
+        cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
         onConfirm={confirmDelete}
         onCancel={() => {
           setShowDeleteConfirm(false);

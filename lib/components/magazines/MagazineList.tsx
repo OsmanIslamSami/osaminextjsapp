@@ -235,8 +235,8 @@ export default function MagazineList({ magazines, selectedMagazines = new Set(),
               : `Are you sure you want to delete "${deletingMagazine.title}"?`
             : ''
         }
-        confirmLabel={language === 'ar' ? 'حذف' : 'Delete'}
-        cancelLabel={language === 'ar' ? 'إلغاء' : 'Cancel'}
+        confirmText={language === 'ar' ? 'حذف' : 'Delete'}
+        cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
         onConfirm={confirmDelete}
         onCancel={() => {
           setShowDeleteConfirm(false);
