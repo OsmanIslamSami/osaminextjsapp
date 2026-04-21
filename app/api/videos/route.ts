@@ -220,6 +220,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Ensure all fields are correct types
+    data.title_en = typeof data.title_en === 'string' ? data.title_en : '';
+    data.title_ar = typeof data.title_ar === 'string' ? data.title_ar : '';
+    data.description_en = typeof data.description_en === 'string' ? data.description_en : null;
+    data.description_ar = typeof data.description_ar === 'string' ? data.description_ar : null;
+    data.youtube_url = typeof data.youtube_url === 'string' ? data.youtube_url : '';
     // Create video in database
     const video = await prisma.videos.create({
       data: {
@@ -234,8 +240,8 @@ export async function POST(request: NextRequest) {
         file_name,
         file_size,
         mime_type,
-        is_featured: data.is_featured || false,
-        is_visible: data.is_visible,
+        is_featured: !!data.is_featured,
+        is_visible: !!data.is_visible,
         published_date: data.published_date,
         created_by: dbUser?.id,
       },
