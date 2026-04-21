@@ -55,7 +55,11 @@ export async function PUT(
 
     const updatedClient = await prisma.clients.update({
       where: {
-        id: phandleValidationError('Name, address, email, and mobile are required'  name,
+        id: parseInt(id),
+        is_deleted: false,
+      },
+      data: {
+        name,
         address,
         email,
         mobile,
@@ -66,15 +70,16 @@ export async function PUT(
     });
 
     return NextResponse.json(updatedClient);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('API error:', error);
-    if (error.code === 'P2002') {
-      return NextResponse.json(
     // Handle Prisma-specific errors (P2002 = unique constraint, P2025 = not found)
-    if (error.code === 'P2002' || error.code === 'P2025') {
+    if (isError(error) && (error as any).code === 'P2002' || (error as any).code === 'P2025') {
       return handlePrismaError(error);
     }
-    return handleApiError(error, 'Failed to update client'
+    return handleApiError(error, 'Failed to update client');
+  }
+}
+
 // DELETE client (soft delete)
 export async function DELETE(
   request: NextRequest,
