@@ -220,32 +220,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Ensure all fields are correct types
-    data.title_en = typeof data.title_en === 'string' ? data.title_en : '';
-    data.title_ar = typeof data.title_ar === 'string' ? data.title_ar : '';
-    data.description_en = typeof data.description_en === 'string' ? data.description_en : null;
-    data.description_ar = typeof data.description_ar === 'string' ? data.description_ar : null;
-    data.youtube_url = typeof data.youtube_url === 'string' ? data.youtube_url : '';
-    // Create video in database
-    const video = await prisma.videos.create({
-      data: {
-        title_en: data.title_en,
-        title_ar: data.title_ar,
-        description_en: data.description_en,
-        description_ar: data.description_ar,
-        youtube_url: data.youtube_url,
-        video_id,
-        thumbnail_url,
-        storage_type,
-        file_name,
-        file_size,
-        mime_type,
-        is_featured: !!data.is_featured,
-        is_visible: !!data.is_visible,
-        published_date: data.published_date,
-        created_by: dbUser?.id,
-      },
-    });
+    // Create a new object with explicit types for Prisma
+    const videoData = {
+      title_en: typeof data.title_en === 'string' ? data.title_en : '',
+      title_ar: typeof data.title_ar === 'string' ? data.title_ar : '',
+      description_en: typeof data.description_en === 'string' ? data.description_en : null,
+      description_ar: typeof data.description_ar === 'string' ? data.description_ar : null,
+      youtube_url: typeof data.youtube_url === 'string' ? data.youtube_url : '',
+      video_id,
+      thumbnail_url,
+      storage_type,
+      file_name,
+      file_size,
+      mime_type,
+      is_featured: !!data.is_featured,
+      is_visible: !!data.is_visible,
+      published_date: data.published_date,
+      created_by: dbUser?.id,
+    };
+    const video = await prisma.videos.create({ data: videoData });
 
     return NextResponse.json(
       { success: true, message: 'Video created successfully', data: video },
