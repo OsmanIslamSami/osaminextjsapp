@@ -210,7 +210,10 @@ export async function POST(request: NextRequest) {
       mime_type = data.thumbnail.type;
     } else if (data.thumbnail_url) {
       // Detect if URL is from style library (Vercel Blob storage)
-      if (data.thumbnail_url.includes('vercel-storage.com') || data.thumbnail_url.includes('blob.vercel-storage.com')) {
+      if (
+        typeof data.thumbnail_url === 'string' &&
+        (data.thumbnail_url.includes('vercel-storage.com') || data.thumbnail_url.includes('blob.vercel-storage.com'))
+      ) {
         storage_type = 'blob';
       } else {
         storage_type = 'local';
