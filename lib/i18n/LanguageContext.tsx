@@ -46,16 +46,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Translation function with nested key support and parameter substitution
   const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: unknown = translations;
-    
+    let value: Record<string, any> | string = translations;
+
     for (const k of keys) {
       if (value && typeof value === 'object') {
-        value = value[k];
+        value = (value as Record<string, any>)[k];
       } else {
         return key; // Fallback to key if translation not found
       }
     }
-    
+
     let result = typeof value === 'string' ? value : key;
     
     // Replace parameters in the format {paramName}
