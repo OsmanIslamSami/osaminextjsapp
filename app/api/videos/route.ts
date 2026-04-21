@@ -167,7 +167,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate YouTube URL
-    if (!validateYouTubeUrl(data.youtube_url)) {
+    if (typeof data.youtube_url !== 'string' || !validateYouTubeUrl(data.youtube_url)) {
       return NextResponse.json(
         { success: false, error: 'Invalid YouTube URL format' },
         { status: 400 }
