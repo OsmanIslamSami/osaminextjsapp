@@ -221,14 +221,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Create a new object with explicit types for Prisma
-    const videoData = {
+    const videoData: any = {
       title_en: typeof data.title_en === 'string' ? data.title_en : '',
       title_ar: typeof data.title_ar === 'string' ? data.title_ar : '',
       description_en: typeof data.description_en === 'string' ? data.description_en : null,
       description_ar: typeof data.description_ar === 'string' ? data.description_ar : null,
       youtube_url: typeof data.youtube_url === 'string' ? data.youtube_url : '',
       video_id,
-      thumbnail_url,
+      thumbnail_url: typeof thumbnail_url === 'string' ? thumbnail_url : null,
       storage_type,
       file_name,
       file_size,
@@ -236,8 +236,10 @@ export async function POST(request: NextRequest) {
       is_featured: !!data.is_featured,
       is_visible: !!data.is_visible,
       published_date: data.published_date,
-      created_by: dbUser?.id,
     };
+    if (dbUser?.id) {
+      videoData.created_by = dbUser.id;
+    }
     const video = await prisma.videos.create({ data: videoData });
 
     return NextResponse.json(
