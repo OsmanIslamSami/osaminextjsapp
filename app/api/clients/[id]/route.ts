@@ -32,6 +32,7 @@ export async function GET(
     return NextResponse.json(client);
   } catch (error) {
     return handleApiError(error, 'Failed to fetch client');
+  }
 }
 
 // PUT update client
