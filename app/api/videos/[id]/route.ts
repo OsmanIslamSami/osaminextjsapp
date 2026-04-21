@@ -71,8 +71,8 @@ export async function PUT(
       updateData.published_date = data.published_date;
     }
 
-    // Update YouTube URL if provided
-    if (data.youtube_url) {
+    // Update YouTube URL if provided and is a string
+    if (typeof data.youtube_url === 'string') {
       if (!validateYouTubeUrl(data.youtube_url)) {
         return NextResponse.json(
           { success: false, error: 'Invalid YouTube URL format' },
