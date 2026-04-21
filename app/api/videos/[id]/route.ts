@@ -48,7 +48,7 @@ export async function PUT(
       };
     } else {
       data = await request.json();
-      if (data.published_date) {
+      if (data.published_date && typeof data.published_date === 'string') {
         data.published_date = new Date(data.published_date);
       }
     }
