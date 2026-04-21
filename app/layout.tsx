@@ -15,6 +15,7 @@ import { ThemeApplier } from "@/lib/components/ThemeApplier";
 import ScrollToTop from "@/lib/components/ScrollToTop";
 import ScrollDown from "@/lib/components/ScrollDown";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/utils/logger";
 
 // Modern English font
 const inter = Inter({
