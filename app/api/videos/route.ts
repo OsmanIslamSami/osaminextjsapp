@@ -144,9 +144,10 @@ export async function POST(request: NextRequest) {
       };
     } else {
       data = await request.json();
-      data.published_date = data.published_date 
-        ? new Date(data.published_date) 
-        : new Date();
+      data.published_date =
+        typeof data.published_date === 'string' || typeof data.published_date === 'number'
+          ? new Date(data.published_date)
+          : new Date();
       data.is_visible = data.is_visible !== false;
     }
 
