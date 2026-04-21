@@ -142,12 +142,29 @@ export default function DashboardPage() {
 
       {/* Latest News */}
       <div className="stagger-item">
-        <LatestNews news={metrics.latestNews} />
+        <LatestNews
+          news={metrics.latestNews.map((n: any) => ({
+            id: String(n.id),
+            title_en: n.title_en ?? null,
+            title_ar: n.title_ar ?? null,
+            published_date: String(n.published_date),
+            is_visible: Boolean(n.is_visible),
+            storage_type: String(n.storage_type),
+          }))}
+        />
       </div>
 
       {/* Latest Clients */}
       <div className="stagger-item">
-        <LatestClients clients={metrics.latestClients} />
+        <LatestClients
+          clients={metrics.latestClients.map((c: any) => ({
+            id: Number(c.id),
+            name: String(c.name),
+            email: String(c.email),
+            mobile: c.mobile ? String(c.mobile) : null,
+            created_at: String(c.created_at),
+          }))}
+        />
       </div>
     </div>
   );
