@@ -126,9 +126,18 @@ export default function DashboardPage() {
         <DonutChart data={metrics.statusBreakdown} />
       </div>
 
+
       {/* Recent Activity */}
       <div className="mb-8 stagger mb-8">
-        <LatestClients clients={metrics.latestClients} />
+        <LatestClients
+          clients={metrics.latestClients.map((c: any) => ({
+            id: Number(c.id),
+            name: String(c.name),
+            email: String(c.email),
+            mobile: c.mobile ? String(c.mobile) : null,
+            created_at: String(c.created_at),
+          }))}
+        />
       </div>
 
       {/* Latest News */}
