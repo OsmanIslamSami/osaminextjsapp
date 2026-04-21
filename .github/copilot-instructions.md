@@ -986,6 +986,289 @@ const publishedDate = new Date(item.published_date).toLocaleDateString(
 - Tablet+: `sm:w-auto` to fit content
 - Add `whitespace-nowrap` to prevent text wrapping
 
+### Animation Standards (Framer Motion)
+
+**All animations MUST use Framer Motion** (v12.38.0 installed):
+
+**When to Use Animations:**
+- ✅ User interactions (hover, tap, drag)
+- ✅ State changes (expand/collapse, show/hide)
+- ✅ Page transitions and reveals
+- ✅ Scroll-based effects (parallax, fade-in)
+- ✅ Loading states and skeleton screens
+- ❌ Avoid excessive animations that distract from content
+
+**CRITICAL REQUIREMENTS:**
+- **Always add `'use client'`** directive when using Framer Motion
+- **Import from framer-motion**: `import { motion, AnimatePresence } from 'framer-motion';`
+- **Use transform properties** (x, y, scale, rotate) instead of top/left for performance
+- **Use opacity** for fade effects (GPU-accelerated)
+- **Keep transitions short** (0.2-0.6s optimal, max 1s)
+- **Test on lower-end devices** to ensure smooth performance
+
+**Standard Animation Patterns:**
+
+**1. Hover Effects (Interactive Elements):**
+```typescript
+import { motion } from 'framer-motion';
+
+// Card hover - lift and scale
+<motion.div
+  whileHover={{ y: -8, scale: 1.02 }}
+  transition={{ duration: 0.3, ease: "easeOut" }}
+  className="bg-white rounded-lg shadow-lg p-6"
+>
+  {/* Card content */}
+</motion.div>
+
+// Button hover and tap
+<motion.button
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  transition={{ duration: 0.2 }}
+  className="px-6 py-3 rounded-full"
+>
+  Click Me
+</motion.button>
+```
+
+**2. Accordion/Collapse Animations:**
+```typescript
+import { motion, AnimatePresence } from 'framer-motion';
+
+<AnimatePresence initial={false}>
+  {isExpanded && (
+    <motion.div
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: 1 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="overflow-hidden"
+    >
+      {/* Collapsible content */}
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+**3. Scroll-Triggered Animations:**
+```typescript
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
+
+const ref = useRef(null);
+const isInView = useInView(ref, { once: true, amount: 0.3 });
+
+<motion.section
+  ref={ref}
+  initial={{ opacity: 0, y: 50 }}
+  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+  transition={{ duration: 0.6, ease: "easeOut" }}
+>
+  {/* Section content */}
+</motion.section>
+```
+
+**4. Parallax Scroll Effects:**
+```typescript
+import { motion, useScroll, useTransform } from 'framer-motion';
+
+const { scrollYProgress } = useScroll({
+  target: sectionRef,
+  offset: ["start end", "end start"]
+});
+const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+
+<motion.div
+  style={{ y }}
+  className="absolute inset-0 -z-10"
+>
+  {/* Background element */}
+</motion.div>
+```
+
+**5. Stagger Children Animations:**
+```typescript
+<motion.div
+  variants={{
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  }}
+  initial="hidden"
+  animate="visible"
+>
+  {items.map((item) => (
+    <motion.div
+      key={item.id}
+      variants={{
+        hidden: { opacity: 0, x: -20 },
+        visible: { opacity: 1, x: 0 }
+      }}
+    >
+      <ItemCard item={item} />
+    </motion.div>
+  ))}
+</motion.div>
+```
+
+**6. Modal/Dialog Animations:**
+```typescript
+<AnimatePresence>
+  {isOpen && (
+    <>
+      {/* Backdrop fade */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/50"
+      />
+      
+      {/* Dialog scale and fade */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="fixed inset-0 flex items-center justify-center"
+      >
+        {/* Dialog content */}
+      </motion.div>
+    </>
+  )}
+</AnimatePresence>
+```
+
+**Animation Property Reference:**
+
+| Property | Purpose | Example |
+|----------|---------|---------|
+| `initial` | Starting state | `{ opacity: 0, y: 20 }` |
+| `animate` | End state | `{ opacity: 1, y: 0 }` |
+| `exit` | Exit animation (needs `AnimatePresence`) | `{ opacity: 0, scale: 0.9 }` |
+| `whileHover` | Hover state | `{ scale: 1.05, y: -4 }` |
+| `whileTap` | Click/tap state | `{ scale: 0.95 }` |
+| `whileInView` | When in viewport | `{ opacity: 1, y: 0 }` |
+| `transition` | Animation timing | `{ duration: 0.3, ease: "easeOut" }` |
+| `variants` | Reusable animation states | See stagger example |
+
+**Advanced Features:**
+
+**Layout Animations (Auto-animate layout changes):**
+```typescript
+<motion.div layout>
+  {/* Content that changes size/position */}
+</motion.div>
+```
+
+**Drag and Drop:**
+```typescript
+<motion.div
+  drag
+  dragConstraints={{ left: 0, right: 300, top: 0, bottom: 300 }}
+  dragElastic={0.2}
+  whileDrag={{ scale: 1.1 }}
+>
+  Drag me
+</motion.div>
+```
+
+**Gesture Detection:**
+```typescript
+<motion.div
+  whileTap={{ scale: 0.9 }}
+  whileHover={{ scale: 1.1 }}
+  onTap={() => console.log('Tapped')}
+  onHoverStart={() => console.log('Hover started')}
+  onHoverEnd={() => console.log('Hover ended')}
+>
+  Interactive element
+</motion.div>
+```
+
+**Path Animations (SVG):**
+```typescript
+<motion.svg>
+  <motion.path
+    d="M 0 0 L 100 100"
+    initial={{ pathLength: 0 }}
+    animate={{ pathLength: 1 }}
+    transition={{ duration: 2 }}
+  />
+</motion.svg>
+```
+
+**View-Based Animations (Alternative to useInView):**
+```typescript
+<motion.div
+  initial={{ opacity: 0 }}
+  whileInView={{ opacity: 1 }}
+  viewport={{ once: true, amount: 0.5 }}
+  transition={{ duration: 0.5 }}
+>
+  Fade in when 50% visible
+</motion.div>
+```
+
+**Performance Best Practices:**
+
+1. ✅ **Prefer transform/opacity** - GPU accelerated properties
+   - Use: `x`, `y`, `scale`, `rotate`, `opacity`
+   - Avoid: `width`, `height`, `top`, `left`, `margin`
+
+2. ✅ **Use will-change sparingly** - Only for complex animations
+   ```typescript
+   <motion.div style={{ willChange: 'transform' }} />
+   ```
+
+3. ✅ **Reduce motion for accessibility**
+   ```typescript
+   import { useReducedMotion } from 'framer-motion';
+   
+   const prefersReducedMotion = useReducedMotion();
+   const transition = prefersReducedMotion ? { duration: 0 } : { duration: 0.5 };
+   ```
+
+4. ✅ **Use `layout` prop for content that changes dimensions**
+   ```typescript
+   <motion.div layout transition={{ duration: 0.3 }} />
+   ```
+
+5. ✅ **Optimize with `initial={false}`** when not needed
+   ```typescript
+   <AnimatePresence initial={false}>
+   ```
+
+6. ✅ **Use `once: true` for one-time scroll animations**
+   ```typescript
+   const isInView = useInView(ref, { once: true });
+   ```
+
+**Accessibility Considerations:**
+- Always respect `prefers-reduced-motion` setting
+- Ensure animations don't hide important content
+- Keep animations smooth (no flashing/flickering)
+- Don't rely solely on animation for critical feedback
+- Provide alternative indicators for users who disable animations
+
+**Examples in Codebase:**
+- [FAQAccordionItem.tsx](../lib/components/faq/FAQAccordionItem.tsx) - Accordion animations
+- [FAQSection.tsx](../lib/components/home/FAQSection.tsx) - Scroll parallax + stagger
+- [MagazineCard.tsx](../lib/components/magazines/MagazineCard.tsx) - Hover and tap effects
+- [MagazineSection.tsx](../lib/components/home/MagazineSection.tsx) - Scroll transforms
+
+**Common Mistakes to Avoid:**
+- ❌ Forgetting `'use client'` directive
+- ❌ Using `left`/`top` instead of `x`/`y`
+- ❌ Animations longer than 1 second
+- ❌ Not testing on mobile devices
+- ❌ Animating non-GPU properties (width, height, etc.)
+- ❌ Missing `AnimatePresence` for exit animations
+- ❌ Over-animating every element (use sparingly)
+
 ## Build and Test
 
 ```bash
@@ -998,7 +1281,7 @@ npm run seed-admin       # Create admin user
 
 **Critical**: `DATABASE_URL`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, and `BLOB_READ_WRITE_TOKEN` must be set before build.
 
-See [DEPLOYMENT_CHECKLIST.md](../DEPLOYMENT_CHECKLIST.md) for full setup process.
+See [DEPLOYMENT_CHECKLIST.md](../docs/DEPLOYMENT_CHECKLIST.md) for full setup process.
 
 ## Code Conventions
 
@@ -1031,7 +1314,7 @@ created_by: user.id, updated_by: user.id, created_at: now, updated_at: now
 - Maximum 50MB (Vercel body limit is 4.5MB by default)
 - Diagnostics endpoint: `/api/style-library/diagnostics`
 
-See [VERCEL_BLOB_SETUP.md](../VERCEL_BLOB_SETUP.md) and [UPLOAD_TROUBLESHOOTING.md](../UPLOAD_TROUBLESHOOTING.md) for details.
+See [VERCEL_BLOB_SETUP.md](../docs/VERCEL_BLOB_SETUP.md) and [UPLOAD_TROUBLESHOOTING.md](../docs/UPLOAD_TROUBLESHOOTING.md) for details.
 
 ### Authentication
 
@@ -1092,7 +1375,7 @@ return NextResponse.json({ error: "Message" }, { status: 400 });
 | OG images fail in Teams | Dynamic API routes | Use file-based [app/opengraph-image.tsx](../app/opengraph-image.tsx) |
 | News section empty on Vercel | HTTP fetch in server component | Query DB directly with Prisma |
 
-See [TEAMS_PREVIEW_FIX.md](../TEAMS_PREVIEW_FIX.md) and [VERCEL_FIX_CHECKLIST.md](../VERCEL_FIX_CHECKLIST.md) for deployment-specific issues.
+See [TEAMS_PREVIEW_FIX.md](../docs/TEAMS_PREVIEW_FIX.md) and [VERCEL_FIX_CHECKLIST.md](../docs/VERCEL_FIX_CHECKLIST.md) for deployment-specific issues.
 
 ## Theme System
 
@@ -1102,7 +1385,7 @@ Configuration: [lib/themes/themeConfig.ts](../lib/themes/themeConfig.ts)
 Storage: `app_settings` table  
 Usage: CSS custom properties (`var(--color-primary)`, `var(--color-text-primary)`)  
 
-See [THEME_SYSTEM.md](../THEME_SYSTEM.md) for full documentation.
+See [THEME_SYSTEM.md](../docs/THEME_SYSTEM.md) for full documentation.
 
 ## Project Structure
 
@@ -1130,8 +1413,8 @@ specs/                 # Feature specifications (SpecKit workflow)
 ## Related Documentation
 
 - [README.md](../README.md) - Project overview and quick start
-- [CLIENTS_SETUP.md](../CLIENTS_SETUP.md) - Client management setup
-- [DEPLOYMENT_CHECKLIST.md](../DEPLOYMENT_CHECKLIST.md) - Full deployment process
-- [IMPLEMENTATION_PROGRESS.md](../IMPLEMENTATION_PROGRESS.md) - Feature implementation status
-- [STYLE_LIBRARY.md](../STYLE_LIBRARY.md) - Style library documentation
+- [CLIENTS_SETUP.md](../docs/CLIENTS_SETUP.md) - Client management setup
+- [DEPLOYMENT_CHECKLIST.md](../docs/DEPLOYMENT_CHECKLIST.md) - Full deployment process
+- [IMPLEMENTATION_PROGRESS.md](../docs/IMPLEMENTATION_PROGRESS.md) - Feature implementation status
+- [STYLE_LIBRARY.md](../docs/STYLE_LIBRARY.md) - Style library documentation
 - [Neon Postgres skill](./../.agents/skills/neon-postgres/SKILL.md) - Database-specific guidance

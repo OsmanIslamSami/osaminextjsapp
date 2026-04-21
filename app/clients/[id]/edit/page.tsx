@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface Client {
   id: number;
@@ -39,7 +40,7 @@ export default function EditClient() {
       const data = await response.json();
       setFormData(data);
     } catch (err) {
-      console.error('Error fetching client:', err);
+      logger.error('Error fetching client:', err);
       setError('Failed to load client');
     } finally {
       setLoading(false);
@@ -77,7 +78,7 @@ export default function EditClient() {
 
       router.push(`/clients/${id}/view`);
     } catch (err) {
-      console.error('Error updating client:', err);
+      logger.error('Error updating client:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setSubmitting(false);

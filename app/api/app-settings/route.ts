@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/app-settings - Get application settings
 export async function GET(request: NextRequest) {
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
-    console.error('App settings GET error:', error);
+    logger.error('App settings GET error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch app settings' },
       { status: 500 }
@@ -82,6 +83,9 @@ export async function PATCH(request: NextRequest) {
       og_image_storage_type,
       site_keywords_en,
       site_keywords_ar,
+      verify_html_url,
+      verify_css_url,
+      verify_taw_url,
     } = body;
 
     // Get existing settings or create new
@@ -111,6 +115,9 @@ export async function PATCH(request: NextRequest) {
           og_image_storage_type: og_image_storage_type || 'upload',
           site_keywords_en,
           site_keywords_ar,
+          verify_html_url,
+          verify_css_url,
+          verify_taw_url,
           updated_by: user.id,
         },
       });
@@ -139,6 +146,9 @@ export async function PATCH(request: NextRequest) {
           ...(og_image_storage_type !== undefined && { og_image_storage_type }),
           ...(site_keywords_en !== undefined && { site_keywords_en }),
           ...(site_keywords_ar !== undefined && { site_keywords_ar }),
+          ...(verify_html_url !== undefined && { verify_html_url }),
+          ...(verify_css_url !== undefined && { verify_css_url }),
+          ...(verify_taw_url !== undefined && { verify_taw_url }),
           updated_by: user.id,
         },
       });
@@ -146,7 +156,7 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
-    console.error('App settings PATCH error:', error);
+    logger.error('App settings PATCH error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to update app settings' },
       { status: 500 }

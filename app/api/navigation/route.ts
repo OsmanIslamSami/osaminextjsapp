@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/navigation
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ data: grouped });
   } catch (error) {
-    console.error('Error fetching navigation:', error);
+    logger.error('Error fetching navigation:', error);
     return NextResponse.json(
       { error: 'Failed to fetch navigation' },
       { status: 500 }
@@ -94,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ data: navItem }, { status: 201 });
   } catch (error) {
-    console.error('Error creating navigation item:', error);
+    logger.error('Error creating navigation item:', error);
     return NextResponse.json(
       { error: 'Failed to create navigation item' },
       { status: 500 }

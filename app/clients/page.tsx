@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import ClientSearchBar from '@/lib/components/clients/ClientSearchBar';
+import { logger } from '@/lib/utils/logger';
 import ClientTable from '@/lib/components/clients/ClientTable';
 import ClientTableRow from '@/lib/components/clients/ClientTableRow';
 import ClientCard from '@/lib/components/clients/ClientCard';
@@ -72,7 +73,7 @@ export default function ClientsList() {
       setHasMore(data.hasMore);
       setNextCursor(data.nextCursor);
     } catch (error) {
-      console.error('Error fetching clients:', error);
+      logger.error('Error fetching clients:', error);
       setError('Failed to load clients. Please try again.');
     } finally {
       setLoading(false);

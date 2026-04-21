@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useToast } from '@/lib/components/ToastContainer';
-import { EyeIcon, EyeSlashIcon, PhotoIcon, VideoCameraIcon, UsersIcon, NewspaperIcon, QuestionMarkCircleIcon, BookOpenIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon, PhotoIcon, VideoCameraIcon, UsersIcon, NewspaperIcon, QuestionMarkCircleIcon, BookOpenIcon, ChevronUpIcon, ChevronDownIcon, FilmIcon, ChartBarIcon, LinkIcon } from '@heroicons/react/24/outline';
 
 interface HomeSection {
   section_type: string;
@@ -125,13 +125,19 @@ export default function AdminHomeSectionsPage() {
         return <QuestionMarkCircleIcon className="w-8 h-8" />;
       case 'magazines':
         return <BookOpenIcon className="w-8 h-8" />;
+      case 'slider':
+        return <FilmIcon className="w-8 h-8" />;
+      case 'stats':
+        return <ChartBarIcon className="w-8 h-8" />;
+      case 'quicklinks':
+        return <LinkIcon className="w-8 h-8" />;
       default:
         return null;
     }
   };
 
   const getSectionTitle = (section_type: string) => {
-    const titles: any = {
+    const titles: Record<string, Record<string, string>> = {
       news: {
         en: 'News Section',
         ar: 'قسم الأخبار',
@@ -156,12 +162,24 @@ export default function AdminHomeSectionsPage() {
         en: 'Magazines Section',
         ar: 'قسم المجلات',
       },
+      slider: {
+        en: 'Hero Slider',
+        ar: 'السلايدر الرئيسي',
+      },
+      stats: {
+        en: 'Quick Overview',
+        ar: 'نظرة سريعة',
+      },
+      quicklinks: {
+        en: 'Quick Links',
+        ar: 'روابط سريعة',
+      },
     };
     return titles[section_type]?.[language] || section_type;
   };
 
   const getSectionDescription = (section_type: string) => {
-    const descriptions: any = {
+    const descriptions: Record<string, Record<string, string>> = {
       news: {
         en: 'Display latest news articles on the home page',
         ar: 'عرض أحدث المقالات الإخبارية على الصفحة الرئيسية',
@@ -185,6 +203,18 @@ export default function AdminHomeSectionsPage() {
       magazines: {
         en: 'Display latest magazine publications on the home page',
         ar: 'عرض أحدث إصدارات المجلات على الصفحة الرئيسية',
+      },
+      slider: {
+        en: 'Display the hero slider/banner at the top of the home page',
+        ar: 'عرض السلايدر الرئيسي في أعلى الصفحة الرئيسية',
+      },
+      stats: {
+        en: 'Display quick overview statistics for authenticated users',
+        ar: 'عرض إحصائيات نظرة سريعة للمستخدمين المسجلين',
+      },
+      quicklinks: {
+        en: 'Display quick navigation links for authenticated users',
+        ar: 'عرض روابط التنقل السريع للمستخدمين المسجلين',
       },
     };
     return descriptions[section_type]?.[language] || '';
@@ -231,6 +261,10 @@ export default function AdminHomeSectionsPage() {
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
               {/* Section Icon & Title */}
               <div className="flex items-center gap-4 flex-1 min-w-0">
+                {/* Section Order Badge */}
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center">
+                  <span className="text-sm font-bold text-gray-700 dark:text-zinc-300">{section.display_order}</span>
+                </div>
                 <div className={`p-3 rounded-lg flex-shrink-0 ${
                   section.is_visible 
                     ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' 

@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 export type Language = 'en' | 'ar';
 
@@ -20,7 +21,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     import(`./translations/${language}.json`)
       .then(module => setTranslations(module.default))
-      .catch(err => console.error('Failed to load translations:', err));
+      .catch(err => logger.error('Failed to load translations:', err));
   }, [language]);
 
   // Load language from localStorage on mount
@@ -29,6 +30,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       const saved = localStorage.getItem('app_language') as Language;
       if (saved === 'en' || saved === 'ar') {
         setLanguageState(saved);
+        document.cookie = `app_language=${saved};path=/;max-age=31536000;SameSite=Lax`;
       }
     }
   }, []);
@@ -37,13 +39,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLanguageState(lang);
     if (typeof window !== 'undefined') {
       localStorage.setItem('app_language', lang);
+      document.cookie = `app_language=${lang};path=/;max-age=31536000;SameSite=Lax`;
     }
   };
 
   // Translation function with nested key support and parameter substitution
   const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = translations;
+    let value: unknown = translations;
     
     for (const k of keys) {
       if (value && typeof value === 'object') {

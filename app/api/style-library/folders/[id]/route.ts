@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/style-library/folders/[id] - Get folder with contents
 export async function GET(
@@ -44,7 +45,7 @@ export async function GET(
 
     return NextResponse.json({ folder }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching folder:', error);
+    logger.error('Error fetching folder:', error);
     return NextResponse.json(
       { error: 'Failed to fetch folder' },
       { status: 500 }
@@ -167,7 +168,7 @@ export async function PUT(
 
     return NextResponse.json({ folder }, { status: 200 });
   } catch (error) {
-    console.error('Error updating folder:', error);
+    logger.error('Error updating folder:', error);
     return NextResponse.json(
       { error: 'Failed to update folder' },
       { status: 500 }
@@ -219,7 +220,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting folder:', error);
+    logger.error('Error deleting folder:', error);
     return NextResponse.json(
       { error: 'Failed to delete folder' },
       { status: 500 }

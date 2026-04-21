@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/permissions';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 export async function PUT(
   request: Request,
@@ -60,7 +61,7 @@ export async function PUT(
       updated_at: updatedUser.updated_at.toISOString(),
     });
   } catch (error) {
-    console.error('Error updating user role:', error);
+    logger.error('Error updating user role:', error);
     return NextResponse.json(
       { error: 'Failed to update user role' },
       { status: 500 }

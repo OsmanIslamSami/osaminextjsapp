@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { User } from '@/lib/types';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { logger } from '@/lib/utils/logger';
 
 export default function AdminPage() {
   const { t, direction } = useLanguage();
@@ -20,7 +21,8 @@ export default function AdminPage() {
         // Fetch users
         const usersRes = await fetch('/api/users');
         if (usersRes.ok) {
-          const users: User[] = await usersRes.json();
+          const data = await usersRes.json();
+          const users: User[] = data.users || [];
           setStats(prev => ({
             ...prev,
             totalUsers: users.length,
@@ -49,7 +51,7 @@ export default function AdminPage() {
           }));
         }
       } catch (error) {
-        console.error('Error fetching admin stats:', error);
+        logger.error('Error fetching admin stats:', error);
       } finally {
         setLoading(false);
       }

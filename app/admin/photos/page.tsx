@@ -331,10 +331,12 @@ export default function AdminPhotosPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={photo.image_url}
                       alt={photo.title_en}
                       className="w-16 h-16 object-cover rounded"
+                      loading="lazy"
                     />
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 dark:text-zinc-100">

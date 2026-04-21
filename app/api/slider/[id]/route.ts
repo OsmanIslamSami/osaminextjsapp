@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { del } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/slider/[id] - Admin only
 export async function GET(
@@ -32,7 +33,7 @@ export async function GET(
 
     return NextResponse.json({ slide }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching slide:', error);
+    logger.error('Error fetching slide:', error);
     return NextResponse.json(
       { error: 'Failed to fetch slide' },
       { status: 500 }
@@ -118,7 +119,7 @@ export async function PUT(
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error updating slide:', error);
+    logger.error('Error updating slide:', error);
     return NextResponse.json(
       { error: 'Failed to update slide' },
       { status: 500 }
@@ -170,14 +171,14 @@ export async function DELETE(
       try {
         await del(slideToDelete.media_url);
       } catch (blobError) {
-        console.error('Error deleting blob:', blobError);
+        logger.error('Error deleting blob:', blobError);
         // Continue even if blob deletion fails
       }
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting slide:', error);
+    logger.error('Error deleting slide:', error);
     return NextResponse.json(
       { error: 'Failed to delete slide' },
       { status: 500 }

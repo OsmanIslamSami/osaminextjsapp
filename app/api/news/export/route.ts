@@ -5,6 +5,7 @@ import { hasPermission } from '@/lib/auth/permissions';
 import { buildNewsWhereClause } from '@/lib/utils/news-search';
 import { formatNewsForExport } from '@/lib/utils/news-search';
 import { generateExcel, createExcelResponse } from '@/lib/utils/excel-export';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/news/export
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
     const fileName = `news-export-${new Date().toISOString().split('T')[0]}.xlsx`;
     return createExcelResponse(buffer, fileName);
   } catch (error) {
-    console.error('Error exporting news:', error);
+    logger.error('Error exporting news:', error);
     return NextResponse.json(
       { error: 'Failed to export news' },
       { status: 500 }

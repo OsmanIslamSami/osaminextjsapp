@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
+import { logger } from '@/lib/utils/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || '';
 
     // Build where clause
-    const where: any = {
+    const where: Record<string, unknown> = {
       is_deleted: false,
     };
 
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Export error:', error);
+    logger.error('Export error:', error);
     return NextResponse.json(
       { error: 'Failed to export clients' },
       { status: 500 }

@@ -8,6 +8,7 @@ import { useToast } from '@/lib/components/ToastContainer';
 import FAQForm from '@/lib/components/faq/FAQForm';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import type { FAQFormData } from '@/lib/types';
+import { logger } from '@/lib/utils/logger';
 
 export default function EditFAQPage() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function EditFAQPage() {
         setFaq(data);
       } catch (error) {
         showError('Failed to load FAQ');
-        console.error('Load FAQ error:', error);
+        logger.error('Load FAQ error:', error);
       } finally {
         setLoading(false);
       }
@@ -73,7 +74,7 @@ export default function EditFAQPage() {
       router.push('/admin/faq');
     } catch (error) {
       showError(error instanceof Error ? error.message : 'Failed to update FAQ');
-      console.error('Update FAQ error:', error);
+      logger.error('Update FAQ error:', error);
     } finally {
       setSubmitting(false);
     }

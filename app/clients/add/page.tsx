@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/utils/logger';
 
 export default function AddClient() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function AddClient() {
 
       router.push('/clients');
     } catch (err) {
-      console.error('Error creating client:', err);
+      logger.error('Error creating client:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

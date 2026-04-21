@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/style-library/folders - Get all folders (hierarchical)
 export async function GET() {
@@ -29,7 +30,7 @@ export async function GET() {
 
     return NextResponse.json({ folders }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching folders:', error);
+    logger.error('Error fetching folders:', error);
     return NextResponse.json(
       { error: 'Failed to fetch folders' },
       { status: 500 }
@@ -123,7 +124,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ folder }, { status: 201 });
   } catch (error) {
-    console.error('Error creating folder:', error);
+    logger.error('Error creating folder:', error);
     return NextResponse.json(
       { error: 'Failed to create folder' },
       { status: 500 }

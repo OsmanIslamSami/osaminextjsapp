@@ -10,7 +10,7 @@ export interface ExcelExportOptions {
   fileName: string;
   sheetName: string;
   columns: ExcelColumn[];
-  data: any[];
+  data: Record<string, unknown>[];
   autoFilter?: boolean;
   headerStyle?: Partial<ExcelJS.Style>;
 }

@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { put } from '@vercel/blob';
 import { extractYouTubeVideoId, validateYouTubeUrl } from '@/lib/utils/youtube';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/videos - List videos or get single video by ID
 export async function GET(request: NextRequest) {
@@ -38,8 +39,8 @@ export async function GET(request: NextRequest) {
     }
 
     // List videos based on context
-    let where: any = {};
-    let orderBy: any = {};
+    let where: Record<string, unknown> = {};
+    let orderBy: Record<string, string> | Record<string, string>[] = {};
     let take = limit;
 
     if (context === 'home') {
@@ -97,7 +98,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Videos GET error:', error);
+    logger.error('Videos GET error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch videos' },
       { status: 500 }
@@ -123,7 +124,7 @@ export async function POST(request: NextRequest) {
     });
 
     const contentType = request.headers.get('content-type') || '';
-    let data: any = {};
+    let data: Record<string, unknown> = {};
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
@@ -241,7 +242,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Videos POST error:', error);
+    logger.error('Videos POST error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create video' },
       { status: 500 }

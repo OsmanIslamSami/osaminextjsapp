@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error('Error fetching current user:', error);
+    logger.error('Error fetching current user:', error);
     return NextResponse.json(
       { error: 'Failed to fetch user' },
       { status: 500 }

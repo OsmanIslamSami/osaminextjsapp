@@ -2,6 +2,7 @@ import { query } from '@/lib/db';
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
+import { logger } from '@/lib/utils/logger';
 
 export async function GET() {
   try {
@@ -97,7 +98,7 @@ export async function GET() {
       latestNews,
     });
   } catch (error) {
-    console.error('Metrics API error:', error);
+    logger.error('Metrics API error:', error);
     return NextResponse.json(
       { error: 'Internal Server Error', message: 'Failed to fetch dashboard metrics. Please try again.' },
       { status: 500 }

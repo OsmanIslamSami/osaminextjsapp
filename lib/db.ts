@@ -2,20 +2,21 @@ import { Pool } from 'pg';
 import { PrismaClient } from '@/lib/generated/prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import { Pool as NeonPool } from '@neondatabase/serverless';
+import { logger } from '@/lib/utils/logger';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-export async function query(text: string, params?: any[]) {
+export async function query(text: string, params?: (string | number | boolean | Date | null | undefined)[]) {
   const start = Date.now();
   try {
     const result = await pool.query(text, params);
     const duration = Date.now() - start;
-    console.log('Executed query', { text, duration, rows: result.rowCount });
+    logger.log('Executed query', { text, duration, rows: result.rowCount });
     return result;
   } catch (error) {
-    console.error('Database query error:', error);
+    logger.error('Database query error:', error);
     throw error;
   }
 }

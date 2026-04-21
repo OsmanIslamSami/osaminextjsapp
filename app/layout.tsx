@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Cairo } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
-import { headers } from 'next/headers';
+import { headers, cookies } from 'next/headers';
 import "./globals.css";
 import Header from "./header";
 import Footer from "@/lib/components/Footer";
@@ -56,19 +56,36 @@ async function getAppSettings() {
     const settings = await prisma.app_settings.findFirst();
     return settings;
   } catch (error) {
-    console.error('Failed to fetch app settings for metadata:', error);
+    logger.error('Failed to fetch app settings for metadata:', error);
     return null;
   }
 }
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getAppSettings();
+  const cookieStore = await cookies();
+  const lang = cookieStore.get('app_language')?.value || 'en';
+  const isArabic = lang === 'ar';
   
-  const title = settings?.site_title_en || "Next App - Complete Business Management Platform";
-  const description = settings?.site_description_en || "Streamline your business with Next App: powerful client management, real-time analytics dashboard, news publishing, and comprehensive reporting tools. Perfect for modern businesses looking to scale efficiently.";
-  const keywords = settings?.site_keywords_en 
-    ? settings.site_keywords_en.split(',').map(k => k.trim())
-    : ["Business Management", "Client Management", "CRM", "Analytics Dashboard", "News Publishing", "Next.js", "React", "Business Platform", "Modern Web App", "Enterprise Software"];
+  const title = isArabic
+    ? (settings?.site_title_ar || settings?.site_title_en || "Next App - Complete Business Management Platform")
+    : (settings?.site_title_en || "Next App - Complete Business Management Platform");
+  const description = isArabic
+    ? (settings?.site_description_ar || settings?.site_description_en || "Streamline your business with Next App: powerful client management, real-time analytics dashboard, news publishing, and comprehensive reporting tools. Perfect for modern businesses looking to scale efficiently.")
+    : (settings?.site_description_en || "Streamline your business with Next App: powerful client management, real-time analytics dashboard, news publishing, and comprehensive reporting tools. Perfect for modern businesses looking to scale efficiently.");
+  const keywords = isArabic
+    ? (settings?.site_keywords_ar
+      ? settings.site_keywords_ar.split(',').map(k => k.trim())
+      : settings?.site_keywords_en
+        ? settings.site_keywords_en.split(',').map(k => k.trim())
+        : ["Business Management", "Client Management", "CRM"])
+    : (settings?.site_keywords_en 
+      ? settings.site_keywords_en.split(',').map(k => k.trim())
+      : ["Business Management", "Client Management", "CRM", "Analytics Dashboard", "News Publishing", "Next.js", "React", "Business Platform", "Modern Web App", "Enterprise Software"]);
+  
+  const siteName = isArabic
+    ? (settings?.site_title_ar || settings?.site_title_en || 'Next App')
+    : (settings?.site_title_en || 'Next App');
   
   return {
     title,
@@ -81,10 +98,10 @@ export async function generateMetadata(): Promise<Metadata> {
     // Next.js will automatically use opengraph-image.tsx for the image
     openGraph: {
       type: 'website',
-      locale: 'en_US',
-      alternateLocale: ['ar_SA'],
+      locale: isArabic ? 'ar_SA' : 'en_US',
+      alternateLocale: [isArabic ? 'en_US' : 'ar_SA'],
       url: baseUrl,
-      siteName: settings?.site_title_en || 'Next App',
+      siteName,
       title,
       description,
       // Only set custom image if it exists, otherwise Next.js will use opengraph-image.tsx

@@ -102,7 +102,7 @@ export default function NewsForm({ news, onClose }: NewsFormProps) {
     }
   };
 
-  const handleFileSelect = (file: any) => {
+  const handleFileSelect = (file: { file_url: string }) => {
     setImageUrl(file.file_url);
     setStorageType('blob');
     setImagePreview(file.file_url);

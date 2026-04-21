@@ -10,6 +10,7 @@ import MagazineList from '@/lib/components/magazines/MagazineList';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { logger } from '@/lib/utils/logger';
 
 interface Magazine {
   id: string;
@@ -78,7 +79,7 @@ export default function AdminMagazinesPage() {
       });
     } catch (error) {
       showError('Failed to load magazines');
-      console.error('Load magazines error:', error);
+      logger.error('Load magazines error:', error);
     } finally {
       setLoading(false);
     }

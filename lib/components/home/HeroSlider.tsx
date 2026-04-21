@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface Slide {
   id: string;
@@ -84,7 +85,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
         const data = await response.json();
         setSlides(data.slides || []);
       } catch (error) {
-        console.error('Error fetching slides:', error);
+        logger.error('Error fetching slides:', error);
       } finally {
         setLoading(false);
       }
@@ -97,7 +98,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
   useEffect(() => {
     if (!loading && !firstSlideLoaded) {
       const fallbackTimer = setTimeout(() => {
-        console.warn('Slider skeleton removed by fallback timeout (5s)');
+        logger.warn('Slider skeleton removed by fallback timeout (5s)');
         setFirstSlideLoaded(true);
       }, 5000);
 
@@ -324,7 +325,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 onError={() => {
                   // Hide skeleton even if video fails to load
                   if (isFirstSlide) {
-                    console.error('Video failed to load, removing skeleton');
+                    logger.error('Video failed to load, removing skeleton');
                     handleFirstSlideLoad();
                   }
                 }}
@@ -345,7 +346,7 @@ export default function HeroSlider({ autoPlayInterval = 5000 }: HeroSliderProps)
                 onError={() => {
                   // Hide skeleton even if image fails to load
                   if (isFirstSlide) {
-                    console.error('Image failed to load, removing skeleton');
+                    logger.error('Image failed to load, removing skeleton');
                     handleFirstSlideLoad();
                   }
                 }}

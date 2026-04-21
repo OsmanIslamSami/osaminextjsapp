@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 interface AppSettings {
   id: string;
@@ -16,6 +17,9 @@ interface AppSettings {
   site_favicon_url?: string | null;
   site_title_en?: string | null;
   site_title_ar?: string | null;
+  verify_html_url?: string | null;
+  verify_css_url?: string | null;
+  verify_taw_url?: string | null;
 }
 
 interface AppSettingsContextValue {
@@ -38,7 +42,7 @@ export function AppSettingsProvider({ children }: { children: ReactNode }) {
         setSettings(data.data);
       }
     } catch (error) {
-      console.error('Failed to load app settings:', error);
+      logger.error('Failed to load app settings:', error);
     } finally {
       setLoading(false);
     }

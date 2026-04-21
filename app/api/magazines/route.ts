@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { put } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { validateImage, validatePDF } from '@/lib/utils/fileValidation';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/magazines
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * validLimit;
     
     // Build where clause
-    const where: any = {
+    const where: Record<string, unknown> = {
       is_deleted: false,
     };
     
@@ -93,7 +94,7 @@ export async function GET(request: NextRequest) {
         if (magazine.file_data && magazine.file_data.length > 0) {
           imageUrl = `/api/magazines/media/${magazine.id}`;
         } else {
-          console.warn(`Magazine ${magazine.id} has storage_type='local' but no file_data. Using original URL.`);
+          logger.warn(`Magazine ${magazine.id} has storage_type='local' but no file_data. Using original URL.`);
         }
       }
       
@@ -117,7 +118,7 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Error fetching Magazines:', error);
+    logger.error('Error fetching Magazines:', error);
     return NextResponse.json(
       { error: 'Failed to fetch Magazines' },
       { status: 500 }
@@ -233,7 +234,7 @@ export async function POST(request: NextRequest) {
         file_size = cover_image.size;
         mime_type = cover_image.type;
       } catch (error) {
-        console.error('Blob upload failed, using local storage:', error);
+        logger.error('Blob upload failed, using local storage:', error);
         // Fallback to local storage
         const bytes = await cover_image.arrayBuffer();
         file_data = Buffer.from(bytes);
@@ -274,7 +275,7 @@ export async function POST(request: NextRequest) {
       });
       download_link = pdfBlob.url;
     } catch (error) {
-      console.error('PDF upload failed:', error);
+      logger.error('PDF upload failed:', error);
       return NextResponse.json(
         { error: 'Failed to upload PDF file' },
         { status: 500 }
@@ -322,7 +323,7 @@ export async function POST(request: NextRequest) {
     );
     
   } catch (error) {
-    console.error('Error creating Magazine:', error);
+    logger.error('Error creating Magazine:', error);
     return NextResponse.json(
       { error: 'Failed to create Magazine' },
       { status: 500 }

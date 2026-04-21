@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * PATCH /api/faq/[id]/favorite
@@ -76,7 +77,7 @@ export async function PATCH(
     return NextResponse.json(updatedFAQ);
     
   } catch (error) {
-    console.error('Toggle FAQ favorite error:', error);
+    logger.error('Toggle FAQ favorite error:', error);
     return NextResponse.json(
       { error: 'Failed to toggle favorite' },
       { status: 500 }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET all active social media links (public)
 export async function GET() {
@@ -26,7 +27,7 @@ export async function GET() {
 
     return NextResponse.json(formattedLinks);
   } catch (error) {
-    console.error('Error fetching social media links:', error);
+    logger.error('Error fetching social media links:', error);
     return NextResponse.json(
       { error: 'Failed to fetch social media links' },
       { status: 500 }
@@ -115,7 +116,7 @@ export async function POST(request: Request) {
       updated_at: newLink.updated_at.toISOString(),
     }, { status: 201 });
   } catch (error) {
-    console.error('Error creating social media link:', error);
+    logger.error('Error creating social media link:', error);
     return NextResponse.json(
       { error: 'Failed to create social media link' },
       { status: 500 }

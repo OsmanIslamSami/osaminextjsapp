@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { hasPermission } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/news/[id]
@@ -32,7 +33,7 @@ export async function GET(
 
     return NextResponse.json(news);
   } catch (error) {
-    console.error('Error fetching news:', error);
+    logger.error('Error fetching news:', error);
     return NextResponse.json(
       { error: 'Failed to fetch news' },
       { status: 500 }
@@ -109,7 +110,7 @@ export async function PUT(
 
     return NextResponse.json(news);
   } catch (error) {
-    console.error('Error updating news:', error);
+    logger.error('Error updating news:', error);
     return NextResponse.json(
       { error: 'Failed to update news' },
       { status: 500 }
@@ -151,7 +152,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'News deleted successfully' });
   } catch (error) {
-    console.error('Error deleting news:', error);
+    logger.error('Error deleting news:', error);
     return NextResponse.json(
       { error: 'Failed to delete news' },
       { status: 500 }

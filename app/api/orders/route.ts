@@ -1,9 +1,15 @@
 import { query } from '@/lib/db';
+import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/utils/logger';
 
 // GET orders for a client
 export async function GET(request: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const searchParams = request.nextUrl.searchParams;
     const clientId = searchParams.get('clientId');
     const limit = parseInt(searchParams.get('limit') || '20');
@@ -33,7 +39,7 @@ export async function GET(request: NextRequest) {
       offset,
     });
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch orders' },
       { status: 500 }
@@ -44,6 +50,10 @@ export async function GET(request: NextRequest) {
 // POST create new order
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const body = await request.json();
     const { clientId, orderDate, description, address, mobile } = body;
 
@@ -70,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', error);
     return NextResponse.json(
       { error: 'Failed to create order' },
       { status: 500 }

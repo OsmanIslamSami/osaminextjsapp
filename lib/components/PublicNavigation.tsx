@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { logger } from '@/lib/utils/logger';
 
 interface NavItem {
   id: string;
@@ -43,7 +44,7 @@ export default function PublicNavigation() {
         setNavItems(data);
       }
     } catch (error) {
-      console.error('Error fetching navigation:', error);
+      logger.error('Error fetching navigation:', error);
     }
   }
 

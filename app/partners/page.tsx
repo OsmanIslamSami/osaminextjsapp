@@ -22,6 +22,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface PartnerItem {
   id: string;
@@ -84,7 +85,7 @@ export default function PartnersDirectoryPage() {
           }));
         }
       } catch (error) {
-        console.error('Failed to fetch partners:', error);
+        logger.error('Failed to fetch partners:', error);
       } finally {
         setLoading(false);
       }

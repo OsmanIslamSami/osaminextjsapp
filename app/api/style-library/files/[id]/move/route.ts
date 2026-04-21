@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // PUT /api/style-library/files/[id]/move - Admin only, move file to another folder
 export async function PUT(
@@ -69,7 +70,7 @@ export async function PUT(
 
     return NextResponse.json({ file: updatedFile }, { status: 200 });
   } catch (error) {
-    console.error('Error moving file:', error);
+    logger.error('Error moving file:', error);
     return NextResponse.json(
       { error: 'Failed to move file' },
       { status: 500 }

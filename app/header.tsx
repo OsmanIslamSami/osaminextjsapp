@@ -9,10 +9,11 @@ import PublicNavigation from "@/lib/components/PublicNavigation";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import { useAppSettings } from "@/lib/contexts/AppSettingsContext";
+import { logger } from "@/lib/utils/logger";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { t, direction } = useTranslation();
+  const { t, direction, language } = useTranslation();
   const { isAdmin } = useCurrentUser();
   const { isSignedIn } = useAuth();
   const { settings, loading } = useAppSettings();
@@ -21,11 +22,11 @@ export default function Header() {
     setMobileMenuOpen(true);
   };
 
-  // Debug logging
-  console.log('Header - Settings:', settings);
-  console.log('Header - Loading:', loading);
-  console.log('Header - Logo URL:', settings?.site_logo_url);
-  console.log('Header - Has Logo:', !!settings?.site_logo_url);
+  // Debug logging (dev only)
+  logger.debug('Header - Settings:', settings);
+  logger.debug('Header - Loading:', loading);
+  logger.debug('Header - Logo URL:', settings?.site_logo_url);
+  logger.debug('Header - Has Logo:', !!settings?.site_logo_url);
 
   return (
     <header 
@@ -65,6 +66,7 @@ export default function Header() {
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-t-2" style={{ borderColor: 'var(--color-primary)' }}></div>
             </div>
           ) : settings?.site_logo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img 
               src={settings.site_logo_url} 
               alt="Site Logo" 
@@ -75,18 +77,21 @@ export default function Header() {
                 objectFit: 'contain',
                 display: 'block'
               }}
+              loading="eager"
               onLoad={(e) => {
-                console.log('✅ Logo loaded successfully:', settings.site_logo_url);
-                console.log('Image dimensions:', e.currentTarget.naturalWidth, 'x', e.currentTarget.naturalHeight);
+                logger.debug('✅ Logo loaded successfully:', settings.site_logo_url);
+                logger.debug('Image dimensions:', e.currentTarget.naturalWidth, 'x', e.currentTarget.naturalHeight);
               }}
               onError={(e) => {
-                console.error('❌ Logo failed to load:', settings.site_logo_url);
+                logger.error('❌ Logo failed to load:', settings.site_logo_url);
                 e.currentTarget.style.display = 'none';
               }}
             />
           ) : (
             <div className="h-10 flex items-center px-2" style={{ color: 'var(--color-text-primary)' }}>
-              <span className="text-xl font-semibold">{settings?.site_title_en || 'App'}</span>
+              <span className="text-xl font-semibold">
+                {language === 'ar' ? (settings?.site_title_ar || 'التطبيق') : (settings?.site_title_en || 'App')}
+              </span>
             </div>
           )}
         </Link>

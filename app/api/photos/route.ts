@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { put } from '@vercel/blob';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/photos - List photos or get single photo by ID
 export async function GET(request: NextRequest) {
@@ -114,7 +115,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Photos GET error:', error);
+    logger.error('Photos GET error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch photos' },
       { status: 500 }
@@ -259,7 +260,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Photos POST error:', error);
+    logger.error('Photos POST error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create photo' },
       { status: 500 }

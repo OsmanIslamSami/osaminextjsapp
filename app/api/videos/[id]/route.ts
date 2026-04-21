@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { put } from '@vercel/blob';
 import { extractYouTubeVideoId, validateYouTubeUrl } from '@/lib/utils/youtube';
+import { logger } from '@/lib/utils/logger';
 
 // PUT /api/videos/[id] - Update video
 export async function PUT(
@@ -27,7 +28,7 @@ export async function PUT(
     });
     
     const contentType = request.headers.get('content-type') || '';
-    let data: any = {};
+    let data: Record<string, unknown> = {};
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
@@ -52,7 +53,7 @@ export async function PUT(
       }
     }
 
-    let updateData: any = {
+    let updateData: Record<string, unknown> = {
       title_en: data.title_en,
       title_ar: data.title_ar,
       description_en: data.description_en,
@@ -140,8 +141,8 @@ export async function PUT(
       data: video,
     });
   } catch (error: any) {
-    console.error('Videos PUT error:', error);
-    console.error('Error details:', {
+    logger.error('Videos PUT error:', error);
+    logger.error('Error details:', {
       message: error.message,
       code: error.code,
       stack: error.stack
@@ -200,7 +201,7 @@ export async function DELETE(
       data: { id: video.id, is_deleted: true },
     });
   } catch (error: any) {
-    console.error('Videos DELETE error:', error);
+    logger.error('Videos DELETE error:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { success: false, error: 'Video not found' },

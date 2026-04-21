@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/magazines/media/[id]
@@ -36,7 +37,7 @@ export async function GET(
     }
     
     if (!magazine.file_data) {
-      console.error(`Magazine ${id} has storage_type='local' but no file_data. Use Blob storage or upload file data.`);
+      logger.error(`Magazine ${id} has storage_type='local' but no file_data. Use Blob storage or upload file data.`);
       return NextResponse.json(
         { error: 'No local file data available. Magazine may be using Blob storage - update storage_type or upload file.' },
         { status: 400 }
@@ -54,7 +55,7 @@ export async function GET(
     });
     
   } catch (error) {
-    console.error('Error retrieving magazine cover:', error);
+    logger.error('Error retrieving magazine cover:', error);
     return NextResponse.json(
       { error: 'Failed to retrieve magazine cover' },
       { status: 500 }

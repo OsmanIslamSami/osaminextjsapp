@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { put } from '@vercel/blob';
+import { logger } from '@/lib/utils/logger';
 
 // PUT /api/photos/[id] - Update photo
 export async function PUT(
@@ -142,8 +143,8 @@ export async function PUT(
       data: photo,
     });
   } catch (error: any) {
-    console.error('Photos PUT error:', error);
-    console.error('Error details:', {
+    logger.error('Photos PUT error:', error);
+    logger.error('Error details:', {
       message: error.message,
       code: error.code,
       stack: error.stack
@@ -202,7 +203,7 @@ export async function DELETE(
       data: { id: photo.id, is_deleted: true },
     });
   } catch (error: any) {
-    console.error('Photos DELETE error:', error);
+    logger.error('Photos DELETE error:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { success: false, error: 'Photo not found' },

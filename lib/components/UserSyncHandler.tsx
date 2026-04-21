@@ -1,6 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * Component that ensures Clerk users are synced to the database.
@@ -15,7 +16,7 @@ export function UserSyncHandler() {
       fetch('/api/users/sync', {
         method: 'POST',
       }).catch(err => {
-        console.error('Failed to sync user:', err);
+        logger.error('Failed to sync user:', err);
       });
     }
   }, [isLoaded, isSignedIn]);

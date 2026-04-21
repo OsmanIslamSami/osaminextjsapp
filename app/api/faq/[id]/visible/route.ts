@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * PATCH /api/faq/[id]/visible
@@ -67,7 +68,7 @@ export async function PATCH(
       is_visible: updatedFAQ.is_visible 
     });
   } catch (error) {
-    console.error('Error toggling FAQ visibility:', error);
+    logger.error('Error toggling FAQ visibility:', error);
     return NextResponse.json(
       { error: 'Failed to toggle visibility' },
       { status: 500 }

@@ -8,6 +8,7 @@ import { useToast } from '@/lib/components/ToastContainer';
 import Link from 'next/link';
 import FAQList from '@/lib/components/faq/FAQList';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
+import { logger } from '@/lib/utils/logger';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 
@@ -80,7 +81,7 @@ export default function AdminFAQPage() {
       });
     } catch (error) {
       showError('Failed to load FAQs');
-      console.error('Load FAQs error:', error);
+      logger.error('Load FAQs error:', error);
     } finally {
       setLoading(false);
     }

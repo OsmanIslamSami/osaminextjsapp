@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/slider/media/[id] - Serve local media files from database
 export async function GET(
@@ -39,7 +40,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error serving media file:', error);
+    logger.error('Error serving media file:', error);
     return NextResponse.json(
       { error: 'Failed to serve media file' },
       { status: 500 }

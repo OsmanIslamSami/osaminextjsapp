@@ -22,6 +22,7 @@ import {
 } from '@heroicons/react/24/outline';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/utils/logger';
 
 interface Folder {
   id: string;
@@ -90,7 +91,7 @@ export default function StyleLibraryPage() {
       const data = await response.json();
       setFolders(data.folders || []);
     } catch (error) {
-      console.error('Error fetching folders:', error);
+      logger.error('Error fetching folders:', error);
     }
   }, []);
 
@@ -120,7 +121,7 @@ export default function StyleLibraryPage() {
       await navigator.clipboard.writeText(fileUrl);
       showSuccess('File URL copied to clipboard!');
     } catch (err) {
-      console.error('Failed to copy:', err);
+      logger.error('Failed to copy:', err);
       showError('Failed to copy URL');
     }
   };
@@ -151,7 +152,7 @@ export default function StyleLibraryPage() {
       setSelectedFileIds(new Set());
       fetchFiles();
     } catch (error) {
-      console.error('Error deleting files:', error);
+      logger.error('Error deleting files:', error);
       showError('Failed to delete some files');
     }
   };
@@ -211,7 +212,7 @@ export default function StyleLibraryPage() {
         setTotalFileCount(data.files?.length || 0);
       }
     } catch (error) {
-      console.error('Error fetching files:', error);
+      logger.error('Error fetching files:', error);
     }
   }, [selectedFolderId, searchQuery]);
 
@@ -524,8 +525,8 @@ export default function StyleLibraryPage() {
                       <button
                         onClick={(e) => handleDeleteFile(file.id, e)}
                         className="p-2 bg-white border border-red-300 rounded-full hover:bg-red-50 shadow-sm inline-flex items-center justify-center"
-                        aria-label={language === 'ar' ? 'حذف' : 'Delete'}
-                        title={language === 'ar' ? 'حذف' : 'Delete'}
+                        aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                        title={language === 'ar' ? 'حذف' : 'Delete'}
                       >
                         <TrashIcon className="w-5 h-5 text-red-600" />
                       </button>
@@ -533,10 +534,12 @@ export default function StyleLibraryPage() {
 
                     {file.file_type.startsWith('image/') ? (
                       <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={file.file_url}
                           alt={file.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       </div>
                     ) : file.file_type.startsWith('video/') ? (
@@ -651,8 +654,8 @@ export default function StyleLibraryPage() {
                             <button
                               onClick={(e) => handleDeleteFile(file.id, e)}
                               className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors inline-flex items-center justify-center"
-                              aria-label={language === 'ar' ? 'حذف' : 'Delete'}
-                              title={language === 'ar' ? 'حذف' : 'Delete'}
+                              aria-label={language === 'ar' ? 'حذف' : 'Delete'}
+                              title={language === 'ar' ? 'حذف' : 'Delete'}
                             >
                               <TrashIcon className="w-5 h-5 text-gray-500 hover:text-red-600" />
                             </button>
@@ -676,7 +679,7 @@ export default function StyleLibraryPage() {
                 </p>
                 {!searchQuery && (
                   <p className="text-sm text-gray-500 mb-6">
-                    💡 Drag and drop files here or click the button below
+                    ðŸ’¡ Drag and drop files here or click the button below
                   </p>
                 )}
                 <button
@@ -1078,7 +1081,7 @@ function UploadFileModal({
             {selectedFiles && selectedFiles.length > 0 && (
               <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm font-medium text-green-800 mb-1">
-                  ✓ {selectedFiles.length} file(s) selected
+                  âœ“ {selectedFiles.length} file(s) selected
                 </p>
                 <ul className="text-xs text-green-700 space-y-1">
                   {Array.from(selectedFiles).slice(0, 5).map((file, idx) => (
@@ -1142,7 +1145,7 @@ function UploadFileModal({
 
           {showConfirmDialog && pendingReplaceFile && (
             <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <h3 className="font-semibold text-yellow-900 mb-2">⚠️ File Already Exists</h3>
+              <h3 className="font-semibold text-yellow-900 mb-2">âš ï¸ File Already Exists</h3>
               <p className="text-sm text-yellow-800 mb-3">
                 A file named <strong>{pendingReplaceFile.file.name}</strong> already exists in this folder.
               </p>
@@ -1153,7 +1156,7 @@ function UploadFileModal({
                 <div>Size: {pendingReplaceFile.existingFile.file_size ? Math.round(pendingReplaceFile.existingFile.file_size / 1024) + ' KB' : 'Unknown'}</div>
               </div>
               <div className="text-xs text-blue-700 mb-3 bg-blue-50 p-2 rounded border border-blue-200">
-                <strong>💡 Note:</strong> Replacing will keep the same URL, so all references (like logos in App Settings) will automatically show the new image.
+                <strong>ðŸ’¡ Note:</strong> Replacing will keep the same URL, so all references (like logos in App Settings) will automatically show the new image.
               </div>
               <div className="flex gap-2">
                 <button
@@ -1227,7 +1230,7 @@ function FileDetailsModal({
 
       onDelete();
     } catch (error) {
-      console.error('Error deleting file:', error);
+      logger.error('Error deleting file:', error);
       showError('Failed to delete file');
     } finally {
       setLoading(false);
@@ -1248,16 +1251,18 @@ function FileDetailsModal({
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
           >
-            ✕
+            âœ•
           </button>
         </div>
 
         {file.file_type.startsWith('image/') && (
           <div className="mb-4 bg-gray-100 rounded-lg p-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={file.file_url}
               alt={file.name}
               className="max-w-full max-h-96 mx-auto rounded"
+              loading="lazy"
             />
           </div>
         )}
@@ -1323,7 +1328,7 @@ function FileDetailsModal({
                 Dimensions
               </label>
               <p className="text-sm text-gray-900">
-                {file.width} × {file.height} px
+                {file.width} Ã— {file.height} px
               </p>
             </div>
           )}

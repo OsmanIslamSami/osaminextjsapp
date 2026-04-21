@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og';
+import { logger } from '@/lib/utils/logger';
 
 export const runtime = 'edge';
 
@@ -169,7 +170,7 @@ export async function GET() {
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
               }}
             >
-              Get Started Today →
+              Get Started Today â†’
             </div>
           </div>
         </div>
@@ -180,7 +181,7 @@ export async function GET() {
       }
     );
   } catch (error) {
-    console.error('Error generating OG image:', error);
+    logger.error('Error generating OG image:', error);
     return new Response('Failed to generate image', { status: 500 });
   }
 }

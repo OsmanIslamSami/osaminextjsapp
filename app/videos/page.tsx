@@ -16,6 +16,7 @@ import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import { VideoPopup, VideoItem } from '@/lib/components/media/VideoPopup';
 import { getYouTubeThumbnailUrl } from '@/lib/utils/youtube';
+import { logger } from '@/lib/utils/logger';
 
 interface PaginationInfo {
   page: number;
@@ -75,7 +76,7 @@ export default function VideosGalleryPage() {
           setPagination(data.pagination);
         }
       } catch (error) {
-        console.error('Failed to fetch videos:', error);
+        logger.error('Failed to fetch videos:', error);
       } finally {
         setLoading(false);
       }

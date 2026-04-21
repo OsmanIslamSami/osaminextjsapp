@@ -1,6 +1,7 @@
 'use client';
 
 import { Component, ReactNode, ComponentType } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 interface ErrorFallbackProps {
   error: Error;
@@ -29,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error to console or monitoring service
-    console.error('Error Boundary Caught:', error, errorInfo);
+    logger.error('Error Boundary Caught:', error, errorInfo);
   }
 
   reset = () => {

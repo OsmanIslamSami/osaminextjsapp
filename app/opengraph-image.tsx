@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/utils/logger';
 
 // Runtime configuration - using nodejs to enable database queries
 export const runtime = 'nodejs';
@@ -27,11 +28,11 @@ export default async function Image() {
   let description = 'Streamline client management, track analytics, publish news updates, and grow your business with our modern platform';
   
   try {
-    console.log('[OG Image] Fetching app settings from database...');
+    logger.debug('[OG Image] Fetching app settings from database...');
     const settings = await prisma.app_settings.findFirst();
     
     if (settings) {
-      console.log('[OG Image] Settings found:', {
+      logger.debug('[OG Image] Settings found:', {
         title_en: settings.site_title_en,
         description_en: settings.site_description_en?.substring(0, 50) + '...',
         og_image_url: settings.og_image_url
@@ -39,12 +40,12 @@ export default async function Image() {
       
       // If custom OG image is uploaded, fetch and return it
       if (settings.og_image_url) {
-        console.log('[OG Image] Custom OG image found, fetching:', settings.og_image_url);
+        logger.debug('[OG Image] Custom OG image found, fetching:', settings.og_image_url);
         try {
           const imageResponse = await fetch(settings.og_image_url);
           if (imageResponse.ok) {
             const imageBuffer = await imageResponse.arrayBuffer();
-            console.log('[OG Image] Serving custom uploaded image');
+            logger.debug('[OG Image] Serving custom uploaded image');
             return new Response(imageBuffer, {
               headers: {
                 'Content-Type': imageResponse.headers.get('Content-Type') || 'image/png',
@@ -52,10 +53,10 @@ export default async function Image() {
               },
             });
           } else {
-            console.error('[OG Image] Failed to fetch custom image, falling back to generated');
+            logger.error('[OG Image] Failed to fetch custom image, falling back to generated');
           }
         } catch (fetchError) {
-          console.error('[OG Image] Error fetching custom image:', fetchError);
+          logger.error('[OG Image] Error fetching custom image:', fetchError);
         }
       }
       
@@ -63,14 +64,14 @@ export default async function Image() {
       title = settings.site_title_en || title;
       description = settings.site_description_en || description;
     } else {
-      console.log('[OG Image] No settings found in database, using defaults');
+      logger.debug('[OG Image] No settings found in database, using defaults');
     }
   } catch (error) {
-    console.error('[OG Image] Failed to fetch app settings:', error);
+    logger.error('[OG Image] Failed to fetch app settings:', error);
     // Fall back to default values
   }
   
-  console.log('[OG Image] Generating dynamic image with title:', title);
+  logger.debug('[OG Image] Generating dynamic image with title:', title);
   
   return new ImageResponse(
     (

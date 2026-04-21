@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/permissions';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 export async function PUT(
   request: Request,
@@ -42,7 +43,7 @@ export async function PUT(
       updated_at: updatedUser.updated_at.toISOString(),
     });
   } catch (error) {
-    console.error('Error activating user:', error);
+    logger.error('Error activating user:', error);
     return NextResponse.json(
       { error: 'Failed to activate user' },
       { status: 500 }

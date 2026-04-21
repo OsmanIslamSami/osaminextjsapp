@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // PUT /api/slider/[id]/toggle - Admin only, toggle is_active
 export async function PUT(
@@ -42,7 +43,7 @@ export async function PUT(
 
     return NextResponse.json({ slide }, { status: 200 });
   } catch (error) {
-    console.error('Error toggling slide:', error);
+    logger.error('Error toggling slide:', error);
     return NextResponse.json(
       { error: 'Failed to toggle slide' },
       { status: 500 }

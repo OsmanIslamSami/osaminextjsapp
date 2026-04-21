@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { LanguageSwitcher } from '@/lib/components/LanguageSwitcher';
 import { prisma } from '@/lib/db';
 import NewsDetailContent from './NewsDetailContent';
+import { logger } from '@/lib/utils/logger';
 
 interface NewsDetailPageProps {
   params: Promise<{ id: string }>;
@@ -38,7 +39,7 @@ async function getNewsItem(id: string): Promise<News | null> {
 
     return newsItem;
   } catch (error) {
-    console.error('Error fetching news item:', error);
+    logger.error('Error fetching news item:', error);
     return null;
   }
 }

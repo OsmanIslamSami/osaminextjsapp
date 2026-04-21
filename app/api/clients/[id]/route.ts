@@ -2,6 +2,14 @@ import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { canDeleteClients } from '@/lib/auth/permissions';
+import {
+  handleApiError,
+  handlePrismaError,
+  handleValidationError,
+  handleNotFoundError,
+  isError
+} from '@/lib/utils/error-handler';
+import { logger } from '@/lib/utils/logger';
 
 // GET single client
 export async function GET(
@@ -18,20 +26,12 @@ export async function GET(
     });
 
     if (!client) {
-      return NextResponse.json(
-        { error: 'Client not found' },
-        { status: 404 }
-      );
+      return handleNotFoundError('Client not found');
     }
 
     return NextResponse.json(client);
   } catch (error) {
-    console.error('API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch client' },
-      { status: 500 }
-    );
-  }
+    return handleApiError(error, 'Failed to fetch client');
 }
 
 // PUT update client
@@ -54,10 +54,7 @@ export async function PUT(
 
     const updatedClient = await prisma.clients.update({
       where: {
-        id: parseInt(id),
-      },
-      data: {
-        name,
+        id: phandleValidationError('Name, address, email, and mobile are required'  name,
         address,
         email,
         mobile,
@@ -69,26 +66,14 @@ export async function PUT(
 
     return NextResponse.json(updatedClient);
   } catch (error: any) {
-    console.error('API error:', error);
+    logger.error('API error:', error);
     if (error.code === 'P2002') {
       return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 400 }
-      );
+    // Handle Prisma-specific errors (P2002 = unique constraint, P2025 = not found)
+    if (error.code === 'P2002' || error.code === 'P2025') {
+      return handlePrismaError(error);
     }
-    if (error.code === 'P2025') {
-      return NextResponse.json(
-        { error: 'Client not found' },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(
-      { error: 'Failed to update client' },
-      { status: 500 }
-    );
-  }
-}
-
+    return handleApiError(error, 'Failed to update client'
 // DELETE client (soft delete)
 export async function DELETE(
   request: NextRequest,
@@ -128,7 +113,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Client deleted successfully' });
   } catch (error: any) {
-    console.error('API error:', error);
+    logger.error('API error:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Client not found' },

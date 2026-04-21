@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useAppSettings } from '@/lib/contexts/AppSettingsContext';
+import { logger } from '@/lib/utils/logger';
 
 interface SocialMediaLink {
   id: string;
@@ -23,6 +25,7 @@ interface FooterNavItem {
 
 export default function Footer() {
   const { t, direction, language } = useTranslation();
+  const { settings } = useAppSettings();
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>([]);
   const [footerNav, setFooterNav] = useState<FooterNavItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +47,7 @@ export default function Footer() {
           setFooterNav(data || []);
         }
       } catch (error) {
-        console.error('Error fetching footer data:', error);
+        logger.error('Error fetching footer data:', error);
       } finally {
         setLoading(false);
       }
@@ -207,6 +210,69 @@ export default function Footer() {
             © {currentYear} {t('footer.appName')}. {t('footer.rights')}.
           </p>
         </div>
+
+        {/* Verification Badges */}
+        {(settings?.verify_html_url || settings?.verify_css_url || settings?.verify_taw_url) && (
+          <div className="mt-4 flex items-center justify-center gap-4 flex-wrap">
+            {settings.verify_html_url && (
+              <a
+                href={settings.verify_html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'; }}
+                aria-label={language === 'ar' ? 'التحقق من HTML' : 'HTML Validation'}
+                title={language === 'ar' ? 'التحقق من HTML' : 'HTML Validation'}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 4L5.5 18.5L12 21L18.5 18.5L20 4H4Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 8H16L15.5 13H9L8.5 16L12 17L15.5 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>HTML</span>
+              </a>
+            )}
+            {settings.verify_css_url && (
+              <a
+                href={settings.verify_css_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'; }}
+                aria-label={language === 'ar' ? 'التحقق من CSS' : 'CSS Validation'}
+                title={language === 'ar' ? 'التحقق من CSS' : 'CSS Validation'}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 4L5.5 18.5L12 21L18.5 18.5L20 4H4Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 8H16L15 13H9.5L9 16L12 17L15 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>CSS</span>
+              </a>
+            )}
+            {settings.verify_taw_url && (
+              <a
+                href={settings.verify_taw_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'; }}
+                aria-label={language === 'ar' ? 'التحقق من إمكانية الوصول - TAW' : 'TAW Accessibility Validation'}
+                title={language === 'ar' ? 'التحقق من إمكانية الوصول - TAW' : 'TAW Accessibility Validation'}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5"/>
+                  <path d="M12 7V7.5M9 10H15M10.5 10V16M13.5 10V16" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <span className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>TAW</span>
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </footer>
   );

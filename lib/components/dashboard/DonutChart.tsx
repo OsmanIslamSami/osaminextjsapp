@@ -59,7 +59,7 @@ export default function DonutChart({ data }: { data: StatusData[] }) {
         <Legend 
           verticalAlign="bottom" 
           height={36}
-          formatter={(value, entry: any) => `${value}: ${entry.payload.value}`}
+          formatter={(value, entry) => `${value}: ${(entry.payload as { value: number })?.value ?? ''}`}
         />
       </PieChart>
     </ResponsiveContainer>

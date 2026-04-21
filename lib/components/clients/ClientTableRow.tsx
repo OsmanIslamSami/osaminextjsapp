@@ -7,6 +7,7 @@ import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
 import { EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useToast } from '@/lib/components/ToastContainer';
+import { logger } from '@/lib/utils/logger';
 
 interface Client {
   id: number;
@@ -47,7 +48,7 @@ export default function ClientTableRow({ client, index, onDelete, isAdmin = fals
         showError(data.error || 'Failed to delete client');
       }
     } catch (error) {
-      console.error('Error deleting client:', error);
+      logger.error('Error deleting client:', error);
       showError('An error occurred while deleting the client');
     } finally {
       setDeleting(false);

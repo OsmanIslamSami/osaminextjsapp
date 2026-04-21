@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { put, del } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_TYPES = [
@@ -18,6 +19,8 @@ export async function GET(request: NextRequest) {
     const folderId = searchParams.get('folder_id');
     const fileType = searchParams.get('file_type'); // e.g., 'image', 'video'
     const search = searchParams.get('search');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '500'), 1000); // Max 1000 files per request
+    const offset = parseInt(searchParams.get('offset') || '0');
 
     const where: any = {
       is_deleted: false,
@@ -54,12 +57,25 @@ export async function GET(request: NextRequest) {
       },
       orderBy: {
         created_at: 'desc'
-      }
+      },
+      take: limit,
+      skip: offset
     });
 
-    return NextResponse.json({ files }, { status: 200 });
+    // Get total count for pagination
+    const total = await prisma.styleLibraryFile.count({ where });
+
+    return NextResponse.json({ 
+      files,
+      pagination: {
+        total,
+        limit,
+        offset,
+        hasMore: offset + files.length < total
+      }
+    }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching files:', error);
+    logger.error('Error fetching files:', error);
     return NextResponse.json(
       { error: 'Failed to fetch files' },
       { status: 500 }
@@ -93,7 +109,7 @@ export async function POST(request: NextRequest) {
     }
 
     const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-    console.log('📤 Upload attempt:', file.name, '(' + file.type + ', ' + fileSizeMB + 'MB)');
+    logger.log('ðŸ“¤ Upload attempt:', file.name, '(' + file.type + ', ' + fileSizeMB + 'MB)');
 
     // Check if file with same name already exists in the same folder
     const existingFile = await prisma.styleLibraryFile.findFirst({
@@ -105,7 +121,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingFile && !replaceExisting) {
-      console.log('⚠️ File already exists:', file.name);
+      logger.log('âš ï¸ File already exists:', file.name);
       return NextResponse.json(
         { 
           error: 'FILE_EXISTS',
@@ -123,7 +139,7 @@ export async function POST(request: NextRequest) {
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
-      console.error('❌ Invalid file type:', file.type);
+      logger.error('âŒ Invalid file type:', file.type);
       return NextResponse.json(
         { error: 'Invalid file type "' + file.type + '". Allowed types: images (JPEG, PNG, GIF, WebP, SVG), videos (MP4, WebM), PDFs, and icons' },
         { status: 400 }
@@ -132,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      console.error('❌ File too large:', file.size, 'bytes (max:', MAX_FILE_SIZE + ')');
+      logger.error('âŒ File too large:', file.size, 'bytes (max:', MAX_FILE_SIZE + ')');
       const maxSizeMB = MAX_FILE_SIZE / (1024 * 1024);
       return NextResponse.json(
         { error: 'File too large (' + fileSizeMB + 'MB). Maximum size: ' + maxSizeMB + 'MB' },
@@ -140,7 +156,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✓ File validation passed');
+    logger.log('âœ“ File validation passed');
 
     // Verify folder exists if provided
     if (folderId) {
@@ -161,7 +177,7 @@ export async function POST(request: NextRequest) {
 
     // Check if Vercel Blob is configured
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      console.error('BLOB_READ_WRITE_TOKEN not configured');
+      logger.error('BLOB_READ_WRITE_TOKEN not configured');
       return NextResponse.json(
         { error: 'Storage not configured. Please enable Vercel Blob in your project settings.' },
         { status: 500 }
@@ -185,7 +201,7 @@ export async function POST(request: NextRequest) {
       // Use the original filename pattern (without timestamp) to maintain the same URL
       sanitizedName = baseName + extension;
       blobPath = 'style-library/' + sanitizedName;
-      console.log('🔄 Replacing file with same path:', blobPath);
+      logger.log('ðŸ”„ Replacing file with same path:', blobPath);
     } else {
       // New upload: add timestamp to ensure uniqueness
       const timestamp = Date.now();
@@ -196,14 +212,14 @@ export async function POST(request: NextRequest) {
     // Upload to Vercel Blob
     let blob;
     try {
-      console.log('📤 Uploading to Vercel Blob:', blobPath);
+      logger.log('ðŸ“¤ Uploading to Vercel Blob:', blobPath);
       blob = await put(blobPath, file, {
         access: 'public',
         addRandomSuffix: false,
       });
-      console.log('✓ Blob upload successful:', blob.url);
+      logger.log('âœ“ Blob upload successful:', blob.url);
     } catch (blobError: any) {
-      console.error('❌ Vercel Blob upload error:', blobError);
+      logger.error('âŒ Vercel Blob upload error:', blobError);
       const errorMsg = blobError?.message || 'Unknown error';
       return NextResponse.json(
         { error: 'Blob upload failed: ' + errorMsg + '. Please ensure Vercel Blob is enabled in your project settings.' },
@@ -213,15 +229,15 @@ export async function POST(request: NextRequest) {
 
     // If replacing existing file, delete the old blob first
     if (existingFile && replaceExisting) {
-      console.log('🔄 Replacing existing file:', existingFile.name);
+      logger.log('ðŸ”„ Replacing existing file:', existingFile.name);
       
       // Delete old file from Vercel Blob if it's a blob URL
       if (existingFile.file_url.includes('vercel-storage.com')) {
         try {
           await del(existingFile.file_url);
-          console.log('✓ Deleted old blob:', existingFile.file_url);
+          logger.log('âœ“ Deleted old blob:', existingFile.file_url);
         } catch (delError) {
-          console.error('⚠️ Failed to delete old blob (continuing anyway):', delError);
+          logger.error('âš ï¸ Failed to delete old blob (continuing anyway):', delError);
         }
       }
     }
@@ -265,7 +281,7 @@ export async function POST(request: NextRequest) {
           }
         }
       });
-      console.log('✓ File record updated in database:', fileRecord.id);
+      logger.log('âœ“ File record updated in database:', fileRecord.id);
     } else {
       // Create new file record
       fileRecord = await prisma.styleLibraryFile.create({
@@ -291,11 +307,11 @@ export async function POST(request: NextRequest) {
           }
         }
       });
-      console.log('✓ File record created in database:', fileRecord.id);
+      logger.log('âœ“ File record created in database:', fileRecord.id);
     }
     return NextResponse.json({ file: fileRecord }, { status: 201 });
   } catch (error: any) {
-    console.error('Error uploading file:', error);
+    logger.error('Error uploading file:', error);
     const errorMessage = error?.message || 'Failed to upload file';
     const detailedError = process.env.NODE_ENV === 'development' 
       ? errorMessage + ' - ' + (error?.stack?.split('\n')[0] || '')

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/faq/[id]
@@ -51,7 +52,7 @@ export async function GET(
     return NextResponse.json({ data: faq });
     
   } catch (error) {
-    console.error('Error fetching FAQ:', error);
+    logger.error('Error fetching FAQ:', error);
     return NextResponse.json(
       { error: 'Failed to fetch FAQ' },
       { status: 500 }
@@ -160,7 +161,7 @@ export async function PUT(
     return NextResponse.json({ data: faq });
     
   } catch (error) {
-    console.error('Error updating FAQ:', error);
+    logger.error('Error updating FAQ:', error);
     return NextResponse.json(
       { error: 'Failed to update FAQ' },
       { status: 500 }
@@ -234,7 +235,7 @@ export async function DELETE(
     });
     
   } catch (error) {
-    console.error('Error deleting FAQ:', error);
+    logger.error('Error deleting FAQ:', error);
     return NextResponse.json(
       { error: 'Failed to delete FAQ' },
       { status: 500 }

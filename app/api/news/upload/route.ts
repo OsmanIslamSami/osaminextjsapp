@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { hasPermission } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * POST /api/news/upload
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
       mime_type: file.type,
     });
   } catch (error) {
-    console.error('Error uploading file:', error);
+    logger.error('Error uploading file:', error);
     return NextResponse.json(
       { error: 'Failed to upload file' },
       { status: 500 }

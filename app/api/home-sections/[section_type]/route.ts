@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 // PATCH /api/home-sections/[section_type] - Update section configuration
 export async function PATCH(
@@ -20,7 +21,7 @@ export async function PATCH(
     const data = await request.json();
 
     // Validate section_type enum
-    const validSectionTypes = ['news', 'photos', 'videos', 'partners', 'faq', 'magazines'];
+    const validSectionTypes = ['news', 'photos', 'videos', 'partners', 'faq', 'magazines', 'slider', 'stats', 'quicklinks'];
     if (!validSectionTypes.includes(section_type)) {
       return NextResponse.json(
         { success: false, error: `Invalid section_type. Must be one of: ${validSectionTypes.join(', ')}` },
@@ -29,7 +30,7 @@ export async function PATCH(
     }
 
     // Prepare update data
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
 
     if (typeof data.is_visible === 'boolean') {
       updateData.is_visible = data.is_visible;
@@ -71,7 +72,7 @@ export async function PATCH(
       data: section,
     });
   } catch (error: any) {
-    console.error('Home sections PATCH error:', error);
+    logger.error('Home sections PATCH error:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { success: false, error: 'Section not found' },

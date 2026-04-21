@@ -1,9 +1,15 @@
 import { prisma } from '@/lib/db';
+import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/utils/logger';
 
 // GET all clients with cursor-based pagination for infinite scroll
 export async function GET(request: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search') || '';
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100); // Max 100
@@ -52,7 +58,7 @@ export async function GET(request: NextRequest) {
       nextCursor,
     });
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch clients' },
       { status: 500 }
@@ -85,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newClient, { status: 201 });
   } catch (error: any) {
-    console.error('API error:', error);
+    logger.error('API error:', error);
     if (error.code === 'P2002') {
       return NextResponse.json(
         { error: 'Email already exists' },

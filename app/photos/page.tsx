@@ -14,6 +14,7 @@ import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useRTLDirection } from '@/lib/hooks/useRTLDirection';
 import { PhotoPopup, PhotoItem } from '@/lib/components/media/PhotoPopup';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface PaginationInfo {
   page: number;
@@ -50,7 +51,7 @@ export default function PhotosGalleryPage() {
           setPagination(data.pagination);
         }
       } catch (error) {
-        console.error('Failed to fetch photos:', error);
+        logger.error('Failed to fetch photos:', error);
       } finally {
         setLoading(false);
       }

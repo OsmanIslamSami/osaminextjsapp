@@ -1,5 +1,6 @@
 import NewsGridClient from './NewsGridClient';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 interface News {
   id: string;
@@ -48,10 +49,10 @@ async function getNews(): Promise<News[]> {
       updated_at: item.updated_at.toISOString(),
     }));
     
-    console.log('[NewsSection Server] Fetched news:', news.length, 'items');
+    logger.log('[NewsSection Server] Fetched news:', news.length, 'items');
     return news;
   } catch (error) {
-    console.error('[NewsSection] Error fetching news:', error);
+    logger.error('[NewsSection] Error fetching news:', error);
     return [];
   }
 }
@@ -66,10 +67,10 @@ interface NewsSectionProps {
 export default async function NewsSection({ title }: NewsSectionProps = {}) {
   const news = await getNews();
 
-  console.log('[NewsSection Server] Rendering with', news.length, 'news items');
+  logger.log('[NewsSection Server] Rendering with', news.length, 'news items');
 
   if (news.length === 0) {
-    console.log('[NewsSection Server] No news to display, returning null');
+    logger.log('[NewsSection Server] No news to display, returning null');
     return null; // Don't show the section if there's no news
   }
 

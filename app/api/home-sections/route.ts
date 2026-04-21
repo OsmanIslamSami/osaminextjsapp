@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/home-sections - Get all sections or single section by section_type
 export async function GET(request: NextRequest) {
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: sections });
   } catch (error) {
-    console.error('Home sections GET error:', error);
+    logger.error('Home sections GET error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch sections' },
       { status: 500 }

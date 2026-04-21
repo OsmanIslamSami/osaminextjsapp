@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 interface ExportButtonProps {
   searchQuery?: string;
@@ -41,7 +42,7 @@ export default function ExportButton({ searchQuery = '' }: ExportButtonProps) {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (err) {
-      console.error('Export error:', err);
+      logger.error('Export error:', err);
       setError('Failed to export clients. Please try again.');
     } finally {
       setLoading(false);

@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { put } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { validateImage, validatePDF } from '@/lib/utils/fileValidation';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/magazines/[id]
@@ -63,7 +64,7 @@ export async function GET(
     return NextResponse.json({ data: magazineWithUrl });
     
   } catch (error) {
-    console.error('Error fetching Magazine:', error);
+    logger.error('Error fetching Magazine:', error);
     return NextResponse.json(
       { error: 'Failed to fetch Magazine' },
       { status: 500 }
@@ -216,7 +217,7 @@ export async function PUT(
         updateData.mime_type = cover_image.type;
         updateData.file_data = null;
       } catch (error) {
-        console.error('Blob upload failed, using local storage:', error);
+        logger.error('Blob upload failed, using local storage:', error);
         // Fallback to local storage
         const bytes = await cover_image.arrayBuffer();
         updateData.file_data = Buffer.from(bytes);
@@ -254,7 +255,7 @@ export async function PUT(
         });
         updateData.download_link = pdfBlob.url;
       } catch (error) {
-        console.error('PDF upload failed:', error);
+        logger.error('PDF upload failed:', error);
         return NextResponse.json(
           { error: 'Failed to upload PDF file' },
           { status: 500 }
@@ -284,7 +285,7 @@ export async function PUT(
     return NextResponse.json({ data: magazine });
     
   } catch (error) {
-    console.error('Error updating Magazine:', error);
+    logger.error('Error updating Magazine:', error);
     return NextResponse.json(
       { error: 'Failed to update Magazine' },
       { status: 500 }
@@ -358,7 +359,7 @@ export async function DELETE(
     });
     
   } catch (error) {
-    console.error('Error deleting Magazine:', error);
+    logger.error('Error deleting Magazine:', error);
     return NextResponse.json(
       { error: 'Failed to delete Magazine' },
       { status: 500 }

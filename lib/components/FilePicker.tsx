@@ -11,6 +11,7 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface Folder {
   id: string;
@@ -74,7 +75,7 @@ export default function FilePicker({
       const data = await response.json();
       setFolders(data.folders || []);
     } catch (error) {
-      console.error('Error fetching folders:', error);
+      logger.error('Error fetching folders:', error);
     }
   };
 
@@ -100,7 +101,7 @@ export default function FilePicker({
       const data = await response.json();
       setFiles(data.files || []);
     } catch (error) {
-      console.error('Error fetching files:', error);
+      logger.error('Error fetching files:', error);
     } finally {
       setLoading(false);
     }

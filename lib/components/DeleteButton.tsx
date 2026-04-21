@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ConfirmDialog from './ConfirmDialog';
+import { logger } from '@/lib/utils/logger';
 
 interface DeleteButtonProps {
   clientId: number;
@@ -36,7 +37,7 @@ export default function DeleteButton({ clientId, clientName, onDelete, isAdmin =
       setShowDialog(false);
       onDelete();
     } catch (err) {
-      console.error('Delete error:', err);
+      logger.error('Delete error:', err);
       setError('Failed to delete client. Please try again.');
     } finally {
       setLoading(false);

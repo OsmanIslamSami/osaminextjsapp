@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 export default function MagazineSectionError({
   error,
@@ -11,7 +12,7 @@ export default function MagazineSectionError({
 }) {
   useEffect(() => {
     // Log error to console (in production, send to monitoring service)
-    console.error('Magazine Section Error:', error);
+    logger.error('Magazine Section Error:', error);
   }, [error]);
 
   return (

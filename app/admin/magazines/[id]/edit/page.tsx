@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useToast } from '@/lib/components/ToastContainer';
 import MagazineForm from '@/lib/components/magazines/MagazineForm';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 export default function EditMagazinePage() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function EditMagazinePage() {
         setMagazine(data);
       } catch (error) {
         showError('Failed to load magazine');
-        console.error('Load magazine error:', error);
+        logger.error('Load magazine error:', error);
       } finally {
         setLoading(false);
       }

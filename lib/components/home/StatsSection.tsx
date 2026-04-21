@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/utils/logger';
 
 interface Stat {
   label: string;
@@ -101,7 +102,7 @@ export default function StatsSection() {
           setMetrics(data);
         }
       } catch (error) {
-        console.error('Failed to fetch metrics:', error);
+        logger.error('Failed to fetch metrics:', error);
       } finally {
         setLoading(false);
       }

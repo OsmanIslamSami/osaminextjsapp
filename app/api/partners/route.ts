@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { put } from '@vercel/blob';
 import { getHomeSectionConfig } from '@/lib/utils/home-sections';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/partners
@@ -117,7 +118,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Partners GET error:', error);
+    logger.error('Partners GET error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch partners' },
       { status: 500 }
@@ -259,7 +260,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Partners POST error:', error);
+    logger.error('Partners POST error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create partner' },
       { status: 500 }

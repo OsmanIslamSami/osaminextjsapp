@@ -329,10 +329,12 @@ export default function AdminPartnersPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={partner.image_url}
                       alt={partner.title_en}
                       className="w-16 h-16 object-contain"
+                      loading="lazy"
                     />
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 dark:text-zinc-100">

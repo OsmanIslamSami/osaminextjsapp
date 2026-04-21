@@ -8,6 +8,7 @@ import { useToast } from '@/lib/components/ToastContainer';
 import FAQForm from '@/lib/components/faq/FAQForm';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import type { FAQFormData } from '@/lib/types';
+import { logger } from '@/lib/utils/logger';
 
 export default function AddFAQPage() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function AddFAQPage() {
       router.push('/admin/faq');
     } catch (error) {
       showError(error instanceof Error ? error.message : 'Failed to create FAQ');
-      console.error('Create FAQ error:', error);
+      logger.error('Create FAQ error:', error);
     } finally {
       setSubmitting(false);
     }

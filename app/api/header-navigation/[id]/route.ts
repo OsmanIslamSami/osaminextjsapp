@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * PUT /api/header-navigation/[id]
@@ -52,7 +53,7 @@ export async function PUT(
     
     return NextResponse.json({ data: navItem });
   } catch (error) {
-    console.error('Error updating navigation item:', error);
+    logger.error('Error updating navigation item:', error);
     return NextResponse.json(
       { error: 'Failed to update navigation item' },
       { status: 500 }
@@ -103,7 +104,7 @@ export async function DELETE(
     
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting navigation item:', error);
+    logger.error('Error deleting navigation item:', error);
     return NextResponse.json(
       { error: 'Failed to delete navigation item' },
       { status: 500 }

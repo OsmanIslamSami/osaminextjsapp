@@ -8,6 +8,7 @@ import { PhotoIcon, VideoCameraIcon, UsersIcon, CheckIcon, NewspaperIcon, Cog6To
 import FilePicker from '@/lib/components/FilePicker';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
 import NavigationManager from '@/lib/components/admin/NavigationManager';
+import { logger } from '@/lib/utils/logger';
 
 interface HomeSection {
   section_type: string;
@@ -39,6 +40,9 @@ interface AppSettings {
   og_image_storage_type: string;
   site_keywords_en?: string | null;
   site_keywords_ar?: string | null;
+  verify_html_url?: string | null;
+  verify_css_url?: string | null;
+  verify_taw_url?: string | null;
 }
 
 type SettingsTab = 'home-sections' | 'fonts' | 'themes' | 'site-settings' | 'navigation';
@@ -130,6 +134,9 @@ export default function AppSettingsPage() {
     site_description_ar: '',
     site_keywords_en: '',
     site_keywords_ar: '',
+    verify_html_url: '',
+    verify_css_url: '',
+    verify_taw_url: '',
   });
   const [filePickerOpen, setFilePickerOpen] = useState(false);
   const [filePickerTarget, setFilePickerTarget] = useState<'logo' | 'favicon' | 'og_image' | null>(null);
@@ -179,6 +186,9 @@ export default function AppSettingsPage() {
             site_description_ar: data.data.site_description_ar || '',
             site_keywords_en: data.data.site_keywords_en || '',
             site_keywords_ar: data.data.site_keywords_ar || '',
+            verify_html_url: data.data.verify_html_url || '',
+            verify_css_url: data.data.verify_css_url || '',
+            verify_taw_url: data.data.verify_taw_url || '',
           });
           // Initialize custom colors state with current values
           setCustomColors({
@@ -322,10 +332,10 @@ export default function AppSettingsPage() {
     });
   };
 
-  const handleFileSelect = async (file: any) => {
+  const handleFileSelect = async (file: { file_url: string; file_size: number }) => {
     if (!filePickerTarget) return;
 
-    console.log('Selected file from library:', file);
+    logger.log('Selected file from library:', file);
 
     // Validate OG Image requirements
     if (filePickerTarget === 'og_image') {
@@ -366,7 +376,7 @@ export default function AppSettingsPage() {
       updates.og_image_storage_type = 'blob';
     }
 
-    console.log('Updating app settings with:', updates);
+    logger.log('Updating app settings with:', updates);
     await handleUpdateAppSettings(updates);
     setFilePickerOpen(false);
     setFilePickerTarget(null);
@@ -392,7 +402,7 @@ export default function AppSettingsPage() {
   };
 
   const getSectionTitle = (section_type: string) => {
-    const titles: any = {
+    const titles: Record<string, Record<string, string>> = {
       news: {
         en: 'News Section',
         ar: 'قسم الأخبار',
@@ -422,7 +432,7 @@ export default function AppSettingsPage() {
   };
 
   const getSectionDescription = (section_type: string) => {
-    const descriptions: any = {
+    const descriptions: Record<string, Record<string, string>> = {
       news: {
         en: 'Display latest news articles in a grid on the home page',
         ar: 'عرض آخر الأخبار في شبكة على الصفحة الرئيسية',
@@ -1595,6 +1605,80 @@ export default function AppSettingsPage() {
                 </div>
               </div>
 
+              {/* Verification Badge Links */}
+              <div>
+                <h4 className="text-base font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
+                  {language === 'ar' ? 'روابط شارات التحقق (Footer)' : 'Verification Badge Links (Footer)'}
+                </h4>
+                <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
+                  {language === 'ar'
+                    ? 'ستظهر هذه الشارات في تذييل الموقع. اتركها فارغة لإخفائها.'
+                    : 'These badges will appear in the site footer. Leave empty to hide.'}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-primary)' }}>
+                      {language === 'ar' ? 'رابط التحقق من HTML' : 'HTML Validation Link'}
+                    </label>
+                    <input
+                      type="url"
+                      value={siteSettings.verify_html_url}
+                      onChange={(e) => setSiteSettings({ ...siteSettings, verify_html_url: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2"
+                      style={{
+                        backgroundColor: 'var(--color-surface)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: 'var(--color-border)',
+                        color: 'var(--color-text-primary)',
+                      }}
+                      placeholder="https://validator.w3.org/..."
+                      dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-primary)' }}>
+                      {language === 'ar' ? 'رابط التحقق من CSS' : 'CSS Validation Link'}
+                    </label>
+                    <input
+                      type="url"
+                      value={siteSettings.verify_css_url}
+                      onChange={(e) => setSiteSettings({ ...siteSettings, verify_css_url: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2"
+                      style={{
+                        backgroundColor: 'var(--color-surface)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: 'var(--color-border)',
+                        color: 'var(--color-text-primary)',
+                      }}
+                      placeholder="https://jigsaw.w3.org/css-validator/..."
+                      dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-primary)' }}>
+                      {language === 'ar' ? 'رابط التحقق من TAW' : 'TAW Accessibility Link'}
+                    </label>
+                    <input
+                      type="url"
+                      value={siteSettings.verify_taw_url}
+                      onChange={(e) => setSiteSettings({ ...siteSettings, verify_taw_url: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2"
+                      style={{
+                        backgroundColor: 'var(--color-surface)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: 'var(--color-border)',
+                        color: 'var(--color-text-primary)',
+                      }}
+                      placeholder="https://www.tawdis.net/..."
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Style Library Notice */}
               <div 
                 className="rounded-lg p-4 flex items-start gap-3"
@@ -1653,10 +1737,12 @@ export default function AppSettingsPage() {
                   >
                     {appSettings.site_logo_url ? (
                       <div className="space-y-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={appSettings.site_logo_url}
                           alt="Header Logo"
                           className="mx-auto h-12 w-auto object-contain"
+                          loading="lazy"
                         />
                         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
                           {language === 'ar' ? 'الشعار الحالي' : 'Current logo'}
@@ -1714,10 +1800,12 @@ export default function AppSettingsPage() {
                   >
                     {appSettings.site_favicon_url ? (
                       <div className="space-y-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={appSettings.site_favicon_url}
                           alt="Favicon"
                           className="mx-auto h-12 w-12 object-contain"
+                          loading="lazy"
                         />
                         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
                           {language === 'ar' ? 'الأيقونة الحالية' : 'Current favicon'}
@@ -1775,10 +1863,12 @@ export default function AppSettingsPage() {
                   >
                     {appSettings.og_image_url ? (
                       <div className="space-y-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={appSettings.og_image_url}
                           alt="OG Image"
                           className="mx-auto h-20 w-auto object-cover rounded"
+                          loading="lazy"
                         />
                         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
                           {language === 'ar' ? 'الصورة الحالية' : 'Current image'}

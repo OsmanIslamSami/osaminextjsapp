@@ -6,6 +6,7 @@ import FilePicker from '@/lib/components/FilePicker';
 import { useToast } from '@/lib/components/ToastContainer';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/utils/logger';
 
 interface FormData {
   platform: string;
@@ -47,7 +48,7 @@ export default function AdminSocialPage() {
         setLinks(data);
       }
     } catch (error) {
-      console.error('Error fetching social media links:', error);
+      logger.error('Error fetching social media links:', error);
     } finally {
       setLoading(false);
     }
@@ -183,7 +184,7 @@ export default function AdminSocialPage() {
         showError(error.error || `Failed to ${editingId ? 'update' : 'create'} link`);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      logger.error('Error submitting form:', error);
       showError(`Failed to ${editingId ? 'update' : 'create'} link`);
     } finally {
       setSubmitting(false);
@@ -211,7 +212,7 @@ export default function AdminSocialPage() {
         showError(error.error || 'Failed to delete link');
       }
     } catch (error) {
-      console.error('Error deleting link:', error);
+      logger.error('Error deleting link:', error);
       showError('Failed to delete link');
     } finally {
       setShowDeleteConfirm(false);
@@ -340,10 +341,12 @@ export default function AdminSocialPage() {
                 {previewUrl && (
                   <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-zinc-700">
                     <div className="w-12 h-12 flex items-center justify-center bg-white dark:bg-zinc-900 rounded p-2 border border-gray-200 dark:border-zinc-700">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src={previewUrl} 
                         alt="Icon preview" 
                         className="w-full h-full object-contain"
+                        loading="lazy"
                       />
                     </div>
                     <div className="flex-1">
@@ -457,10 +460,12 @@ export default function AdminSocialPage() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-zinc-800 rounded p-1">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src={link.icon_path} 
                         alt={link.platform}
                         className="w-full h-full object-contain"
+                        loading="lazy"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none';
                         }}
@@ -512,10 +517,12 @@ export default function AdminSocialPage() {
             {/* Platform and Icon */}
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 flex items-center justify-center bg-gray-50 dark:bg-zinc-800 rounded p-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={link.icon_path} 
                   alt={link.platform}
                   className="w-full h-full object-contain"
+                  loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}

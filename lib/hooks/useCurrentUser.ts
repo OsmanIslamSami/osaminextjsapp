@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { User } from '@/lib/types';
+import { logger } from '@/lib/utils/logger';
 
 export function useCurrentUser() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -37,7 +38,7 @@ export function useCurrentUser() {
           setIsAdmin(false);
         }
       } catch (error) {
-        console.error('Error fetching current user:', error);
+        logger.error('Error fetching current user:', error);
         setUser(null);
         setIsAdmin(false);
       } finally {

@@ -7,6 +7,7 @@ import StatusBadge from '@/lib/components/clients/StatusBadge';
 import { ClientStatus } from '@/lib/generated/prisma/enums';
 import { useToast } from '@/lib/components/ToastContainer';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface Client {
   id: number;
@@ -59,7 +60,7 @@ export default function ViewClient() {
       const data = await response.json();
       setClient(data);
     } catch (err) {
-      console.error('Error fetching client:', err);
+      logger.error('Error fetching client:', err);
       setError('Failed to load client');
     } finally {
       setLoading(false);
@@ -73,7 +74,7 @@ export default function ViewClient() {
       const data = await response.json();
       setOrders(data.orders);
     } catch (err) {
-      console.error('Error fetching orders:', err);
+      logger.error('Error fetching orders:', err);
     }
   };
 
@@ -102,7 +103,7 @@ export default function ViewClient() {
       setShowAddOrder(false);
       fetchOrders();
     } catch (err) {
-      console.error('Error creating order:', err);
+      logger.error('Error creating order:', err);
       showError('An error occurred');
     } finally {
       setSubmittingOrder(false);

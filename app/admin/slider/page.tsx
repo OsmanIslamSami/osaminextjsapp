@@ -7,6 +7,7 @@ import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import { TrashIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon, EyeIcon, EyeSlashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import FilePicker from '@/lib/components/FilePicker';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface Slide {
   id: string;
@@ -65,7 +66,7 @@ export default function AdminSliderPage() {
         setSlides(data.slides || []);
       }
     } catch (error) {
-      console.error('Error fetching slides:', error);
+      logger.error('Error fetching slides:', error);
     } finally {
       setLoading(false);
     }
@@ -128,7 +129,7 @@ export default function AdminSliderPage() {
         showError(error.error || 'Upload failed');
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      logger.error('Error uploading file:', error);
       showError('Upload failed');
     } finally {
       setUploading(false);
@@ -167,7 +168,7 @@ export default function AdminSliderPage() {
         showError(error.error || 'Operation failed');
       }
     } catch (error) {
-      console.error('Error saving slide:', error);
+      logger.error('Error saving slide:', error);
       showError('Save failed');
     }
   };
@@ -210,7 +211,7 @@ export default function AdminSliderPage() {
         showError(error.error || 'Delete failed');
       }
     } catch (error) {
-      console.error('Error deleting slide:', error);
+      logger.error('Error deleting slide:', error);
       showError('Delete failed');
     } finally {
       setShowDeleteConfirm(false);
@@ -225,7 +226,7 @@ export default function AdminSliderPage() {
         fetchSlides();
       }
     } catch (error) {
-      console.error('Error toggling visibility:', error);
+      logger.error('Error toggling visibility:', error);
     }
   };
 
@@ -258,7 +259,7 @@ export default function AdminSliderPage() {
         setSlides(newSlides);
       }
     } catch (error) {
-      console.error('Error reordering slides:', error);
+      logger.error('Error reordering slides:', error);
     }
   };
 
@@ -498,7 +499,8 @@ export default function AdminSliderPage() {
                 {slide.media_type === 'video' ? (
                   <video src={slide.media_url} className="w-full h-full object-cover rounded" />
                 ) : (
-                  <img src={slide.media_url} alt="Slide" className="w-full h-full object-cover rounded" />
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={slide.media_url} alt="Slide" className="w-full h-full object-cover rounded" loading="lazy" />
                 )}
                 {/* Hidden overlay indicator */}
                 {!slide.is_visible && (

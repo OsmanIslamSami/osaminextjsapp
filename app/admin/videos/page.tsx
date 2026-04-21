@@ -340,10 +340,12 @@ export default function AdminVideosPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={video.thumbnail_url || `https://img.youtube.com/vi/${video.video_id}/mqdefault.jpg`}
                       alt={video.title_en}
                       className="w-24 h-16 object-cover rounded"
+                      loading="lazy"
                     />
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 dark:text-zinc-100">

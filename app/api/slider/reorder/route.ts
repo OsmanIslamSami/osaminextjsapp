@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // PUT /api/slider/reorder - Admin only, bulk update display_order
 export async function PUT(request: NextRequest) {
@@ -41,7 +42,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error reordering slides:', error);
+    logger.error('Error reordering slides:', error);
     return NextResponse.json(
       { error: 'Failed to reorder slides' },
       { status: 500 }

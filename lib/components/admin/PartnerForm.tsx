@@ -104,7 +104,7 @@ export default function PartnerForm({ partner, onClose }: PartnerFormProps) {
     setError('');
   };
 
-  const handleFileSelect = (file: any) => {
+  const handleFileSelect = (file: { file_url: string }) => {
     setLogoUrl(file.file_url);
     setLogoPreview(file.file_url);
     setLogoFile(null);

@@ -3,6 +3,7 @@
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import Image from 'next/image';
 import Link from 'next/link';
+import { logger } from '@/lib/utils/logger';
 
 interface News {
   id: string;
@@ -67,7 +68,7 @@ export default function NewsCard({ news, index, isVisible }: NewsCardProps) {
           sizes="400px"
           unoptimized={news.storage_type === 'blob'}
           onError={(e) => {
-            console.error('Image failed to load:', imageUrl);
+            logger.error('Image failed to load:', imageUrl);
             // Hide the failed image element
             const target = e.target as HTMLImageElement;
             target.style.display = 'none';

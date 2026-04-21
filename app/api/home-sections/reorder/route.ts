@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 // POST /api/home-sections/reorder - Reorder sections
 export async function POST(request: NextRequest) {
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
       message: 'Section reordered successfully',
     });
   } catch (error) {
-    console.error('Home sections reorder error:', error);
+    logger.error('Home sections reorder error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to reorder section' },
       { status: 500 }

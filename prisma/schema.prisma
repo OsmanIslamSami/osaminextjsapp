@@ -429,6 +429,11 @@ model app_settings {
   site_keywords_en   String?   // SEO keywords
   site_keywords_ar   String?   // SEO keywords
   
+  // Verification Badge Links
+  verify_html_url    String?   // W3C HTML Validator link
+  verify_css_url     String?   // W3C CSS Validator link
+  verify_taw_url     String?   // TAW Accessibility Validator link
+  
   // Audit trail
   updated_by         String?   // User ID who last updated
   created_at         DateTime  @default(now())

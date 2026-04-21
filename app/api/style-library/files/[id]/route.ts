@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { del } from '@vercel/blob';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/style-library/files/[id] - Get file details
 export async function GET(
@@ -36,7 +37,7 @@ export async function GET(
 
     return NextResponse.json({ file }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching file:', error);
+    logger.error('Error fetching file:', error);
     return NextResponse.json(
       { error: 'Failed to fetch file' },
       { status: 500 }
@@ -118,7 +119,7 @@ export async function PUT(
 
     return NextResponse.json({ file }, { status: 200 });
   } catch (error) {
-    console.error('Error updating file:', error);
+    logger.error('Error updating file:', error);
     return NextResponse.json(
       { error: 'Failed to update file' },
       { status: 500 }
@@ -169,14 +170,14 @@ export async function DELETE(
       try {
         await del(file.file_url);
       } catch (blobError) {
-        console.error('Error deleting blob:', blobError);
+        logger.error('Error deleting blob:', blobError);
         // Continue even if blob deletion fails
       }
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting file:', error);
+    logger.error('Error deleting file:', error);
     return NextResponse.json(
       { error: 'Failed to delete file' },
       { status: 500 }

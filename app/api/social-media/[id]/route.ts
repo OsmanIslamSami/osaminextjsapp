@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET single social media link
 export async function GET(
@@ -34,7 +35,7 @@ export async function GET(
       updated_at: link.updated_at.toISOString(),
     });
   } catch (error) {
-    console.error('Error fetching social media link:', error);
+    logger.error('Error fetching social media link:', error);
     return NextResponse.json(
       { error: 'Failed to fetch social media link' },
       { status: 500 }
@@ -123,7 +124,7 @@ export async function PUT(
       updated_at: updatedLink.updated_at.toISOString(),
     });
   } catch (error: any) {
-    console.error('Error updating social media link:', error);
+    logger.error('Error updating social media link:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Social media link not found' },
@@ -173,7 +174,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Social media link deleted successfully' });
   } catch (error: any) {
-    console.error('Error deleting social media link:', error);
+    logger.error('Error deleting social media link:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Social media link not found' },

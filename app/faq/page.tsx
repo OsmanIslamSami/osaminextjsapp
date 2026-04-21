@@ -3,6 +3,7 @@
 import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { logger } from '@/lib/utils/logger';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import FAQSection from '@/lib/components/home/FAQSection';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
@@ -64,7 +65,7 @@ function FAQContent() {
         totalPages: result.totalPages,
       });
     } catch (error) {
-      console.error('Load FAQs error:', error);
+      logger.error('Load FAQs error:', error);
     } finally {
       setLoading(false);
     }

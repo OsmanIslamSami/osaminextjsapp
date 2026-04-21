@@ -5,6 +5,7 @@ import {
   buildNewsWhereClause,
   validatePagination,
 } from '@/lib/utils/news-search';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/news
@@ -63,9 +64,9 @@ export async function GET(request: NextRequest) {
       prisma.news.count({ where }),
     ]);
 
-    console.log('News API - Where clause:', JSON.stringify(where, null, 2));
-    console.log('News API - Found:', news.length, 'news items');
-    console.log('News API - Total count:', total);
+    logger.log('News API - Where clause:', JSON.stringify(where, null, 2));
+    logger.log('News API - Found:', news.length, 'news items');
+    logger.log('News API - Total count:', total);
 
     const totalPages = Math.ceil(total / validatedLimit);
 
@@ -84,7 +85,7 @@ export async function GET(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Error fetching news:', error);
+    logger.error('Error fetching news:', error);
     return NextResponse.json(
       { error: 'Failed to fetch news' },
       { status: 500 }
@@ -177,7 +178,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(news, { status: 201 });
   } catch (error) {
-    console.error('Error creating news:', error);
+    logger.error('Error creating news:', error);
     return NextResponse.json(
       { error: 'Failed to create news' },
       { status: 500 }

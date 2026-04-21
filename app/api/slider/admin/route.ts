@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth/permissions';
+import { logger } from '@/lib/utils/logger';
 
 // GET /api/slider/admin - Admin only, fetch all slides (including hidden)
 export async function GET(request: NextRequest) {
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ slides }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching slides:', error);
+    logger.error('Error fetching slides:', error);
     return NextResponse.json(
       { error: 'Failed to fetch slides' },
       { status: 500 }

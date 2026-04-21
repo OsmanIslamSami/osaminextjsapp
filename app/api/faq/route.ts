@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/faq
@@ -88,7 +89,7 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Error fetching FAQs:', error);
+    logger.error('Error fetching FAQs:', error);
     return NextResponse.json(
       { error: 'Failed to fetch FAQs' },
       { status: 500 }
@@ -176,7 +177,7 @@ export async function POST(request: NextRequest) {
     );
     
   } catch (error) {
-    console.error('Error creating FAQ:', error);
+    logger.error('Error creating FAQ:', error);
     return NextResponse.json(
       { error: 'Failed to create FAQ' },
       { status: 500 }

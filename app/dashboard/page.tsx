@@ -9,6 +9,7 @@ import LatestClients from '@/lib/components/dashboard/LatestClients';
 import LatestNews from '@/lib/components/dashboard/LatestNews';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import LoadingSpinner from '@/lib/components/ui/LoadingSpinner';
+import { logger } from '@/lib/utils/logger';
 
 interface DashboardMetrics {
   clientCount: number;
@@ -19,10 +20,10 @@ interface DashboardMetrics {
   thisMonthOrders: number;
   lastMonthOrders: number;
   statusBreakdown: { status: string; count: number }[];
-  recentClients: any[];
-  recentOrders: any[];
-  latestClients: any[];
-  latestNews: any[];
+  recentClients: Record<string, unknown>[];
+  recentOrders: Record<string, unknown>[];
+  latestClients: Record<string, unknown>[];
+  latestNews: Record<string, unknown>[];
 }
 
 export default function DashboardPage() {
@@ -54,7 +55,7 @@ export default function DashboardPage() {
       const data = await response.json();
       setMetrics(data);
     } catch (err) {
-      console.error('Error fetching metrics:', err);
+      logger.error('Error fetching metrics:', err);
       setError('Failed to load dashboard metrics. Please try again.');
     } finally {
       setLoading(false);

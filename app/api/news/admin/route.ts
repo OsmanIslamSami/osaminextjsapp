@@ -6,6 +6,7 @@ import {
   buildNewsWhereClause,
   validatePagination,
 } from '@/lib/utils/news-search';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/news/admin
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error fetching admin news:', error);
+    logger.error('Error fetching admin news:', error);
     return NextResponse.json(
       { error: 'Failed to fetch news' },
       { status: 500 }

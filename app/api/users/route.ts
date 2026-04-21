@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/permissions';
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/utils/logger';
 
 export async function GET() {
   try {
@@ -25,7 +26,10 @@ export async function GET() {
       orderBy: {
         created_at: 'desc',
       },
+      take: 500, // Limit to 500 users per request (can be made configurable)
     });
+
+    const total = await prisma.user.count();
 
     const formattedUsers = users.map(user => ({
       id: user.id,
@@ -38,9 +42,12 @@ export async function GET() {
       updated_at: user.updated_at.toISOString(),
     }));
 
-    return NextResponse.json(formattedUsers);
+    return NextResponse.json({ 
+      users: formattedUsers,
+      total 
+    });
   } catch (error) {
-    console.error('Error fetching users:', error);
+    logger.error('Error fetching users:', error);
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }

@@ -5,6 +5,7 @@ import { useToast } from '@/lib/components/ToastContainer';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import ConfirmDialog from '@/lib/components/ConfirmDialog';
 import { TrashIcon } from '@heroicons/react/24/outline';
+import { logger } from '@/lib/utils/logger';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -20,10 +21,10 @@ export default function AdminUsersPage() {
         const response = await fetch('/api/users');
         if (response.ok) {
           const data = await response.json();
-          setUsers(data);
+          setUsers(data.users || []);
         }
       } catch (error) {
-        console.error('Error fetching users:', error);
+        logger.error('Error fetching users:', error);
       } finally {
         setLoading(false);
       }
@@ -46,14 +47,14 @@ export default function AdminUsersPage() {
         const updatedResponse = await fetch('/api/users');
         if (updatedResponse.ok) {
           const data = await updatedResponse.json();
-          setUsers(data);
+          setUsers(data.users || []);
         }
       } else {
         const error = await response.json();
         showError(error.error || t('admin.users.messages.roleUpdateFailed'));
       }
     } catch (error) {
-      console.error('Error updating role:', error);
+      logger.error('Error updating role:', error);
       showError(t('admin.users.messages.roleUpdateFailed'));
     }
   };
@@ -71,14 +72,14 @@ export default function AdminUsersPage() {
         const updatedResponse = await fetch('/api/users');
         if (updatedResponse.ok) {
           const data = await updatedResponse.json();
-          setUsers(data);
+          setUsers(data.users || []);
         }
       } else {
         const error = await response.json();
         showError(error.error || t('admin.users.messages.statusUpdateFailed'));
       }
     } catch (error) {
-      console.error(`Error ${isActive ? 'deactivating' : 'activating'} user:`, error);
+      logger.error(`Error ${isActive ? 'deactivating' : 'activating'} user:`, error);
       showError(t('admin.users.messages.statusUpdateFailed'));
     }
   };
@@ -134,7 +135,7 @@ export default function AdminUsersPage() {
       const response = await fetch('/api/users');
       if (response.ok) {
         const data = await response.json();
-        setUsers(data);
+        setUsers(data.users || []);
       }
     } catch (err) {
       showError(language === 'ar' ? 'فشل الحذف الجماعي' : 'Failed to bulk delete');

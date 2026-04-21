@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 export default function HomeFAQError({
   error,
@@ -11,7 +12,7 @@ export default function HomeFAQError({
 }) {
   useEffect(() => {
     // Log error to console (in production, send to monitoring service)
-    console.error('FAQ Section Error:', error);
+    logger.error('FAQ Section Error:', error);
   }, [error]);
 
   return (
