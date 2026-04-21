@@ -332,7 +332,7 @@ export default function AppSettingsPage() {
     });
   };
 
-  const handleFileSelect = async (file: { file_url: string; file_size: number; width?: number; height?: number }) => {
+  const handleFileSelect = async (file: { file_url: string; file_size: number; width?: number | null; height?: number | null }) => {
     if (!filePickerTarget) return;
 
     logger.log('Selected file from library:', file);
