@@ -40,8 +40,7 @@ export default function Header() {
       {/* Left: Logo + Navigation Tabs */}
       <div className="flex items-center gap-6">
         {/* Mobile Menu Button - at row start for both LTR and RTL */}
-        {isSignedIn && (
-          <button
+        <button
             onClick={handleMobileMenuToggle}
             type="button"
             className="md:hidden p-3 rounded-full transition-all hover:scale-105"
@@ -58,7 +57,6 @@ export default function Header() {
           >
             <Bars3Icon className="w-5 h-5" />
           </button>
-        )}
         
         <Link href="/" className="flex items-center min-h-[40px]">
           {loading ? (
@@ -173,12 +171,14 @@ export default function Header() {
       {/* Right: Language Switcher + User Button */}
       <div className="flex items-center gap-4">
         {!isSignedIn && (
-          <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <SignInButton mode="modal"><button className="px-4 md:px-5 py-1.5 md:py-2 text-sm font-medium rounded-full transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100">{t('login.signInButton')}</button></SignInButton>
             <SignUpButton mode="modal"><button className="hidden md:block px-5 py-2 text-sm font-medium rounded-full transition-all border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent">{t('login.signUpButton')}</button></SignUpButton>
           </div>
         )}
-        <LanguageSwitcher />
+        <div className="hidden md:block">
+          <LanguageSwitcher />
+        </div>
         {isSignedIn && (
           <div className="hidden md:block">
             <UserButton />

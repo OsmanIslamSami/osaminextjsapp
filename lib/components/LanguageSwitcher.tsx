@@ -32,10 +32,10 @@ export function LanguageSwitcher() {
   const currentLanguage = languages.find(lang => lang.code === language);
 
   return (
-    <div className="relative inline-block" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 bg-transparent transition-all"
+        className="w-full flex items-center justify-center gap-2 px-5 py-2 text-sm font-medium rounded-full border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 bg-transparent transition-all"
         aria-label="Select language"
       >
         <GlobeAltIcon className="w-4 h-4 text-gray-700 dark:text-zinc-300" />

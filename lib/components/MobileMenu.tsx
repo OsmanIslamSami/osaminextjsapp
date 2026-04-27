@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { XMarkIcon, ChartBarIcon, UsersIcon, Cog6ToothIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { UserButton } from '@clerk/nextjs';
+import { SignInButton, SignUpButton, UserButton, useAuth } from '@clerk/nextjs';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { LanguageSwitcher } from '@/lib/components/LanguageSwitcher';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 
 interface NavItem {
@@ -22,6 +23,7 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const { isSignedIn } = useAuth();
   const pathname = usePathname();
   const { t, direction, language } = useTranslation();
   const { isAdmin } = useCurrentUser();
@@ -197,11 +199,35 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </ul>
         </nav>
 
-        {/* User Profile Section */}
+        {/* User/Profile/Language Section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
-          <div className="flex items-center gap-3">
-            <UserButton />
-            <span className="text-sm text-gray-600 dark:text-zinc-400">{t('common.profile')}</span>
+          <div className="flex flex-col items-center gap-3 w-full mb-6">
+            {/* Language Switcher */}
+            <div className="w-full flex justify-center">
+              <div className="w-full max-w-[220px]">
+                <LanguageSwitcher />
+              </div>
+            </div>
+            {/* Auth Buttons or User Button */}
+            {!isSignedIn ? (
+              <div className="flex flex-col gap-2 w-full max-w-[220px]">
+                <SignInButton mode="modal">
+                  <button className="w-full px-5 py-2 text-sm font-medium rounded-full transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100">
+                    {t('login.signInButton')}
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="w-full px-5 py-2 text-sm font-medium rounded-full transition-all border-2 border-gray-300 dark:border-zinc-600 hover:border-gray-400 dark:hover:border-zinc-500 text-gray-700 dark:text-zinc-300 bg-transparent">
+                    {t('login.signUpButton')}
+                  </button>
+                </SignUpButton>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 w-full max-w-[220px] justify-center">
+                <UserButton />
+                <span className="text-sm text-gray-600 dark:text-zinc-400">{t('common.profile')}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
