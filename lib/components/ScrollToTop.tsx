@@ -33,6 +33,7 @@ export default function ScrollToTop() {
 
   const dashOffset = CIRCUMFERENCE * (1 - progress);
 
+  
   return (
     <button
       onClick={scrollToTop}
